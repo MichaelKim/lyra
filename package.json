@@ -1,0 +1,38 @@
+{
+  "name": "music-player",
+  "version": "1.0.0",
+  "description": "A music player app",
+  "main": "src/main/index.js",
+  "scripts": {
+    "dev": "electron-webpack dev",
+    "build": "electron-webpack",
+    "dist": "electron-webpack && electron-builder --dir"
+  },
+  "author": "Michael Kim <micklepickle98@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "source-map-support": "^0.5.11"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "electron": "^4.1.1",
+    "electron-builder": "^20.39.0",
+    "electron-webpack": "^2.6.2",
+    "flow-bin": "^0.95.1",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "react-player": "^1.10.0",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "webpack": "^4.29.6"
+  },
+  "build": {
+    "productName": "Music Player",
+    "appId": "com.music-player",
+    "win": {
+      "target": "portable"
+    }
+  }
+}
