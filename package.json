@@ -11,6 +11,7 @@
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "electron-json-storage": "^4.1.6",
     "source-map-support": "^0.5.11"
   },
   "devDependencies": {

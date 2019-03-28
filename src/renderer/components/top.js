@@ -1,6 +1,6 @@
 // @flow strict
 
-import React from 'react';
+import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
@@ -31,4 +31,6 @@ function mapState(state: StoreState) {
   };
 }
 
-export default connect(mapState)(Top);
+const ConnectedComp: React.ComponentType<{||}> = connect(mapState)(Top);
+
+export default ConnectedComp;

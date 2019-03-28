@@ -1,6 +1,6 @@
 // @flow strict
 
-import React from 'react';
+import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import fs from 'fs';
@@ -95,7 +95,9 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-export default connect(
+const ConnectedComp: React.ComponentType<{||}> = connect(
   null,
   mapDispatch
 )(Settings);
+
+export default ConnectedComp;

@@ -1,13 +1,12 @@
 // @flow strict
 
-import React from 'react';
+import * as React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
-import Top from './components/top';
-import PlaybackBar from './components/playbackBar';
+import Root from './components/root';
 
-import store from './store';
+import store from './state/store';
 
 import '../css/fonts.css';
 import '../css/main.css';
@@ -18,8 +17,7 @@ class App extends React.Component<{||}> {
   render() {
     return (
       <Provider store={store}>
-        <Top />
-        <PlaybackBar />
+        <Root />
       </Provider>
     );
   }

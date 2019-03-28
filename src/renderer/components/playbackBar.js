@@ -1,10 +1,10 @@
 // @flow strict
 
-import React from 'react';
+import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
-import ReactPlayer from 'react-player';
+// import ReactPlayer from 'react-player';
 
 import type { StoreState, Song } from '../types';
 
@@ -35,7 +35,9 @@ function mapState(state: StoreState) {
   };
 }
 
-export default connect(mapState)(PlaybackBar);
+const ConnectedComp: React.ComponentType<{||}> = connect(mapState)(PlaybackBar);
+
+export default ConnectedComp;
 
 //   <ReactPlayer
 //     // url={'file:///C:/Users/Michael/Music/' + this.state.playing}

@@ -1,21 +1,26 @@
 # Music Player
 
-- Local usage
-  - Basic playback operations
-  - Playlists
-  - Persistent storage
-- Online usage
-
 TODO:
 
-- Add persistent storage
-  - Store songs
-  - Playlists
+- Songs
+  - Delete songs
+  - Detect missing songs
+- Playlists
+  - Create playlist
+  - Add song to playlist
+  - Remove song to playlist
+  - Add to persistent storage
 
-* Add songs
-  - Select directory to search songs
-  - Directories aren't stored, only songs paths
-* Drag and drop
+Long term features:
+
+- Music metadata
+  - Use metadata instead of filename
+  - Edit metadata on song add
+    - Default to existing metadata
+    - If title doesn't exist, default to filename
+  - Show more detail on Screen
+    - Title, Duration, Artist
+- Drag and drop
   - Add songs to all songs
   - Add songs to playlists
   - Add songs into playlists
