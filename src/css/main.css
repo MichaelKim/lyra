@@ -1,13 +1,3 @@
-@font-face {
-  font-family: 'Open Sans';
-  font-weight: 400;
-  src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
-}
-
-* {
-  font-family: 'Open Sans';
-}
-
 html,
 body,
 #app {
@@ -35,11 +25,6 @@ p {
 .playback-bar {
   height: 125px;
   background-color: lightgray;
-}
-
-.sidebar {
-  width: 125px;
-  background-color: gray;
 }
 
 .screen {

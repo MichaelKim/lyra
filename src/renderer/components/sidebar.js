@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 
 import type { StoreState, Dispatch } from '../types';
 
+require('../../css/sidebar.css');
+
 type Props = {|
   +playlist?: ?string,
   +selectPlaylist: (name: ?string) => void
@@ -13,13 +15,38 @@ type Props = {|
 
 class Sidebar extends React.Component<Props> {
   render() {
+    const { playlist, selectPlaylist } = this.props;
+
     return (
       <div className="sidebar">
-        <p>Sidebar</p>
-        <p onClick={() => this.props.selectPlaylist(null)}>All Songs</p>
-        <p>Playlists</p>
-        <p onClick={() => this.props.selectPlaylist('Piano')}>Piano</p>
-        <p onClick={() => this.props.selectPlaylist('settings')}>Settings</p>
+        <h3 className="sidebar-title">Music Player</h3>
+        <p
+          className={
+            'sidebar-link sidebar-section ' +
+            (playlist == null ? ' sidebar-selected' : '')
+          }
+          onClick={() => selectPlaylist(null)}
+        >
+          All Songs
+        </p>
+        <p className="sidebar-section">Playlists</p>
+        <p
+          className={
+            'sidebar-link ' + (playlist == 'Piano' ? ' sidebar-selected' : '')
+          }
+          onClick={() => selectPlaylist('Piano')}
+        >
+          Piano
+        </p>
+        <p
+          className={
+            'sidebar-link sidebar-section ' +
+            (playlist == 'settings' ? ' sidebar-selected' : '')
+          }
+          onClick={() => selectPlaylist('settings')}
+        >
+          Settings
+        </p>
       </div>
     );
   }
