@@ -2,19 +2,33 @@
 
 import React from 'react';
 import { render } from 'react-dom';
+import { connect } from 'react-redux';
 
 import Sidebar from './sidebar';
 import Screen from './screen';
+import Settings from './settings';
 
-class Top extends React.Component<{||}> {
+import type { StoreState } from '../types';
+
+type Props = {|
+  +playlist: ?string
+|};
+
+class Top extends React.Component<Props> {
   render() {
     return (
       <div className="top">
         <Sidebar />
-        <Screen />
+        {this.props.playlist === 'settings' ? <Settings /> : <Screen />}
       </div>
     );
   }
 }
 
-export default Top;
+function mapState(state: StoreState) {
+  return {
+    playlist: state.playlist
+  };
+}
+
+export default connect(mapState)(Top);

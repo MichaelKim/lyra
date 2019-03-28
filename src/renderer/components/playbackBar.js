@@ -6,22 +6,21 @@ import { connect } from 'react-redux';
 import path from 'path';
 import ReactPlayer from 'react-player';
 
-import type { StoreState } from '../types';
+import type { StoreState, Song } from '../types';
 
 type Props = {|
-  +directory: string,
-  +current?: string
+  +current?: Song
 |};
 
 class PlaybackBar extends React.Component<Props> {
   render() {
-    const { directory, current } = this.props;
+    const { current } = this.props;
 
     return (
       <div className="playback-bar">
         <p>Playback</p>
         {current != null ? (
-          <audio autoPlay controls src={path.join(directory, current)} />
+          <audio autoPlay controls src={path.join(current.dir, current.name)} />
         ) : (
           <p>No music playing</p>
         )}
@@ -32,7 +31,6 @@ class PlaybackBar extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    directory: state.directory,
     current: state.current
   };
 }

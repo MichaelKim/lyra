@@ -1,17 +1,25 @@
 // @flow strict
 
+export type StoreState = {|
+  +current?: Song,
+  +directories: string[],
+  +playlist?: ?string
+|};
+
+export type Song = {|
+  +name: string,
+  +dir: string
+|};
+
+export type Dispatch = (action: Action) => void;
+
 export type Action =
   | {|
       +type: 'SELECT_SONG',
-      +name: string
+      +song: Song
     |}
   | {|
       +type: 'SELECT_PLAYLIST',
       +name: ?string
-    |};
-
-export type StoreState = {|
-  +current?: string,
-  +directory: string,
-  +playlist?: ?string
-|};
+    |}
+  | {| +type: 'SET_DIRECTORIES', +dirs: string[] |};

@@ -4,7 +4,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
-import type { StoreState } from '../types';
+import type { StoreState, Dispatch } from '../types';
 
 type Props = {|
   +playlist?: ?string,
@@ -19,6 +19,7 @@ class Sidebar extends React.Component<Props> {
         <p onClick={() => this.props.selectPlaylist(null)}>All Songs</p>
         <p>Playlists</p>
         <p onClick={() => this.props.selectPlaylist('Piano')}>Piano</p>
+        <p onClick={() => this.props.selectPlaylist('settings')}>Settings</p>
       </div>
     );
   }
@@ -30,7 +31,7 @@ function mapState(state: StoreState) {
   };
 }
 
-function mapDispatch(dispatch) {
+function mapDispatch(dispatch: Dispatch) {
   return {
     selectPlaylist: (name: ?string) =>
       dispatch({ type: 'SELECT_PLAYLIST', name })

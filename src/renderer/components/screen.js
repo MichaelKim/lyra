@@ -8,55 +8,76 @@ import path from 'path';
 
 import Sidebar from './sidebar';
 
-import type { StoreState } from '../types';
+import type { StoreState, Dispatch, Song } from '../types';
 
 type Props = {|
-  +directory: string,
+  +directories: string[],
   +playlist: ?string,
-  +selectSong: (name: string) => void
+  +selectSong: (song: Song) => void
 |};
 
 type State = {
   loaded: boolean,
-  files: string[]
+  songs: Song[]
 };
 
 class Screen extends React.Component<Props, State> {
   state = {
     loaded: false,
-    files: []
+    songs: []
   };
 
   componentDidMount() {
-    fs.readdir(this.props.directory, (err, files) => {
+    const promises = this.props.directories.map(
+      dir =>
+        new Promise((resolve, reject) => {
+          fs.readdir(dir, (err, files) => {
+            if (err) reject();
+            else {
+              const names = files.filter(file => path.extname(file) === '.mp3');
+              resolve(
+                names.map(name => ({
+                  name,
+                  dir
+                }))
+              );
+            }
+          });
+        })
+    );
+
+    Promise.all(promises).then(values => {
       this.setState({
         loaded: true,
-        files: files.filter(file => path.extname(file) === '.mp3')
+        // $FlowFixMe: Array.prototype.flat not in Flow
+        songs: values.flat()
       });
     });
   }
 
-  _onClick = (file: string) => {
-    this.props.selectSong(file);
+  _onClick = (song: Song) => {
+    this.props.selectSong(song);
   };
 
   render() {
     const { playlist } = this.props;
-    const { files, loaded } = this.state;
+    const { songs, loaded } = this.state;
 
     const title = playlist || 'All Songs';
 
     const filtered =
-      playlist == null ? files : files.filter(file => file.includes(playlist));
+      playlist == null
+        ? songs
+        : songs.filter(song => song.name.includes(playlist));
 
     return (
       <div className="screen">
         <h1>{title}</h1>
         {loaded ? (
           <div>
-            {filtered.map(file => (
-              <div onClick={() => this._onClick(file)} key={file}>
-                <p>{file}</p>
+            {filtered.map(song => (
+              <div onClick={() => this._onClick(song)} key={song.name}>
+                <p>{song.name}</p>
               </div>
             ))}
           </div>
@@ -70,14 +91,14 @@ class Screen extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    directory: state.directory,
+    directories: state.directories,
     playlist: state.playlist
   };
 }
 
-function mapDispatch(dispatch) {
+function mapDispatch(dispatch: Dispatch) {
   return {
-    selectSong: (name: string) => dispatch({ type: 'SELECT_SONG', name })
+    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song })
   };
 }
 
