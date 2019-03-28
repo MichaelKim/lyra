@@ -5,10 +5,11 @@ import { createStore } from 'redux';
 import type { StoreState, Action } from './types';
 
 const initialState: StoreState = {
-  directories: ['C:/Users/Michael/Music/']
+  songs: []
 };
 
 function reducer(state: StoreState = initialState, action: Action) {
+  console.log(action);
   switch (action.type) {
     case 'SELECT_SONG':
       return {
@@ -22,10 +23,10 @@ function reducer(state: StoreState = initialState, action: Action) {
         playlist: action.name
       };
 
-    case 'SET_DIRECTORIES':
+    case 'ADD_SONGS':
       return {
         ...state,
-        directories: action.dirs
+        songs: state.songs.concat(action.songs)
       };
 
     default:

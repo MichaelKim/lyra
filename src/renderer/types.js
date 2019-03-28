@@ -2,8 +2,8 @@
 
 export type StoreState = {|
   +current?: Song,
-  +directories: string[],
-  +playlist?: ?string
+  +playlist?: ?string,
+  +songs: Song[]
 |};
 
 export type Song = {|
@@ -22,4 +22,4 @@ export type Action =
       +type: 'SELECT_PLAYLIST',
       +name: ?string
     |}
-  | {| +type: 'SET_DIRECTORIES', +dirs: string[] |};
+  | {| +type: 'ADD_SONGS', +songs: Song[] |};

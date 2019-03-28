@@ -14,6 +14,7 @@ function createWindow() {
     height: 720,
     title: 'Music Player',
     webPreferences: {
+      nodeIntegration: true,
       webSecurity: false
     }
   });

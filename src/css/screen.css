@@ -1,0 +1,13 @@
+.screen {
+  flex: 1;
+  background-color: lightgoldenrodyellow;
+  padding: 20px;
+}
+
+.screen-title {
+  font-size: 30px;
+}
+
+.song-item {
+  cursor: pointer;
+}

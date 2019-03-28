@@ -26,8 +26,3 @@ p {
   height: 125px;
   background-color: lightgray;
 }
-
-.screen {
-  flex: 1;
-  background-color: lightgoldenrodyellow;
-}

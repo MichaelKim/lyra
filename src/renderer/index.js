@@ -9,8 +9,8 @@ import PlaybackBar from './components/playbackBar';
 
 import store from './store';
 
-require('../css/fonts.css');
-require('../css/main.css');
+import '../css/fonts.css';
+import '../css/main.css';
 
 const root = document.getElementById('app');
 

@@ -9,6 +9,13 @@
 }
 
 h1 {
+  font-size: 30px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 700;
+  line-height: 23px;
+}
+h2 {
   font-size: 23px;
   font-style: normal;
   font-variant: normal;

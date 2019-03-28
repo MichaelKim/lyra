@@ -10,58 +10,21 @@ import Sidebar from './sidebar';
 
 import type { StoreState, Dispatch, Song } from '../types';
 
+import '../../css/screen.css';
+
 type Props = {|
-  +directories: string[],
+  +songs: Song[],
   +playlist: ?string,
   +selectSong: (song: Song) => void
 |};
 
-type State = {
-  loaded: boolean,
-  songs: Song[]
-};
-
-class Screen extends React.Component<Props, State> {
-  state = {
-    loaded: false,
-    songs: []
-  };
-
-  componentDidMount() {
-    const promises = this.props.directories.map(
-      dir =>
-        new Promise((resolve, reject) => {
-          fs.readdir(dir, (err, files) => {
-            if (err) reject();
-            else {
-              const names = files.filter(file => path.extname(file) === '.mp3');
-              resolve(
-                names.map(name => ({
-                  name,
-                  dir
-                }))
-              );
-            }
-          });
-        })
-    );
-
-    Promise.all(promises).then(values => {
-      this.setState({
-        loaded: true,
-        // $FlowFixMe: Array.prototype.flat not in Flow
-        songs: values.flat()
-      });
-    });
-  }
-
+class Screen extends React.Component<Props> {
   _onClick = (song: Song) => {
     this.props.selectSong(song);
   };
 
   render() {
-    const { playlist } = this.props;
-    const { songs, loaded } = this.state;
+    const { songs, playlist } = this.props;
 
     const title = playlist || 'All Songs';
 
@@ -73,17 +36,15 @@ class Screen extends React.Component<Props, State> {
     return (
       <div className="screen">
         <h1>{title}</h1>
-        {loaded ? (
-          <div>
-            {filtered.map(song => (
-              <div onClick={() => this._onClick(song)} key={song.name}>
-                <p>{song.name}</p>
-              </div>
-            ))}
+        {filtered.map(song => (
+          <div
+            className="song-item"
+            onClick={() => this._onClick(song)}
+            key={song.name}
+          >
+            <p>{song.name}</p>
           </div>
-        ) : (
-          <p>Loading...</p>
-        )}
+        ))}
       </div>
     );
   }
@@ -91,7 +52,7 @@ class Screen extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    directories: state.directories,
+    songs: state.songs,
     playlist: state.playlist
   };
 }

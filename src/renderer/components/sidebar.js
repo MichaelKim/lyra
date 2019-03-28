@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import type { StoreState, Dispatch } from '../types';
 
-require('../../css/sidebar.css');
+import '../../css/sidebar.css';
 
 type Props = {|
   +playlist?: ?string,

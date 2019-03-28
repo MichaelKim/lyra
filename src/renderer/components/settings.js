@@ -3,88 +3,99 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
+import fs from 'fs';
+import path from 'path';
+import { remote } from 'electron';
 
-import type { StoreState, Dispatch } from '../types';
+import type { StoreState, Dispatch, Song } from '../types';
 
 type Props = {|
-  +directories: string[],
-  +setDirectories: (dirs: string[]) => void
+  +addSongs: (songs: Song[]) => void
 |};
 
 type State = {|
-  entered: string,
-  tempDirs: Set<string>
+  selected: boolean,
+  tempDirs: [],
+  tempSongs: Song[]
 |};
 
 class Settings extends React.Component<Props, State> {
   state = {
-    entered: '',
-    tempDirs: new Set(this.props.directories)
-  };
-
-  _onChange = event => {
-    this.setState({
-      entered: event.target.value
-    });
+    selected: false,
+    tempDirs: [],
+    tempSongs: []
   };
 
   _onAdd = () => {
-    this.setState(state => ({
-      entered: '',
-      tempDirs: state.tempDirs.add(state.entered)
-    }));
+    this.props.addSongs(this.state.tempSongs);
   };
 
-  _onDelete = dir => {
-    this.setState(state => {
-      state.tempDirs.delete(dir);
-      return {
-        tempDirs: state.tempDirs
-      };
+  _onSelect = () => {
+    const dirs = remote.dialog.showOpenDialog({
+      properties: ['openDirectory']
     });
-  };
 
-  _onSave = () => {
-    this.props.setDirectories(Array.from(this.state.tempDirs));
+    if (dirs == null) {
+      return;
+    }
+
+    const promises = dirs.map(
+      dir =>
+        new Promise((resolve, reject) => {
+          fs.readdir(dir, (err, files) => {
+            if (err) {
+              reject();
+              return;
+            }
+
+            const names = files.filter(file => path.extname(file) === '.mp3');
+            resolve(
+              names.map(name => ({
+                name,
+                dir
+              }))
+            );
+          });
+        })
+    );
+
+    Promise.all(promises).then(values => {
+      this.setState({
+        selected: true,
+        tempDirs: dirs,
+        tempSongs: values.flat()
+      });
+    });
   };
 
   render() {
     return (
       <div className="screen">
         <h1>Settings</h1>
-        <p>Directories</p>
-        {Array.from(this.state.tempDirs).map(dir => (
-          <div key={dir}>
-            <p>{dir}</p>
-            <p onClick={() => this._onDelete(dir)}>x</p>
-          </div>
-        ))}
-        <input
-          placeholder="New directory"
-          value={this.state.entered}
-          onChange={this._onChange}
-        />
-        <button onClick={this._onAdd}>Add</button>
-        <button onClick={this._onSave}>Save</button>
+        <h3>Add Songs</h3>
+        <button onClick={this._onSelect}>Select Directory</button>
+
+        {this.state.selected ? (
+          <>
+            {this.state.tempSongs.map(song => (
+              <p key={song.name}>{song.name}</p>
+            ))}
+
+            <button onClick={this._onAdd}>Import</button>
+          </>
+        ) : null}
       </div>
     );
   }
 }
 
-function mapState(state: StoreState) {
-  return {
-    directories: state.directories
-  };
-}
-
 function mapDispatch(dispatch: Dispatch) {
   return {
-    setDirectories: (dirs: string[]) =>
-      dispatch({ type: 'SET_DIRECTORIES', dirs })
+    addSongs: (songs: Song[]) => dispatch({ type: 'ADD_SONGS', songs })
   };
 }
 
 export default connect(
-  mapState,
+  null,
   mapDispatch
 )(Settings);
