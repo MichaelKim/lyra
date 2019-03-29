@@ -3,10 +3,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import fs from 'fs';
-import path from 'path';
 
-import Sidebar from './sidebar';
+import SongItem from './songItem';
 
 import type { StoreState, Dispatch, Song } from '../types';
 
@@ -37,13 +35,7 @@ class Screen extends React.Component<Props> {
       <div className="screen">
         <h1>{title}</h1>
         {filtered.map(song => (
-          <div
-            className="song-item"
-            onClick={() => this._onClick(song)}
-            key={song.name}
-          >
-            <p>{song.name}</p>
-          </div>
+          <SongItem key={song.name} song={song} />
         ))}
       </div>
     );

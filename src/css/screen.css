@@ -11,3 +11,9 @@
 .song-item {
   cursor: pointer;
 }
+
+.song-missing {
+  color: grey;
+  text-decoration: line-through;
+  cursor: default;
+}

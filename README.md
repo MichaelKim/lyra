@@ -4,7 +4,6 @@ TODO:
 
 - Songs
   - Delete songs
-  - Detect missing songs
 - Playlists
   - Create playlist
   - Add song to playlist
@@ -24,3 +23,11 @@ Long term features:
   - Add songs to all songs
   - Add songs to playlists
   - Add songs into playlists
+- Download from Youtube
+
+- Online
+  - Make account
+  - Show songs saved online
+  - Stream songs
+  - Download songs
+  - Upload songs
