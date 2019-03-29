@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "electron-json-storage": "^4.1.6",
+    "music-metadata": "^3.5.3",
     "source-map-support": "^0.5.11"
   },
   "devDependencies": {

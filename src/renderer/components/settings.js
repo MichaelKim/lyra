@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import fs from 'fs';
 import path from 'path';
 import { remote } from 'electron';
+import { getSongs } from '../util';
 
 import type { StoreState, Dispatch, Song } from '../types';
 
@@ -39,25 +40,7 @@ class Settings extends React.Component<Props, State> {
       return;
     }
 
-    const promises = dirs.map(
-      dir =>
-        new Promise((resolve, reject) => {
-          fs.readdir(dir, (err, files) => {
-            if (err) {
-              reject();
-              return;
-            }
-
-            const names = files.filter(file => path.extname(file) === '.mp3');
-            resolve(
-              names.map(name => ({
-                name,
-                dir
-              }))
-            );
-          });
-        })
-    );
+    const promises = dirs.map(dir => getSongs(dir));
 
     Promise.all(promises).then(values => {
       this.setState({
