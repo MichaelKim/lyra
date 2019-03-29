@@ -31,4 +31,7 @@ export type Action =
       +type: 'SELECT_PLAYLIST',
       +name: ?string
     |}
-  | {| +type: 'ADD_SONGS', +songs: Song[] |};
+  | {| +type: 'ADD_SONGS', +songs: Song[] |}
+  | {|
+      +type: 'CLEAR_DATA'
+    |};

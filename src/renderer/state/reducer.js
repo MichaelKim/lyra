@@ -33,6 +33,12 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         songs: newSongs
       };
 
+    case 'CLEAR_DATA':
+      return {
+        ...initialState,
+        loaded: true
+      };
+
     default:
       return state;
   }
@@ -43,6 +49,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
 
   switch (action.type) {
     case 'ADD_SONGS':
+    case 'CLEAR_DATA':
       save(newState);
       break;
   }

@@ -11,7 +11,8 @@ import { getSongs } from '../util';
 import type { StoreState, Dispatch, Song } from '../types';
 
 type Props = {|
-  +addSongs: (songs: Song[]) => void
+  +addSongs: (songs: Song[]) => void,
+  +clearData: () => void
 |};
 
 type State = {|
@@ -51,6 +52,10 @@ class Settings extends React.Component<Props, State> {
     });
   };
 
+  _onClear = () => {
+    this.props.clearData();
+  };
+
   render() {
     return (
       <div className="screen">
@@ -67,6 +72,8 @@ class Settings extends React.Component<Props, State> {
             <button onClick={this._onAdd}>Import</button>
           </>
         ) : null}
+
+        <button onClick={this._onClear}>Clear all data</button>
       </div>
     );
   }
@@ -74,7 +81,8 @@ class Settings extends React.Component<Props, State> {
 
 function mapDispatch(dispatch: Dispatch) {
   return {
-    addSongs: (songs: Song[]) => dispatch({ type: 'ADD_SONGS', songs })
+    addSongs: (songs: Song[]) => dispatch({ type: 'ADD_SONGS', songs }),
+    clearData: () => dispatch({ type: 'CLEAR_DATA' })
   };
 }
 
