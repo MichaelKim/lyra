@@ -12,7 +12,7 @@ import '../../css/screen.css';
 
 type Props = {|
   +songs: Song[],
-  +playlist: ?string,
+  +currScreen: ?string,
   +selectSong: (song: Song) => void
 |};
 
@@ -22,20 +22,20 @@ class Screen extends React.Component<Props> {
   };
 
   render() {
-    const { songs, playlist } = this.props;
+    const { songs, currScreen } = this.props;
 
-    const title = playlist || 'All Songs';
+    const title = currScreen || 'All Songs';
 
     const filtered =
-      playlist == null
+      currScreen == null
         ? songs
-        : songs.filter(song => song.name.includes(playlist));
+        : songs.filter(song => song.name.includes(currScreen));
 
     return (
       <div className="screen">
         <h1>{title}</h1>
         {filtered.map(song => (
-          <SongItem key={song.name} song={song} />
+          <SongItem key={song.id} song={song} />
         ))}
       </div>
     );
@@ -45,7 +45,7 @@ class Screen extends React.Component<Props> {
 function mapState(state: StoreState) {
   return {
     songs: state.songs,
-    playlist: state.playlist
+    currScreen: state.currScreen
   };
 }
 

@@ -17,13 +17,13 @@ function rootReducer(state: StoreState = initialState, action: Action) {
     case 'SELECT_SONG':
       return {
         ...state,
-        current: action.song
+        currSong: action.song
       };
 
     case 'SELECT_PLAYLIST':
       return {
         ...state,
-        playlist: action.name
+        currScreen: action.name
       };
 
     case 'ADD_SONGS':

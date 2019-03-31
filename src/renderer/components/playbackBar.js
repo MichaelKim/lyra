@@ -9,18 +9,22 @@ import path from 'path';
 import type { StoreState, Song } from '../types';
 
 type Props = {|
-  +current?: Song
+  +currSong?: Song
 |};
 
 class PlaybackBar extends React.Component<Props> {
   render() {
-    const { current } = this.props;
+    const { currSong } = this.props;
 
     return (
       <div className="playback-bar">
         <p>Playback</p>
-        {current != null ? (
-          <audio autoPlay controls src={path.join(current.dir, current.name)} />
+        {currSong != null ? (
+          <audio
+            autoPlay
+            controls
+            src={path.join(currSong.dir, currSong.name)}
+          />
         ) : (
           <p>No music playing</p>
         )}
@@ -31,7 +35,7 @@ class PlaybackBar extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    current: state.current
+    currSong: state.currSong
   };
 }
 

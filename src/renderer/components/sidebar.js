@@ -4,18 +4,19 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
-import type { StoreState, Dispatch } from '../types';
+import type { StoreState, Dispatch, Playlist } from '../types';
 
 import '../../css/sidebar.css';
 
 type Props = {|
-  +playlist?: ?string,
+  +currScreen?: ?string,
+  +playlists: Playlist[],
   +selectPlaylist: (name: ?string) => void
 |};
 
 class Sidebar extends React.Component<Props> {
   render() {
-    const { playlist, selectPlaylist } = this.props;
+    const { currScreen, playlists, selectPlaylist } = this.props;
 
     return (
       <div className="sidebar">
@@ -23,25 +24,29 @@ class Sidebar extends React.Component<Props> {
         <p
           className={
             'sidebar-link sidebar-section ' +
-            (playlist == null ? ' sidebar-selected' : '')
+            (currScreen == null ? ' sidebar-selected' : '')
           }
           onClick={() => selectPlaylist(null)}
         >
           All Songs
         </p>
         <p className="sidebar-section">Playlists</p>
-        <p
-          className={
-            'sidebar-link ' + (playlist == 'Piano' ? ' sidebar-selected' : '')
-          }
-          onClick={() => selectPlaylist('Piano')}
-        >
-          Piano
-        </p>
+        {playlists.map(playlist => (
+          <p
+            key={playlist.id}
+            className={
+              'sidebar-link ' +
+              (currScreen == playlist.name ? ' sidebar-selected' : '')
+            }
+            onClick={() => selectPlaylist(playlist.name)}
+          >
+            Piano
+          </p>
+        ))}
         <p
           className={
             'sidebar-link sidebar-section ' +
-            (playlist == 'settings' ? ' sidebar-selected' : '')
+            (currScreen == 'settings' ? ' sidebar-selected' : '')
           }
           onClick={() => selectPlaylist('settings')}
         >
@@ -54,7 +59,8 @@ class Sidebar extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    playlist: state.playlist
+    currScreen: state.currScreen,
+    playlists: state.playlists
   };
 }
 

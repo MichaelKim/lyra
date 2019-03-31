@@ -11,7 +11,7 @@ import Settings from './settings';
 import type { StoreState } from '../types';
 
 type Props = {|
-  +playlist: ?string
+  +currScreen: ?string
 |};
 
 class Top extends React.Component<Props> {
@@ -19,7 +19,7 @@ class Top extends React.Component<Props> {
     return (
       <div className="top">
         <Sidebar />
-        {this.props.playlist === 'settings' ? <Settings /> : <Screen />}
+        {this.props.currScreen === 'settings' ? <Settings /> : <Screen />}
       </div>
     );
   }
@@ -27,7 +27,7 @@ class Top extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    playlist: state.playlist
+    currScreen: state.currScreen
   };
 }
 
