@@ -4,6 +4,8 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
+import { values } from '../util';
+
 import type { StoreState, Dispatch, Playlist } from '../types';
 
 import '../../css/sidebar.css';
@@ -60,7 +62,7 @@ class Sidebar extends React.Component<Props> {
 function mapState(state: StoreState) {
   return {
     currScreen: state.currScreen,
-    playlists: state.playlists
+    playlists: values(state.playlists)
   };
 }
 

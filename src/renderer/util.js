@@ -37,3 +37,8 @@ export function getSongs(dir: string) {
     });
   });
 }
+
+// Flow doesn't like Object.values(), so this is an alternative with Object.keys()
+export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
+  return Object.keys(obj).map<V>((key: K) => obj[key]);
+}

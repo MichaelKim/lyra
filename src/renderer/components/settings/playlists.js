@@ -4,6 +4,8 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
+import { values } from '../../util';
+
 import type { StoreState, Dispatch, Playlist } from '../../types';
 
 type Props = {|
@@ -55,8 +57,7 @@ class Playlists extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    // Flow doesn't like Object.values()
-    playlists: Object.keys(state.playlists).map(id => state.playlists[id])
+    playlists: values(state.playlists)
   };
 }
 
