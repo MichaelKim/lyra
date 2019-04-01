@@ -11,24 +11,24 @@ import type { StoreState, Store } from '../types';
 
 const store: Store = createStore(reducer, initialState);
 
-storage.has('songs', (err, exists) => {
+storage.has('state', (err, exists) => {
   if (err) return;
 
   if (!exists) {
     store.dispatch({
       type: 'LOAD_STORAGE',
-      songs: []
+      state: initialState
     });
 
     return;
   }
 
-  storage.get('songs', (err, songs) => {
+  storage.get('state', (err, state) => {
     if (err) return;
 
     store.dispatch({
       type: 'LOAD_STORAGE',
-      songs
+      state
     });
   });
 });

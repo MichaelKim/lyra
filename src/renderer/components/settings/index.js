@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import Sources from './sources';
+import Playlists from './playlists';
 
 import type { Dispatch } from '../../types';
 
@@ -22,6 +23,7 @@ class Settings extends React.Component<Props> {
       <div className="screen">
         <h1>Settings</h1>
         <Sources />
+        <Playlists />
 
         <button onClick={this._onClear}>Clear all data</button>
       </div>

@@ -3,21 +3,22 @@
 import type { Store as ReduxStore } from 'redux';
 
 export type SongID = string;
-export type PlaylistID = string;
+export type PlaylistID = number;
 
 export type Song = {|
-  +id: SongID,
+  +id: SongID, // hash of filepath
   +name: string,
   +dir: string,
   +playlists: PlaylistID[]
 |};
 
 export type Playlist = {|
-  +id: PlaylistID,
+  +id: PlaylistID, // timestamp
   +name: string,
   +songs: SongID[]
 |};
 
+// Redux types
 export type Store = ReduxStore<StoreState, Action, Dispatch>;
 
 export type StoreState = {|
@@ -33,7 +34,7 @@ export type Dispatch = (action: Action) => void;
 export type Action =
   | {|
       +type: 'LOAD_STORAGE',
-      +songs: Song[]
+      +state: StoreState
     |}
   | {|
       +type: 'SELECT_SONG',
@@ -44,6 +45,7 @@ export type Action =
       +name: ?string
     |}
   | {| +type: 'ADD_SONGS', +songs: Song[] |}
+  | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {|
       +type: 'CLEAR_DATA'
     |};

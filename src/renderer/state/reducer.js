@@ -9,9 +9,8 @@ function rootReducer(state: StoreState = initialState, action: Action) {
   switch (action.type) {
     case 'LOAD_STORAGE':
       return {
-        ...state,
-        loaded: true,
-        songs: action.songs
+        ...action.state,
+        loaded: true
       };
 
     case 'SELECT_SONG':
@@ -33,6 +32,12 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         songs: newSongs
       };
 
+    case 'CREATE_PLAYLIST':
+      return {
+        ...state,
+        playlists: [...state.playlists, action.playlist]
+      };
+
     case 'CLEAR_DATA':
       return {
         ...initialState,
@@ -49,6 +54,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
 
   switch (action.type) {
     case 'ADD_SONGS':
+    case 'CREATE_PLAYLIST':
     case 'CLEAR_DATA':
       save(newState);
       break;

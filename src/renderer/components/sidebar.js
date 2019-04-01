@@ -40,7 +40,7 @@ class Sidebar extends React.Component<Props> {
             }
             onClick={() => selectPlaylist(playlist.name)}
           >
-            Piano
+            {playlist.name}
           </p>
         ))}
         <p

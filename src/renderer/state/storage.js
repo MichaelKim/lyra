@@ -11,9 +11,9 @@ export const initialState: StoreState = {
 };
 
 export function save(state: StoreState) {
-  storage.set('songs', state.songs, err => {
+  storage.set('state', state, err => {
     if (err) console.log(err);
-    else console.log('Stored songs:', state.songs);
+    else console.log('Stored state:', state);
   });
 }
 
