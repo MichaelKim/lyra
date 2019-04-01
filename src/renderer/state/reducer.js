@@ -26,16 +26,24 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       };
 
     case 'ADD_SONGS':
-      const newSongs: Song[] = state.songs.concat(action.songs);
-      return {
-        ...state,
-        songs: newSongs
-      };
+      return action.songs.reduce(
+        (acc, song) => ({
+          ...acc,
+          songs: {
+            ...acc.songs,
+            [song.id]: song
+          }
+        }),
+        state
+      );
 
     case 'CREATE_PLAYLIST':
       return {
         ...state,
-        playlists: [...state.playlists, action.playlist]
+        playlists: {
+          ...state.playlists,
+          [action.playlist.id]: action.playlist
+        }
       };
 
     case 'CLEAR_DATA':

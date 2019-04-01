@@ -6,8 +6,8 @@ import type { StoreState } from '../types';
 
 export const initialState: StoreState = {
   loaded: false,
-  songs: [],
-  playlists: []
+  songs: {},
+  playlists: {}
 };
 
 export function save(state: StoreState) {

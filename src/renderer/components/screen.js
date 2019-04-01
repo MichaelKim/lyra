@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import SongItem from './songItem';
 
-import type { StoreState, Dispatch, Song } from '../types';
+import type { StoreState, Dispatch, Song, SongID } from '../types';
 
 import '../../css/screen.css';
 
@@ -44,7 +44,8 @@ class Screen extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    songs: state.songs,
+    // Flow doesn't like Object.values()
+    songs: Object.keys(state.songs).map(id => state.songs[id]),
     currScreen: state.currScreen
   };
 }

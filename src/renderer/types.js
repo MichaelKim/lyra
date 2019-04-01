@@ -3,13 +3,14 @@
 import type { Store as ReduxStore } from 'redux';
 
 export type SongID = string;
-export type PlaylistID = number;
+export type PlaylistID = string;
 
 export type Song = {|
   +id: SongID, // hash of filepath
   +name: string,
   +dir: string,
-  +playlists: PlaylistID[]
+  +playlists: PlaylistID[],
+  +date: number
 |};
 
 export type Playlist = {|
@@ -25,8 +26,8 @@ export type StoreState = {|
   +loaded: boolean,
   +currSong?: Song,
   +currScreen?: ?string,
-  +songs: Song[],
-  +playlists: Playlist[]
+  +songs: {| [id: SongID]: Song |},
+  +playlists: {| [id: PlaylistID]: Playlist |}
 |};
 
 export type Dispatch = (action: Action) => void;

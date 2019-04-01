@@ -30,7 +30,8 @@ export function getSongs(dir: string) {
             .digest('hex'),
           name,
           dir,
-          playlists: []
+          playlists: [],
+          date: Date.now()
         }))
       );
     });

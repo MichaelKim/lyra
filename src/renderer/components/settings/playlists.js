@@ -28,7 +28,7 @@ class Playlists extends React.Component<Props, State> {
 
   _onAdd = () => {
     this.props.addPlaylist({
-      id: Date.now(),
+      id: Date.now().toString(),
       name: this.state.input,
       songs: []
     });
@@ -55,7 +55,8 @@ class Playlists extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    playlists: state.playlists
+    // Flow doesn't like Object.values()
+    playlists: Object.keys(state.playlists).map(id => state.playlists[id])
   };
 }
 
