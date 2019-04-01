@@ -6,11 +6,12 @@ import { connect } from 'react-redux';
 
 import { values } from '../../util';
 
-import type { StoreState, Dispatch, Playlist } from '../../types';
+import type { StoreState, Dispatch, Playlist, PlaylistID } from '../../types';
 
 type Props = {|
   +playlists: Playlist[],
-  +addPlaylist: (playlist: Playlist) => void
+  +addPlaylist: (playlist: Playlist) => void,
+  +deletePlaylist: (id: PlaylistID) => void
 |};
 
 type State = {|
@@ -40,12 +41,27 @@ class Playlists extends React.Component<Props, State> {
     });
   };
 
+  _onDelete = (id: PlaylistID) => {
+    this.props.deletePlaylist(id);
+  };
+
   render() {
     return (
       <div>
         <h3>Manage Playlists</h3>
         {this.props.playlists.map(playlist => (
-          <p key={playlist.id}>{playlist.name}</p>
+          <div key={playlist.id}>
+            <span>{playlist.name}</span>
+            <span
+              style={{
+                cursor: 'pointer',
+                padding: 5
+              }}
+              onClick={() => this._onDelete(playlist.id)}
+            >
+              X
+            </span>
+          </div>
         ))}
 
         <input type="text" value={this.state.input} onChange={this._onChange} />
@@ -64,7 +80,9 @@ function mapState(state: StoreState) {
 function mapDispatch(dispatch: Dispatch) {
   return {
     addPlaylist: (playlist: Playlist) =>
-      dispatch({ type: 'CREATE_PLAYLIST', playlist })
+      dispatch({ type: 'CREATE_PLAYLIST', playlist }),
+    deletePlaylist: (id: PlaylistID) =>
+      dispatch({ type: 'DELETE_PLAYLIST', id })
   };
 }
 

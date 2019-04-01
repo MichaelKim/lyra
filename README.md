@@ -3,10 +3,8 @@
 TODO:
 
 - Playlists
-  - Delete playlists
   - Add song to playlist
   - Remove song to playlist
-  - Add to persistent storage
 
 Long term features:
 

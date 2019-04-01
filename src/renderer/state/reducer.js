@@ -46,6 +46,27 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         }
       };
 
+    case 'DELETE_PLAYLIST':
+      const playlist = state.playlists[action.id];
+      if (playlist == null) {
+        return state;
+      }
+
+      const playlists = state.playlists;
+      const songs = state.songs;
+
+      playlist.songs.forEach(id => {
+        const index = songs[id].playlists.indexOf(action.id);
+        if (index !== -1) songs[id].playlists.splice(index, 1);
+      });
+      delete playlists[action.id];
+
+      return {
+        ...state,
+        playlists,
+        songs
+      };
+
     case 'CLEAR_DATA':
       return {
         ...initialState,
@@ -63,6 +84,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
   switch (action.type) {
     case 'ADD_SONGS':
     case 'CREATE_PLAYLIST':
+    case 'DELETE_PLAYLIST':
     case 'CLEAR_DATA':
       save(newState);
       break;
