@@ -9,12 +9,7 @@ TODO:
 Long term features:
 
 - Music metadata
-  - Use metadata instead of filename
   - Edit metadata on song add
-    - Default to existing metadata
-    - If title doesn't exist, default to filename
-  - Show more detail on Screen
-    - Title, Duration, Artist
 - Drag and drop
   - Add songs to all songs
   - Add songs to playlists

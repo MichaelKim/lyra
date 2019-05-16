@@ -35,12 +35,12 @@ class Screen extends React.Component<Props> {
     return (
       <div className='screen'>
         <h1>{title}</h1>
-        <table>
+        <table className='song-table'>
           <thead>
             <tr>
               <th>Title</th>
               <th>Artist</th>
-              <th>Length</th>
+              <th>Duration</th>
             </tr>
           </thead>
           <tbody>

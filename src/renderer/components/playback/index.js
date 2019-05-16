@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import path from 'path';
 // import ReactPlayer from 'react-player';
 
-import type { StoreState, Song } from '../types';
+import type { StoreState, Song } from '../../types';
 
 type Props = {|
   +currSong?: Song
@@ -17,13 +17,13 @@ class PlaybackBar extends React.Component<Props> {
     const { currSong } = this.props;
 
     return (
-      <div className="playback-bar">
+      <div className='playback-bar'>
         <p>Playback</p>
         {currSong != null ? (
           <audio
-            autoPlay
             controls
-            src={path.join(currSong.dir, currSong.name)}
+            src={path.join('file://', currSong.dir, currSong.name)}
+            autoPlay
           />
         ) : (
           <p>No music playing</p>

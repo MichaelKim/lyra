@@ -84,6 +84,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
   switch (action.type) {
     case 'ADD_SONGS':
     case 'CREATE_PLAYLIST':
+    case 'SELECT_PLAYLIST':
     case 'DELETE_PLAYLIST':
     case 'CLEAR_DATA':
       save(newState);

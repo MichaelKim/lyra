@@ -10,6 +10,15 @@
   font-size: 30px;
 }
 
+.song-table {
+  width: 100%;
+}
+
+/* Song Duration Column */
+.song-table tbody tr td:nth-child(3) {
+  text-align: center;
+}
+
 .song-item {
   cursor: pointer;
   /* height: 25px; */

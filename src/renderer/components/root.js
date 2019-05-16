@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import Top from './top';
-import PlaybackBar from './playbackBar';
+import PlaybackBar from './playback';
 
 import type { StoreState } from '../types';
 
