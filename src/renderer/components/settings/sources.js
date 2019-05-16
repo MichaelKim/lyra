@@ -88,8 +88,8 @@ class Sources extends React.Component<Props, State> {
                   {this.state.tempSongs
                     .filter(song => song.dir === dir)
                     .map(song => (
-                      <div key={song.name}>
-                        <span>{song.name}</span>
+                      <div className='sources-song-item' key={song.name}>
+                        <span className='sources-song-name'>{song.name}</span>
                         <Toggle
                           onToggle={() => this._onToggle(song.id)}
                           selected={this.state.toggle[song.id]}

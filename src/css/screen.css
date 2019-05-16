@@ -3,6 +3,7 @@
   background-color: #333;
   color: #eee;
   padding: 20px;
+  overflow: hidden auto;
 }
 
 .screen-title {
@@ -26,4 +27,16 @@
   color: grey;
   text-decoration: line-through;
   cursor: default;
+}
+
+.sources-song-item {
+  display: flex;
+  flex-direction: row;
+}
+
+.sources-song-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
