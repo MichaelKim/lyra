@@ -72,3 +72,12 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(19px);
 }
+
+button {
+  background-color: #777;
+  border: none;
+  height: 24px;
+  border-radius: 12px;
+  color: #eee;
+  cursor: pointer;
+}

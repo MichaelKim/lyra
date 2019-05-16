@@ -32,7 +32,7 @@ class Playlists extends React.Component<Props, State> {
   _onAdd = () => {
     this.props.addPlaylist({
       id: Date.now().toString(),
-      name: this.state.input,
+      name: this.state.input || 'Unnamed Playlist',
       songs: []
     });
 
@@ -64,7 +64,12 @@ class Playlists extends React.Component<Props, State> {
           </div>
         ))}
 
-        <input type="text" value={this.state.input} onChange={this._onChange} />
+        <input
+          type="text"
+          placeholder="Playlist Name"
+          value={this.state.input}
+          onChange={this._onChange}
+        />
         <button onClick={this._onAdd}>Create Playlist</button>
       </div>
     );
