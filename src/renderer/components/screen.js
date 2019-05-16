@@ -33,11 +33,22 @@ class Screen extends React.Component<Props> {
         : songs.filter(song => song.name.includes(currScreen));
 
     return (
-      <div className="screen">
+      <div className='screen'>
         <h1>{title}</h1>
-        {filtered.map(song => (
-          <SongItem key={song.id} song={song} />
-        ))}
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Artist</th>
+              <th>Length</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(song => (
+              <SongItem key={song.id} song={song} />
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

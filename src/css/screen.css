@@ -12,11 +12,11 @@
 
 .song-item {
   cursor: pointer;
-  height: 30px;
+  /* height: 25px; */
   border-top: 1px solid #555;
-  display: flex;
+  /* display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: center; */
 }
 
 .song-item:hover {
