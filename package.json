@@ -13,6 +13,7 @@
   "dependencies": {
     "electron-json-storage": "^4.1.6",
     "music-metadata": "^3.5.3",
+    "node-id3": "^0.1.7",
     "source-map-support": "^0.5.11"
   },
   "devDependencies": {
@@ -20,7 +21,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "electron": "^4.1.1",
-    "electron-builder": "^20.39.0",
+    "electron-builder": "^20.41.0",
     "electron-webpack": "^2.6.2",
     "flow-bin": "^0.95.1",
     "react": "^16.8.5",
