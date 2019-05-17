@@ -1,0 +1,28 @@
+.volume-bar {
+  width: 120px;
+  height: 6px;
+  -webkit-appearance: none;
+  background-color: black;
+  border-radius: 3px;
+}
+
+.volume-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: pointer;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.volume-bar::-moz-range-thumb {
+  cursor: pointer;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.volume-bar:focus {
+  outline: none;
+}

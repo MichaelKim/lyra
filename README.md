@@ -2,10 +2,13 @@
 
 TODO:
 
-- Volume control
+- Playback controls
+  - Custom UI
 
 Long term features:
 
+- Songs screen
+  - Sort by table column
 - Playlists
   - Add song to playlist
   - Remove song to playlist

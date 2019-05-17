@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import path from 'path';
 // import ReactPlayer from 'react-player';
 
+import VolumeBar from './volume';
+
 import type { StoreState, Song } from '../../types';
 
 type Props = {|
@@ -13,6 +15,14 @@ type Props = {|
 |};
 
 class PlaybackBar extends React.Component<Props> {
+  _audio = React.createRef();
+
+  _onVolumeChange = (volume: number) => {
+    if (this._audio.current) {
+      this._audio.current.volume = volume / 100;
+    }
+  };
+
   render() {
     const { currSong } = this.props;
 
@@ -21,6 +31,7 @@ class PlaybackBar extends React.Component<Props> {
         <p>Playback</p>
         {currSong != null ? (
           <audio
+            ref={this._audio}
             controls
             src={path.join('file://', currSong.dir, currSong.name)}
             autoPlay
@@ -28,6 +39,7 @@ class PlaybackBar extends React.Component<Props> {
         ) : (
           <p>No music playing</p>
         )}
+        <VolumeBar onChange={this._onVolumeChange} />
       </div>
     );
   }
