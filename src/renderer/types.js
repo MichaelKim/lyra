@@ -19,6 +19,17 @@ export type Playlist = {|
   +songs: SongID[]
 |};
 
+export type Tags = {|
+  +title: string,
+  +artist: string
+|};
+
+export type Metadata = {|
+  +title: string,
+  +artist: string,
+  +duration: number
+|};
+
 // Redux types
 export type Store = ReduxStore<StoreState, Action, Dispatch>;
 

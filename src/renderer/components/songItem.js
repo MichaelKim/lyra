@@ -4,15 +4,13 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
-import * as mm from 'music-metadata';
-import id3 from 'node-id3';
 
-import { fileExists } from '../util';
+import { fileExists, getMetadata, setTags } from '../util';
 import Sidebar from './sidebar';
 
 import type { StoreState, Dispatch, Song } from '../types';
 
-import '../../css/screen.css';
+import '../../css/table.css';
 
 type PassedProps = {|
   +song: Song
@@ -26,7 +24,8 @@ type State = {|
   status: 'LOADING' | 'READY' | 'MISSING' | 'EDITING',
   title: string,
   artist: string,
-  duration: string
+  duration: string,
+  editStart: 'TITLE' | 'ARTIST'
 |};
 
 class Screen extends React.Component<Props, State> {
@@ -34,35 +33,63 @@ class Screen extends React.Component<Props, State> {
     status: 'LOADING',
     title: '',
     artist: '',
-    duration: ''
+    duration: '',
+    editStart: 'TITLE'
   };
+  // Double click
   _isDblClick: boolean = false;
   _clickTimer: ?TimeoutID = null;
+  // Focus switching
+  _focusTimer: ?TimeoutID = null;
 
-  _onClick = () => {
-    console.log('click');
+  _onClick = editStart => {
+    // Make it easier to double click
+    if (this._clickTimer != null) {
+      this._onDblClick(editStart);
+      return;
+    }
+
     // Don't fire click handler if double click
     this._clickTimer = setTimeout(() => {
       if (!this._isDblClick && this.state.status === 'READY') {
         this.props.selectSong(this.props.song);
       }
+      this._clickTimer = null;
       this._isDblClick = false;
     }, 250);
   };
 
-  _onDblClick = () => {
-    console.log('dblclick');
+  _onDblClick = editStart => {
     // Don't fire single click handler
-    clearTimeout(this._clickTimer);
+    this._clickTimer && clearTimeout(this._clickTimer);
+    this._clickTimer = null;
     this._isDblClick = true;
 
     this.setState({
-      status: 'EDITING'
+      status: 'EDITING',
+      editStart
     });
   };
 
-  _onFocusOut = e => {
-    console.log('blur');
+  _onFocus = () => {
+    this._focusTimer && clearTimeout(this._focusTimer);
+    this._focusTimer = null;
+  };
+
+  _onBlur = () => {
+    this._focusTimer = setTimeout(() => {
+      this._finishEdit();
+      this._focusTimer = null;
+    }, 10);
+  };
+
+  _onKeyDown = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      this._finishEdit();
+    }
+  };
+
+  _finishEdit = () => {
     const { song } = this.props;
     const filepath = path.join(song.dir, song.name);
 
@@ -72,22 +99,20 @@ class Screen extends React.Component<Props, State> {
       artist: this.state.artist
     };
 
-    id3.update(tags, filepath, (err, buff) => {
-      console.log('done', err, buff);
-    });
-
     this.setState({
       status: 'READY'
     });
+
+    setTags(filepath, tags);
   };
 
-  _changeTitle = e => {
+  _changeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
     this.setState({
       title: e.target.value
     });
   };
 
-  _changeArtist = e => {
+  _changeArtist = (e: SyntheticInputEvent<HTMLInputElement>) => {
     this.setState({
       artist: e.target.value
     });
@@ -110,53 +135,55 @@ class Screen extends React.Component<Props, State> {
           title: this.props.song.name
         });
       } else {
-        // id3.read(filepath, (err, tags) => {
-        //   console.log({
-        //     title: tags.title || this.props.song.name,
-        //     artist: tags.artist || '',
-        //     duration: tags.length || ''
-        //   });
-        // });
-
-        mm.parseFile(filepath).then(metadata => {
+        getMetadata(song).then(metadata => {
           this.setState({
             status: 'READY',
-            title: metadata.common.title || this.props.song.name,
-            artist: metadata.common.artist || '',
-            duration: this._formatDuration(metadata.format.duration)
+            title: metadata.title,
+            artist: metadata.artist,
+            duration: this._formatDuration(metadata.duration)
           });
         });
       }
     });
   }
 
-  render() {
-    const { status, title, artist, duration } = this.state;
+  _renderInput = (name, value: string, onChange) => {
+    const { status, title, editStart } = this.state;
 
     return (
-      <tr
-        className={'song-item ' + (status === 'MISSING' ? 'song-missing' : '')}
-        onClick={this._onClick}
-        onDoubleClick={this._onDblClick}
-        onFocus={() => console.log('focus')}
-        onBlur={this._onFocusOut}
+      <div
+        className={status === 'EDITING' ? 'song-row-edit' : ''}
+        onClick={() => this._onClick(name)}
+        onDoubleClick={() => this._onDblClick(name)}
       >
-        <td>
-          {status === 'EDITING' ? (
-            <input type='text' value={title} onChange={this._changeTitle} />
-          ) : (
-            title
-          )}
-        </td>
-        <td>
-          {status === 'EDITING' ? (
-            <input type='text' value={artist} onChange={this._changeArtist} />
-          ) : (
-            artist
-          )}
-        </td>
-        <td>{duration}</td>
-      </tr>
+        {status === 'EDITING' ? (
+          <input
+            autoFocus={editStart === name}
+            type="text"
+            value={value}
+            onChange={onChange}
+            onKeyDown={this._onKeyDown}
+          />
+        ) : (
+          value
+        )}
+      </div>
+    );
+  };
+
+  render() {
+    const { status, title, artist, duration, editStart } = this.state;
+
+    return (
+      <div
+        className={'song-row ' + (status === 'MISSING' ? 'song-missing' : '')}
+        onFocus={this._onFocus}
+        onBlur={this._onBlur}
+      >
+        {this._renderInput('TITLE', title, this._changeTitle)}
+        {this._renderInput('ARTIST', artist, this._changeArtist)}
+        <div>{duration}</div>
+      </div>
     );
   }
 }

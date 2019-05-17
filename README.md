@@ -2,12 +2,13 @@
 
 TODO:
 
-- Playlists
-  - Add song to playlist
-  - Remove song to playlist
+- Volume control
 
 Long term features:
 
+- Playlists
+  - Add song to playlist
+  - Remove song to playlist
 - Music metadata
   - Edit metadata on song add
 - Drag and drop

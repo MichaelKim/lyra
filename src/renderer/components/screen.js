@@ -10,6 +10,7 @@ import { values } from '../util';
 import type { StoreState, Dispatch, Song, SongID } from '../types';
 
 import '../../css/screen.css';
+import '../../css/table.css';
 
 type Props = {|
   +songs: Song[],
@@ -33,22 +34,18 @@ class Screen extends React.Component<Props> {
         : songs.filter(song => song.name.includes(currScreen));
 
     return (
-      <div className='screen'>
+      <div className="screen">
         <h1>{title}</h1>
-        <table className='song-table'>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Artist</th>
-              <th>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(song => (
-              <SongItem key={song.id} song={song} />
-            ))}
-          </tbody>
-        </table>
+        <div className="song-table">
+          <div className="song-row">
+            <div>Title</div>
+            <div>Artist</div>
+            <div>Duration</div>
+          </div>
+          {filtered.map(song => (
+            <SongItem key={song.id} song={song} />
+          ))}
+        </div>
       </div>
     );
   }
