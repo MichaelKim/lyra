@@ -1,13 +1,40 @@
 .playback-box {
-  height: 100px;
+  height: 75px;
   background-color: lightgray;
+  text-align: center;
+  position: relative;
 }
 
 .playback-bar {
+  display: flex;
+  align-items: center;
   width: 95%;
   margin: 0 2.5%;
+  height: 20px;
 }
 
 .playback-controls {
-  margin: 0 auto;
+  display: inline-block;
+}
+
+.play-pause {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.play {
+  background: #777 url('../../static/play.svg') no-repeat center;
+}
+
+.pause {
+  background: #777 url('../../static/pause.svg') no-repeat center;
+}
+
+.volume {
+  width: 120px;
+  position: absolute;
+  right: 50px;
+  display: inline-block;
+  top: 27px;
 }

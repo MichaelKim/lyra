@@ -30,7 +30,7 @@ class VolumeBar extends React.Component<Props, State> {
 
   render() {
     return (
-      <div style={{ width: 120 }}>
+      <div className="volume">
         <RangeInput
           min={0}
           max={100}

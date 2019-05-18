@@ -31,6 +31,7 @@ class RangeInput extends React.Component<Props> {
         type="range"
         min={min}
         max={this.props.max}
+        step="0.01"
         value={this.props.value}
         onChange={this._onChange}
         style={{

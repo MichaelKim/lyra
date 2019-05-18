@@ -17,12 +17,13 @@ type Props = {|
   +currSong?: Song
 |};
 
-type State = {| currentTime: number, paused: boolean |};
+type State = {|
+  currentTime: number
+|};
 
 class PlaybackBar extends React.Component<Props, State> {
   state = {
-    currentTime: 0,
-    paused: false
+    currentTime: 0
   };
   _audio = React.createRef();
 
@@ -32,9 +33,9 @@ class PlaybackBar extends React.Component<Props, State> {
     }
   };
 
-  _onTimeUpdate = e => {
+  _onTimeUpdate = (e: SyntheticEvent<HTMLAudioElement>) => {
     this.setState({
-      currentTime: e.target.currentTime
+      currentTime: e.currentTarget.currentTime
     });
   };
 
@@ -46,53 +47,60 @@ class PlaybackBar extends React.Component<Props, State> {
 
   _onTogglePause = () => {
     if (this._audio.current) {
-      if (this.state.paused) {
+      if (this._audio.current.paused) {
         this._audio.current.play();
       } else {
         this._audio.current.pause();
       }
     }
-
-    this.setState(prevState => ({
-      paused: !prevState.paused
-    }));
   };
 
   _onEnded = () => {
-    this.setState({
-      paused: true
-    });
+    this._audio.current && this._audio.current.pause();
   };
 
   render() {
     const { currSong } = this.props;
+    const max =
+      this._audio.current && this._audio.current.duration
+        ? this._audio.current.duration
+        : 0;
 
     return (
       <div className="playback-box">
         <div className="playback-bar">
+          <audio
+            ref={this._audio}
+            src={
+              currSong
+                ? path.join('file://', currSong.dir, currSong.name)
+                : null
+            }
+            autoPlay
+            onTimeUpdate={this._onTimeUpdate}
+            onEnded={this._onEnded}
+          />
           {currSong != null ? (
-            <>
-              <audio
-                ref={this._audio}
-                src={path.join('file://', currSong.dir, currSong.name)}
-                autoPlay
-                onTimeUpdate={this._onTimeUpdate}
-                onEnded={this._onEnded}
-              />
-              <RangeInput
-                value={this.state.currentTime}
-                max={this._audio.current ? this._audio.current.duration : 0}
-                onChange={this._onSeek}
-              />
-            </>
+            <RangeInput
+              value={this.state.currentTime}
+              max={max}
+              onChange={this._onSeek}
+            />
           ) : (
             <RangeInput value={0} max={0} />
           )}
         </div>
         <div className="playback-controls">
-          <button onClick={this._onTogglePause} disabled={currSong == null}>
-            {this.state.paused ? 'Play' : 'Pause'}
-          </button>
+          <button
+            className={
+              'play-pause ' +
+              (this._audio.current == null || this._audio.current.paused
+                ? 'play'
+                : 'pause')
+            }
+            onClick={this._onTogglePause}
+            disabled={currSong == null}
+          />
         </div>
         <VolumeBar onChange={this._onVolumeChange} />
       </div>
