@@ -159,7 +159,7 @@ class Screen extends React.Component<Props, State> {
         {status === 'EDITING' ? (
           <input
             autoFocus={editStart === name}
-            type="text"
+            type='text'
             value={value}
             onChange={onChange}
             onKeyDown={this._onKeyDown}

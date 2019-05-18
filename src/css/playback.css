@@ -1,0 +1,13 @@
+.playback-box {
+  height: 100px;
+  background-color: lightgray;
+}
+
+.playback-bar {
+  width: 95%;
+  margin: 0 2.5%;
+}
+
+.playback-controls {
+  margin: 0 auto;
+}

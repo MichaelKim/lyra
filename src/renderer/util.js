@@ -47,11 +47,18 @@ export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
 
 export function getMetadata(song: Song): Promise<Metadata> {
   const filepath = path.join(song.dir, song.name);
-  return mm.parseFile(filepath).then(metadata => ({
-    title: metadata.common.title || song.name,
-    artist: metadata.common.artist || '',
-    duration: metadata.format.duration
-  }));
+  return mm
+    .parseFile(filepath)
+    .then(metadata => ({
+      title: metadata.common.title || song.name,
+      artist: metadata.common.artist || '',
+      duration: metadata.format.duration
+    }))
+    .catch(err => ({
+      title: song.name,
+      artist: '',
+      duration: ''
+    }));
 }
 
 export function setTags(filepath: string, tags: Tags) {

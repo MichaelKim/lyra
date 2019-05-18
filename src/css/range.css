@@ -1,4 +1,4 @@
-.volume-bar {
+input {
   width: 120px;
   height: 6px;
   -webkit-appearance: none;
@@ -6,7 +6,7 @@
   border-radius: 3px;
 }
 
-.volume-bar::-webkit-slider-thumb {
+input::-webkit-slider-thumb {
   -webkit-appearance: none;
   cursor: pointer;
   width: 12px;
@@ -15,7 +15,7 @@
   background-color: black;
 }
 
-.volume-bar::-moz-range-thumb {
+input::-moz-range-thumb {
   cursor: pointer;
   width: 12px;
   height: 12px;
@@ -23,6 +23,6 @@
   background-color: black;
 }
 
-.volume-bar:focus {
+input:focus {
   outline: none;
 }

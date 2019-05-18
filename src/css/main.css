@@ -22,11 +22,6 @@ p {
   flex-direction: row;
 }
 
-.playback-bar {
-  height: 125px;
-  background-color: lightgray;
-}
-
 .toggle {
   position: relative;
   display: inline-block;
