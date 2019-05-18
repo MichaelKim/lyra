@@ -26,3 +26,14 @@ Long term features:
   - Stream songs
   - Download songs
   - Upload songs
+
+Ideas:
+
+- Song row interaction
+  - Single click does nothing
+  - Double click to play
+  - Play button on left
+    - Single click to play
+  - Right click to open menu
+    - Play, Edit
+      - Edit is same

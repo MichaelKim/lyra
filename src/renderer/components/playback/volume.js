@@ -30,12 +30,14 @@ class VolumeBar extends React.Component<Props, State> {
 
   render() {
     return (
-      <RangeInput
-        min={0}
-        max={100}
-        value={this.state.volume}
-        onChange={this._onChange}
-      />
+      <div style={{ width: 120 }}>
+        <RangeInput
+          min={0}
+          max={100}
+          value={this.state.volume}
+          onChange={this._onChange}
+        />
+      </div>
     );
   }
 }

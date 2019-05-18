@@ -50,7 +50,9 @@ export function getMetadata(song: Song): Promise<Metadata> {
   return mm
     .parseFile(filepath)
     .then(metadata => ({
-      title: metadata.common.title || song.name,
+      title:
+        metadata.common.title ||
+        path.basename(song.name, path.extname(song.name)),
       artist: metadata.common.artist || '',
       duration: metadata.format.duration
     }))

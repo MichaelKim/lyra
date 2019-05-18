@@ -1,12 +1,12 @@
-input {
-  width: 120px;
+input[type='range'] {
+  width: 100%;
   height: 6px;
   -webkit-appearance: none;
   background-color: black;
   border-radius: 3px;
 }
 
-input::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   cursor: pointer;
   width: 12px;
@@ -15,7 +15,7 @@ input::-webkit-slider-thumb {
   background-color: black;
 }
 
-input::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   cursor: pointer;
   width: 12px;
   height: 12px;
@@ -23,6 +23,6 @@ input::-moz-range-thumb {
   background-color: black;
 }
 
-input:focus {
+input[type='range']:focus {
   outline: none;
 }

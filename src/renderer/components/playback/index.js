@@ -68,27 +68,28 @@ class PlaybackBar extends React.Component<Props, State> {
     const { currSong } = this.props;
 
     return (
-      <div className='playback-box'>
-        {currSong != null ? (
-          <>
-            <audio
-              ref={this._audio}
-              src={path.join('file://', currSong.dir, currSong.name)}
-              autoPlay
-              onTimeUpdate={this._onTimeUpdate}
-              onEnded={this._onEnded}
-            />
-            <RangeInput
-              className='playback-bar'
-              value={this.state.currentTime}
-              max={this._audio.current ? this._audio.current.duration : 0}
-              onChange={this._onSeek}
-            />
-          </>
-        ) : (
-          <input className='playback-bar' type='range' value='0' disabled />
-        )}
-        <div className='playback-controls'>
+      <div className="playback-box">
+        <div className="playback-bar">
+          {currSong != null ? (
+            <>
+              <audio
+                ref={this._audio}
+                src={path.join('file://', currSong.dir, currSong.name)}
+                autoPlay
+                onTimeUpdate={this._onTimeUpdate}
+                onEnded={this._onEnded}
+              />
+              <RangeInput
+                value={this.state.currentTime}
+                max={this._audio.current ? this._audio.current.duration : 0}
+                onChange={this._onSeek}
+              />
+            </>
+          ) : (
+            <RangeInput value={0} max={0} />
+          )}
+        </div>
+        <div className="playback-controls">
           <button onClick={this._onTogglePause} disabled={currSong == null}>
             {this.state.paused ? 'Play' : 'Pause'}
           </button>

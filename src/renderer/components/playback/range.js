@@ -9,14 +9,13 @@ type Props = {|
   +value: number,
   +min?: number,
   +max: number,
-  +onChange: (value: number) => void,
-  +className?: string
+  +onChange?: (value: number) => void
 |};
 
 class RangeInput extends React.Component<Props> {
   _onChange = (e: SyntheticEvent<HTMLInputElement>) => {
     const value = Number(e.currentTarget.value);
-    this.props.onChange(value);
+    this.props.onChange && this.props.onChange(value);
   };
 
   render() {
@@ -29,8 +28,7 @@ class RangeInput extends React.Component<Props> {
 
     return (
       <input
-        className={this.props.className || ''}
-        type='range'
+        type="range"
         min={min}
         max={this.props.max}
         value={this.props.value}
