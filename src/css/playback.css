@@ -21,20 +21,49 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background-color: #777;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .play {
-  background: #777 url('../../static/play.svg') no-repeat center;
+  background-image: url('../../static/play.svg');
 }
 
 .pause {
-  background: #777 url('../../static/pause.svg') no-repeat center;
+  background-image: url('../../static/pause.svg');
 }
 
 .volume {
-  width: 120px;
-  position: absolute;
-  right: 50px;
-  display: inline-block;
+  width: 150px;
   top: 27px;
+  right: 50px;
+  position: absolute;
+  display: flex;
+}
+
+.volume-btn {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+}
+
+.volume-none {
+  background-image: url('../../static/volume-off.svg');
+}
+
+.volume-low {
+  background-image: url('../../static/volume-low.svg');
+}
+
+.volume-high {
+  background-image: url('../../static/volume-high.svg');
+}
+
+.volume-bar {
+  display: inline-block;
+  width: 120px;
 }

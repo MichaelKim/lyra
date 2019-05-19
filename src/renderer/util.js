@@ -68,3 +68,9 @@ export function setTags(filepath: string, tags: Tags) {
   // avoiding blocking the UI
   id3.update(tags, filepath, (err, buff) => {});
 }
+
+export function formatDuration(duration: number) {
+  const min = (duration / 60) | 0;
+  const sec = String(duration % 60 | 0).padStart(2, '0');
+  return `${min}:${sec}`;
+}

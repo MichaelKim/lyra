@@ -2,9 +2,6 @@
 
 TODO:
 
-- Playback controls
-  - Custom UI
-
 Long term features:
 
 - Songs screen

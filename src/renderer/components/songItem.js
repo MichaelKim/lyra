@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
 
-import { fileExists, getMetadata, setTags } from '../util';
+import { fileExists, getMetadata, setTags, formatDuration } from '../util';
 import Sidebar from './sidebar';
 
 import type { StoreState, Dispatch, Song } from '../types';
@@ -118,12 +118,6 @@ class Screen extends React.Component<Props, State> {
     });
   };
 
-  _formatDuration = (duration: number) => {
-    const min = (duration / 60) | 0;
-    const sec = String(duration % 60 | 0).padStart(2, '0');
-    return `${min}:${sec}`;
-  };
-
   componentDidMount() {
     const { song } = this.props;
     const filepath = path.join(song.dir, song.name);
@@ -140,7 +134,7 @@ class Screen extends React.Component<Props, State> {
             status: 'READY',
             title: metadata.title,
             artist: metadata.artist,
-            duration: this._formatDuration(metadata.duration)
+            duration: formatDuration(metadata.duration)
           });
         });
       }
@@ -159,7 +153,7 @@ class Screen extends React.Component<Props, State> {
         {status === 'EDITING' ? (
           <input
             autoFocus={editStart === name}
-            type='text'
+            type="text"
             value={value}
             onChange={onChange}
             onKeyDown={this._onKeyDown}

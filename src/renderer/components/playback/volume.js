@@ -28,15 +28,33 @@ class VolumeBar extends React.Component<Props, State> {
     this.props.onChange(volume);
   };
 
+  _toggleMute = () => {
+    this.setState(prevState => ({
+      muted: !prevState.muted
+    }));
+
+    this.props.onChange(!this.state.muted ? 0 : this.state.volume);
+  };
+
   render() {
+    const icon =
+      this.state.muted || this.state.volume === 0
+        ? 'volume-none'
+        : this.state.volume <= 50
+        ? 'volume-low'
+        : 'volume-high';
+
     return (
       <div className="volume">
-        <RangeInput
-          min={0}
-          max={100}
-          value={this.state.volume}
-          onChange={this._onChange}
-        />
+        <button className={'volume-btn ' + icon} onClick={this._toggleMute} />
+        <div className="volume-bar">
+          <RangeInput
+            min={0}
+            max={100}
+            value={this.state.muted ? 0 : this.state.volume}
+            onChange={this._onChange}
+          />
+        </div>
       </div>
     );
   }

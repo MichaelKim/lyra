@@ -11,6 +11,10 @@ p {
   margin: 0;
 }
 
+button {
+  outline: none;
+}
+
 #app {
   display: flex;
   flex-direction: column;
