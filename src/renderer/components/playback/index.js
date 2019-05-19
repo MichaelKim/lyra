@@ -8,6 +8,7 @@ import path from 'path';
 
 import VolumeBar from './volume';
 import RangeInput from './range';
+import { formatDuration } from '../../util';
 
 import type { StoreState, Song } from '../../types';
 
@@ -66,20 +67,22 @@ class PlaybackBar extends React.Component<Props, State> {
         ? this._audio.current.duration
         : 0;
 
+    const currTime = formatDuration(this.state.currentTime);
+    const maxTime = formatDuration(max);
+
     return (
       <div className="playback-box">
+        <audio
+          ref={this._audio}
+          src={
+            currSong ? path.join('file://', currSong.dir, currSong.name) : null
+          }
+          autoPlay
+          onTimeUpdate={this._onTimeUpdate}
+          onEnded={this._onEnded}
+        />
         <div className="playback-bar">
-          <audio
-            ref={this._audio}
-            src={
-              currSong
-                ? path.join('file://', currSong.dir, currSong.name)
-                : null
-            }
-            autoPlay
-            onTimeUpdate={this._onTimeUpdate}
-            onEnded={this._onEnded}
-          />
+          <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
               value={this.state.currentTime}
@@ -89,6 +92,7 @@ class PlaybackBar extends React.Component<Props, State> {
           ) : (
             <RangeInput value={0} max={0} />
           )}
+          <p>{maxTime}</p>
         </div>
         <div className="playback-controls">
           <button
