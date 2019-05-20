@@ -7,10 +7,10 @@ import fs from 'fs';
 import path from 'path';
 import { remote } from 'electron';
 
-import { getSongs } from '../../util';
-import Toggle from '../toggle';
+import { getSongs } from '../../../util';
+import Toggle from '../../toggle';
 
-import type { StoreState, Dispatch, Song, SongID } from '../../types';
+import type { StoreState, Dispatch, Song, SongID } from '../../../types';
 
 type Props = {|
   +addSongs: (songs: Song[]) => void
@@ -76,7 +76,6 @@ class Sources extends React.Component<Props, State> {
   render() {
     return (
       <div>
-        <h3>Add Songs</h3>
         <button onClick={this._onSelect}>Select Directory</button>
 
         {this.state.selected ? (
@@ -88,8 +87,8 @@ class Sources extends React.Component<Props, State> {
                   {this.state.tempSongs
                     .filter(song => song.dir === dir)
                     .map(song => (
-                      <div className='sources-song-item' key={song.name}>
-                        <span className='sources-song-name'>{song.name}</span>
+                      <div className="sources-song-item" key={song.name}>
+                        <span className="sources-song-name">{song.name}</span>
                         <Toggle
                           onToggle={() => this._onToggle(song.id)}
                           selected={this.state.toggle[song.id]}

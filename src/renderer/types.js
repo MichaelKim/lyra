@@ -6,7 +6,7 @@ export type SongID = string;
 export type PlaylistID = string;
 
 export type Song = {|
-  +id: SongID, // hash of filepath
+  +id: SongID, // hash of filepath or url
   +name: string,
   +dir: string,
   +playlists: PlaylistID[],

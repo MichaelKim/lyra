@@ -2,10 +2,14 @@
 
 TODO:
 
-Long term features:
-
 - Songs screen
   - Sort by table column
+  - Add time added as column (default sort)
+- Download from Youtube
+  - Should server or client download?
+
+Long term features:
+
 - Playlists
   - Add song to playlist
   - Remove song to playlist
@@ -15,8 +19,6 @@ Long term features:
   - Add songs to all songs
   - Add songs to playlists
   - Add songs into playlists
-- Download from Youtube
-
 - Online
   - Make account
   - Show songs saved online
