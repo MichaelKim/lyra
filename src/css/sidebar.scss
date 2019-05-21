@@ -1,7 +1,9 @@
+@import './variables.scss';
+
 .sidebar {
   width: 100px;
-  background-color: black;
-  color: grey;
+  background-color: $sidebar-color;
+  color: $text-color;
   padding: 20px;
 
   .sidebar-title {
@@ -12,7 +14,7 @@
     cursor: pointer;
 
     &:hover {
-      color: lightgrey;
+      color: $text-light-color;
     }
   }
 
@@ -22,6 +24,6 @@
   }
 
   .sidebar-selected {
-    color: white;
+    color: $text-light-color;
   }
 }

@@ -1,7 +1,9 @@
+@import './variables.scss';
+
 /* Playback Bar */
 .playback-box {
   height: 75px;
-  background-color: lightgray;
+  background-color: $playback-color;
   text-align: center;
   position: relative;
 
@@ -14,6 +16,7 @@
     /* Playback Times */
     p {
       margin: 0 15px;
+      color: $text-color;
     }
   }
 
@@ -25,16 +28,18 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #777;
+    // background-color: $accent-color;
+    background-color: transparent;
+    border: 2px solid $accent-color;
     background-repeat: no-repeat;
     background-position: center;
+  }
 
-    .play {
-      background-image: url('../../static/play.svg');
-    }
+  .play {
+    background-image: url('../../static/play.svg');
+  }
 
-    .pause {
-      background-image: url('../../static/pause.svg');
-    }
+  .pause {
+    background-image: url('../../static/pause.svg');
   }
 }

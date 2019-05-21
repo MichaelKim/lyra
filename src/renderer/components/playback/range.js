@@ -35,7 +35,12 @@ class RangeInput extends React.Component<Props> {
         value={this.props.value}
         onChange={this._onChange}
         style={{
-          backgroundImage: `linear-gradient(to right, black ${percent}%, gray ${percent}%)`
+          // Accent color
+          backgroundImage: `linear-gradient(
+            to right,
+            #4286f4 ${percent}%,
+            #555 ${percent}%
+          )`
         }}
       />
     );

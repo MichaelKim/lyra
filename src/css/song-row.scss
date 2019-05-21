@@ -1,5 +1,7 @@
+@import './variables.scss';
+
 .song-row {
-  border-top: 1px solid #555;
+  border-top: 1px solid $border-color;
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -10,11 +12,11 @@
     border: none;
     font-variant-caps: all-small-caps;
     line-height: 1em;
-    color: #aaa;
+    color: $text-dark-color;
   }
 
   &:hover {
-    background-color: #444;
+    background-color: $light-color;
   }
 
   div {
@@ -48,9 +50,9 @@
 
   input {
     background: none;
-    color: #eee;
+    color: $text-color;
     border: none;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid $underline-color;
     font-size: 16px;
     padding: 0;
     outline: none;
@@ -59,7 +61,7 @@
 }
 
 .song-missing {
-  color: grey;
+  color: $text-dark-color;
   text-decoration: line-through;
   cursor: default;
 }

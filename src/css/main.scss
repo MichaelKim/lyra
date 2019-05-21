@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 html,
 body,
 #app {
@@ -13,11 +15,11 @@ p {
 
 button {
   outline: none;
-  background-color: #777;
+  background-color: $light-color;
   border: none;
   height: 24px;
   border-radius: 12px;
-  color: #eee;
+  color: $text-color;
   cursor: pointer;
 }
 

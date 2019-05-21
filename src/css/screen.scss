@@ -1,7 +1,9 @@
+@import './variables.scss';
+
 .screen {
   flex: 1;
-  background-color: #333;
-  color: #eee;
+  background-color: $screen-color;
+  color: $text-color;
   padding: 20px;
   overflow: hidden auto;
   font-size: 16px;
