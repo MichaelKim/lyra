@@ -31,16 +31,22 @@
 
 /* Title Column */
 .song-row div:nth-child(1) {
-  width: 50%;
+  width: 40%;
 }
 
 /* Artist Column */
 .song-row div:nth-child(2) {
-  width: 35%;
+  width: 30%;
 }
 
 /* Song Duration Column */
 .song-row div:nth-child(3) {
+  width: 15%;
+  text-align: center;
+}
+
+/* Date Added Column */
+.song-row div:nth-child(4) {
   width: 15%;
   text-align: center;
 }

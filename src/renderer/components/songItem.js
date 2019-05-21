@@ -153,7 +153,7 @@ class Screen extends React.Component<Props, State> {
         {status === 'EDITING' ? (
           <input
             autoFocus={editStart === name}
-            type="text"
+            type='text'
             value={value}
             onChange={onChange}
             onKeyDown={this._onKeyDown}
@@ -177,6 +177,7 @@ class Screen extends React.Component<Props, State> {
         {this._renderInput('TITLE', title, this._changeTitle)}
         {this._renderInput('ARTIST', artist, this._changeArtist)}
         <div>{duration}</div>
+        <div>{new Date(this.props.song.date).toLocaleDateString()}</div>
       </div>
     );
   }
