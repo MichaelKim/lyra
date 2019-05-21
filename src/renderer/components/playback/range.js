@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 
-import '../../../css/range.css';
+import '../../../css/range.scss';
 
 type Props = {|
   +value: number,
@@ -28,10 +28,10 @@ class RangeInput extends React.Component<Props> {
 
     return (
       <input
-        type="range"
+        type='range'
         min={min}
         max={this.props.max}
-        step="0.01"
+        step='0.01'
         value={this.props.value}
         onChange={this._onChange}
         style={{

@@ -1,0 +1,52 @@
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  outline: none;
+  background-color: #777;
+  border: none;
+  height: 24px;
+  border-radius: 12px;
+  color: #eee;
+  cursor: pointer;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.loading {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 4px solid #777;
+  border-top: 4px solid #ddd;
+  animation: 1s spin linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

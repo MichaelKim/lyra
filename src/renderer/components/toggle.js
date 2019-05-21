@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 
+import '../../css/toggle.scss';
+
 type Props = {|
   +onToggle: (selected: boolean) => void,
   +selected: boolean
@@ -27,9 +29,9 @@ class Toggle extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className="toggle">
-        <input type="checkbox" checked={this.state.selected} readOnly />
-        <span className="slider" onClick={this._onToggle} />
+      <div className='toggle'>
+        <input type='checkbox' checked={this.state.selected} readOnly />
+        <span className='slider' onClick={this._onToggle} />
       </div>
     );
   }

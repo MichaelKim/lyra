@@ -1,0 +1,26 @@
+.screen {
+  flex: 1;
+  background-color: #333;
+  color: #eee;
+  padding: 20px;
+  overflow: hidden auto;
+  font-size: 16px;
+
+  .song-table {
+    width: 100%;
+    word-wrap: break-word;
+  }
+
+  /* Local Source Song Items */
+  .sources-song-item {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .sources-song-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

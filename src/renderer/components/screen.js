@@ -9,8 +9,8 @@ import { values } from '../util';
 
 import type { StoreState, Dispatch, Song, SongID } from '../types';
 
-import '../../css/screen.css';
-import '../../css/table.css';
+import '../../css/screen.scss';
+import '../../css/song-row.scss';
 
 type Props = {|
   +songs: Song[],

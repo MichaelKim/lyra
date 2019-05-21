@@ -5,6 +5,8 @@ import { render } from 'react-dom';
 
 import RangeInput from './range';
 
+import '../../../css/volume.scss';
+
 type Props = {|
   +onChange: (volume: number) => void
 |};
@@ -45,9 +47,9 @@ class VolumeBar extends React.Component<Props, State> {
         : 'volume-high';
 
     return (
-      <div className="volume">
+      <div className='volume'>
         <button className={'volume-btn ' + icon} onClick={this._toggleMute} />
-        <div className="volume-bar">
+        <div className='volume-bar'>
           <RangeInput
             min={0}
             max={100}

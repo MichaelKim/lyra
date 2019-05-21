@@ -8,7 +8,7 @@ import { values } from '../util';
 
 import type { StoreState, Dispatch, Playlist } from '../types';
 
-import '../../css/sidebar.css';
+import '../../css/sidebar.scss';
 
 type Props = {|
   +currScreen?: ?string,
@@ -21,8 +21,8 @@ class Sidebar extends React.Component<Props> {
     const { currScreen, playlists, selectPlaylist } = this.props;
 
     return (
-      <div className="sidebar">
-        <h3 className="sidebar-title">Music Player</h3>
+      <div className='sidebar'>
+        <h3 className='sidebar-title'>Music Player</h3>
         <p
           className={
             'sidebar-link sidebar-section ' +
@@ -32,7 +32,7 @@ class Sidebar extends React.Component<Props> {
         >
           All Songs
         </p>
-        <p className="sidebar-section">Playlists</p>
+        <p className='sidebar-section'>Playlists</p>
         {playlists.map(playlist => (
           <p
             key={playlist.id}

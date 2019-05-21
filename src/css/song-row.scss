@@ -1,0 +1,65 @@
+.song-row {
+  border-top: 1px solid #555;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  line-height: 1.5em;
+
+  /* Header Row */
+  &:first-child {
+    border: none;
+    font-variant-caps: all-small-caps;
+    line-height: 1em;
+    color: #aaa;
+  }
+
+  &:hover {
+    background-color: #444;
+  }
+
+  div {
+    padding: 5px 0;
+  }
+
+  .song-row-edit {
+    padding-bottom: 4px;
+  }
+
+  /* Title Column */
+  div:nth-child(1) {
+    width: 40%;
+  }
+
+  /* Artist Column */
+  div:nth-child(2) {
+    width: 30%;
+  }
+
+  /* Song Duration Column */
+  div:nth-child(3) {
+    width: 15%;
+  }
+
+  /* Date Added Column */
+  div:nth-child(4) {
+    width: 15%;
+    text-align: right;
+  }
+
+  input {
+    background: none;
+    color: #eee;
+    border: none;
+    border-bottom: 1px solid #aaa;
+    font-size: 16px;
+    padding: 0;
+    outline: none;
+    width: 90%;
+  }
+}
+
+.song-missing {
+  color: grey;
+  text-decoration: line-through;
+  cursor: default;
+}

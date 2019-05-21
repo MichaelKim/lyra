@@ -13,7 +13,7 @@ import { formatDuration } from '../../util';
 
 import type { StoreState, Song } from '../../types';
 
-import '../../../css/playback.css';
+import '../../../css/playback.scss';
 
 type Props = {|
   +currSong?: Song

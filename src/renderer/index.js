@@ -8,8 +8,8 @@ import Root from './components/root';
 
 import store from './state/store';
 
-import '../css/fonts.css';
-import '../css/main.css';
+import '../css/fonts.scss';
+import '../css/main.scss';
 
 const root = document.getElementById('app');
 

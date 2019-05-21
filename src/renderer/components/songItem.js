@@ -10,8 +10,6 @@ import Sidebar from './sidebar';
 
 import type { StoreState, Dispatch, Song } from '../types';
 
-import '../../css/table.css';
-
 type PassedProps = {|
   +song: Song
 |};
