@@ -4,6 +4,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
+import { remote } from 'electron';
 // import ReactPlayer from 'react-player';
 
 import VolumeBar from './volume';
@@ -60,6 +61,20 @@ class PlaybackBar extends React.Component<Props, State> {
     this._audio.current && this._audio.current.pause();
   };
 
+  componentDidMount() {
+    const ret = remote.globalShortcut.register('MediaPlayPause', () => {
+      console.log('toggle');
+      this._onTogglePause();
+    });
+
+    console.log(ret);
+  }
+
+  componentWillUnmount() {
+    console.log('dead');
+    remote.globalShortcut.unregister('MediaPlayPause');
+  }
+
   render() {
     const { currSong } = this.props;
     const max =
@@ -71,7 +86,7 @@ class PlaybackBar extends React.Component<Props, State> {
     const maxTime = formatDuration(max);
 
     return (
-      <div className="playback-box">
+      <div className='playback-box'>
         <audio
           ref={this._audio}
           src={
@@ -81,7 +96,7 @@ class PlaybackBar extends React.Component<Props, State> {
           onTimeUpdate={this._onTimeUpdate}
           onEnded={this._onEnded}
         />
-        <div className="playback-bar">
+        <div className='playback-bar'>
           <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
@@ -94,7 +109,7 @@ class PlaybackBar extends React.Component<Props, State> {
           )}
           <p>{maxTime}</p>
         </div>
-        <div className="playback-controls">
+        <div className='playback-controls'>
           <button
             className={
               'play-pause ' +

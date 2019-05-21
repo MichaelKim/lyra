@@ -66,7 +66,9 @@ export function getMetadata(song: Song): Promise<Metadata> {
 export function setTags(filepath: string, tags: Tags) {
   // Adding a callback makes the method async,
   // avoiding blocking the UI
-  id3.update(tags, filepath, (err, buff) => {});
+  return new Promise<void>((resolve, reject) =>
+    id3.update(tags, filepath, (err, buff) => (err ? reject(err) : resolve()))
+  );
 }
 
 export function formatDuration(duration: number) {
