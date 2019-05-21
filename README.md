@@ -5,8 +5,15 @@ TODO:
 - Songs screen
   - Sort by table column
   - Add time added as column (default sort)
-- Download from Youtube
-  - Should server or client download?
+- More playback controls
+  - Continuous playing
+    - Shuffle
+    - Play in order
+  - Skip
+    - To next song
+    - Previous song
+- Add media button listeners
+  - MediaNextTrack, MediaPreviousTrack, MediaPlayPause (maybe MediaStop)
 
 Long term features:
 
@@ -36,3 +43,5 @@ Ideas:
   - Right click to open menu
     - Play, Edit
       - Edit is same
+- Download from Youtube
+  - Server download, since it requires converting to mp3
