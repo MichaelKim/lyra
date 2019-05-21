@@ -14,7 +14,9 @@
 /* Header Row */
 .song-row:first-child {
   border: none;
-  text-align: center;
+  font-variant-caps: all-small-caps;
+  line-height: 1em;
+  color: #aaa;
 }
 
 .song-row:hover {
@@ -42,13 +44,12 @@
 /* Song Duration Column */
 .song-row div:nth-child(3) {
   width: 15%;
-  text-align: center;
 }
 
 /* Date Added Column */
 .song-row div:nth-child(4) {
   width: 15%;
-  text-align: center;
+  text-align: right;
 }
 
 .song-row input {
