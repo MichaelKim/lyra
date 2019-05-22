@@ -38,7 +38,8 @@ export type StoreState = {|
   +currSong?: Song,
   +currScreen?: ?string,
   +songs: {| [id: SongID]: Song |},
-  +playlists: {| [id: PlaylistID]: Playlist |}
+  +playlists: {| [id: PlaylistID]: Playlist |},
+  +volume: number
 |};
 
 export type Dispatch = (action: Action) => void;
@@ -59,6 +60,7 @@ export type Action =
   | {| +type: 'ADD_SONGS', +songs: Song[] |}
   | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}
+  | {| +type: 'CHANGE_VOLUME', +volume: number |}
   | {|
       +type: 'CLEAR_DATA'
     |};

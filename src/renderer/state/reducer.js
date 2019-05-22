@@ -67,6 +67,13 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         songs
       };
 
+    case 'CHANGE_VOLUME': {
+      return {
+        ...state,
+        volume: Math.max(Math.min(action.volume, 100), 0)
+      };
+    }
+
     case 'CLEAR_DATA':
       return {
         ...initialState,
@@ -86,6 +93,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
     case 'CREATE_PLAYLIST':
     case 'SELECT_PLAYLIST':
     case 'DELETE_PLAYLIST':
+    case 'CHANGE_VOLUME':
     case 'CLEAR_DATA':
       save(newState);
       break;
