@@ -1,18 +1,13 @@
 @import './variables.scss';
 
 .song-row {
-  border-top: 1px solid $border-color;
   cursor: pointer;
   display: flex;
   flex-direction: row;
   line-height: 1.5em;
 
-  /* Header Row */
-  &:first-child {
-    border: none;
-    font-variant-caps: all-small-caps;
-    line-height: 1em;
-    color: $text-dark-color;
+  &:not(:first-child) {
+    border-top: 1px solid $border-color;
   }
 
   &:hover {

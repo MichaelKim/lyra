@@ -38,10 +38,10 @@ class Screen extends React.Component<Props> {
         <h1>{title}</h1>
         <div className='song-table'>
           <div className='song-row'>
-            <div>Title</div>
-            <div>Artist</div>
-            <div>Duration</div>
-            <div>Date Added</div>
+            <div className='label'>Title</div>
+            <div className='label'>Artist</div>
+            <div className='label'>Duration</div>
+            <div className='label'>Date Added</div>
           </div>
           {filtered.map(song => (
             <SongItem key={song.id} song={song} />

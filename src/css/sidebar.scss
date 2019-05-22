@@ -12,18 +12,16 @@
 
   .sidebar-link {
     cursor: pointer;
+  }
 
-    &:hover {
-      color: $text-light-color;
-    }
+  .sidebar-link:hover,
+  .sidebar-selected {
+    color: $text-light-color;
+    text-shadow: 0 0 $text-light-color;
   }
 
   .sidebar-section {
     font-size: 16px;
     margin-top: 10px;
-  }
-
-  .sidebar-selected {
-    color: $text-light-color;
   }
 }

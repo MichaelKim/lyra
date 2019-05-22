@@ -23,6 +23,7 @@ class Sidebar extends React.Component<Props> {
     return (
       <div className='sidebar'>
         <h3 className='sidebar-title'>Music Player</h3>
+        <p className='sidebar-section label'>Library</p>
         <p
           className={
             'sidebar-link sidebar-section ' +
@@ -32,7 +33,16 @@ class Sidebar extends React.Component<Props> {
         >
           All Songs
         </p>
-        <p className='sidebar-section'>Playlists</p>
+        <p
+          className={
+            'sidebar-link sidebar-section ' +
+            (currScreen == 'settings' ? ' sidebar-selected' : '')
+          }
+          onClick={() => selectPlaylist('settings')}
+        >
+          Settings
+        </p>
+        <p className='sidebar-section label'>Playlists</p>
         {playlists.map(playlist => (
           <p
             key={playlist.id}
@@ -45,15 +55,6 @@ class Sidebar extends React.Component<Props> {
             {playlist.name}
           </p>
         ))}
-        <p
-          className={
-            'sidebar-link sidebar-section ' +
-            (currScreen == 'settings' ? ' sidebar-selected' : '')
-          }
-          onClick={() => selectPlaylist('settings')}
-        >
-          Settings
-        </p>
       </div>
     );
   }

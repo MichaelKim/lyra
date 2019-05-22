@@ -52,3 +52,9 @@ button {
     transform: rotate(360deg);
   }
 }
+
+.label {
+  font-variant-caps: all-small-caps;
+  color: $text-dark-color;
+  line-height: 1em;
+}
