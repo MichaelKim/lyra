@@ -47,6 +47,16 @@ class PlaybackBar extends React.Component<Props, State> {
     }
   };
 
+  _onReplay = () => {
+    // Don't need to max 0
+    this._onSeek(this.state.currentTime - 10);
+  };
+
+  _onForward = () => {
+    // Don't need to min duration
+    this._onSeek(this.state.currentTime + 10);
+  };
+
   _onTogglePause = () => {
     if (this._audio.current) {
       if (this._audio.current.paused) {
@@ -86,7 +96,7 @@ class PlaybackBar extends React.Component<Props, State> {
     const maxTime = formatDuration(max);
 
     return (
-      <div className='playback-box'>
+      <div className="playback-box">
         <audio
           ref={this._audio}
           src={
@@ -96,7 +106,7 @@ class PlaybackBar extends React.Component<Props, State> {
           onTimeUpdate={this._onTimeUpdate}
           onEnded={this._onEnded}
         />
-        <div className='playback-bar'>
+        <div className="playback-bar">
           <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
@@ -109,7 +119,9 @@ class PlaybackBar extends React.Component<Props, State> {
           )}
           <p>{maxTime}</p>
         </div>
-        <div className='playback-controls'>
+        <div className="playback-controls">
+          <button className="skip-previous" onClick={() => {}} />
+          <button className="replay-btn" onClick={this._onReplay} />
           <button
             className={
               'play-pause ' +
@@ -120,6 +132,8 @@ class PlaybackBar extends React.Component<Props, State> {
             onClick={this._onTogglePause}
             disabled={currSong == null}
           />
+          <button className="forward-btn" onClick={this._onForward} />
+          <button className="skip-next" onClick={() => {}} />
         </div>
         <VolumeBar onChange={this._onVolumeChange} />
       </div>

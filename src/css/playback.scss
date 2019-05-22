@@ -21,18 +21,26 @@
   }
 
   .playback-controls {
-    display: inline-block;
-  }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    button {
+      width: 30px;
+      height: 30px;
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
 
-  .play-pause {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    // background-color: $accent-color;
-    background-color: transparent;
-    border: 2px solid $accent-color;
-    background-repeat: no-repeat;
-    background-position: center;
+    .play-pause {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      // background-color: $accent-color;
+      border: 2px solid $accent-color;
+    }
   }
 
   .play {
@@ -41,5 +49,21 @@
 
   .pause {
     background-image: url('../../static/pause.svg');
+  }
+
+  .replay-btn {
+    background-image: url('../../static/replay-10.svg');
+  }
+
+  .forward-btn {
+    background-image: url('../../static/forward-10.svg');
+  }
+
+  .skip-previous {
+    background-image: url('../../static/skip-previous.svg');
+  }
+  
+  .skip-next {
+    background-image: url('../../static/skip-next.svg');
   }
 }

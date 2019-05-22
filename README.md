@@ -14,6 +14,7 @@ TODO:
     - Previous song
 - Add media button listeners
   - MediaNextTrack, MediaPreviousTrack, MediaPlayPause (maybe MediaStop)
+- Add search bar on top of song list
 
 Long term features:
 
@@ -32,6 +33,12 @@ Long term features:
   - Stream songs
   - Download songs
   - Upload songs
+- Youtube
+  - Stream similar to autoplay
+    - No video, only thumbnail
+  - Save song to library
+  - Skip to next / previous
+  - Show several related songs
 
 Ideas:
 
