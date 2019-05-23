@@ -75,6 +75,9 @@ class Sources extends React.Component<Props, State> {
                 .update(info.video_id)
                 .digest('hex'),
               name: safeName,
+              title: info.title,
+              artist: info.author.title,
+              duration: 0,
               dir: storage.getDataPath(),
               playlists: [],
               date: Date.now()

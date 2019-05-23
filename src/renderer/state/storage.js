@@ -8,7 +8,11 @@ export const initialState: StoreState = {
   loaded: false,
   songs: {},
   playlists: {},
-  volume: 100
+  volume: 100,
+  sort: {
+    column: 'TITLE',
+    direction: false
+  }
 };
 
 export function save(state: StoreState) {

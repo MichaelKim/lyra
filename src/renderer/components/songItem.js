@@ -5,33 +5,32 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
 
-import { fileExists, getMetadata, setTags, formatDuration } from '../util';
+import { fileExists, formatDuration } from '../util';
 import Sidebar from './sidebar';
 
-import type { StoreState, Dispatch, Song } from '../types';
+import type { StoreState, Dispatch, Song, SongID } from '../types';
 
 type PassedProps = {|
   +song: Song
 |};
 
 type Props = PassedProps & {|
-  +selectSong: (song: Song) => void
+  +selectSong: (song: Song) => void,
+  +updateTags: (id: SongID, title: string, artist: string) => void
 |};
 
 type State = {|
   status: 'LOADING' | 'READY' | 'MISSING' | 'EDITING',
   title: string,
   artist: string,
-  duration: string,
   editStart: 'TITLE' | 'ARTIST'
 |};
 
-class Screen extends React.Component<Props, State> {
+class SongItem extends React.Component<Props, State> {
   state = {
     status: 'LOADING',
     title: '',
     artist: '',
-    duration: '',
     editStart: 'TITLE'
   };
   // Double click
@@ -88,20 +87,16 @@ class Screen extends React.Component<Props, State> {
   };
 
   _finishEdit = () => {
-    const { song } = this.props;
-    const filepath = path.join(song.dir, song.name);
-
     // Change metadata
-    const tags = {
-      title: this.state.title,
-      artist: this.state.artist
-    };
-
     this.setState({
       status: 'READY'
     });
 
-    setTags(filepath, tags);
+    this.props.updateTags(
+      this.props.song.id,
+      this.state.title,
+      this.state.artist
+    );
   };
 
   _changeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
@@ -127,20 +122,17 @@ class Screen extends React.Component<Props, State> {
           title: this.props.song.name
         });
       } else {
-        getMetadata(song).then(metadata => {
-          this.setState({
-            status: 'READY',
-            title: metadata.title,
-            artist: metadata.artist,
-            duration: formatDuration(metadata.duration)
-          });
+        this.setState({
+          status: 'READY',
+          title: song.title,
+          artist: song.artist
         });
       }
     });
   }
 
   _renderInput = (name, value: string, onChange) => {
-    const { status, title, editStart } = this.state;
+    const { status, editStart } = this.state;
 
     return (
       <div
@@ -164,7 +156,7 @@ class Screen extends React.Component<Props, State> {
   };
 
   render() {
-    const { status, title, artist, duration, editStart } = this.state;
+    const { status, title, artist } = this.state;
 
     return (
       <div
@@ -174,7 +166,7 @@ class Screen extends React.Component<Props, State> {
       >
         {this._renderInput('TITLE', title, this._changeTitle)}
         {this._renderInput('ARTIST', artist, this._changeArtist)}
-        <div>{duration}</div>
+        <div>{formatDuration(this.props.song.duration)}</div>
         <div>{new Date(this.props.song.date).toLocaleDateString()}</div>
       </div>
     );
@@ -183,13 +175,15 @@ class Screen extends React.Component<Props, State> {
 
 function mapDispatch(dispatch: Dispatch) {
   return {
-    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song })
+    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
+    updateTags: (id: SongID, title: string, artist: string) =>
+      dispatch({ type: 'UPDATE_TAGS', id, title, artist })
   };
 }
 
 const ConnectedComp: React.ComponentType<PassedProps> = connect(
   null,
   mapDispatch
-)(Screen);
+)(SongItem);
 
 export default ConnectedComp;

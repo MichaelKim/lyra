@@ -7,7 +7,10 @@ export type PlaylistID = string;
 
 export type Song = {|
   +id: SongID, // hash of filepath or url
-  +name: string,
+  +title: string, // metadata title
+  +artist: string,
+  +duration: number,
+  +name: string, // filename
   +dir: string,
   +playlists: PlaylistID[],
   +date: number
@@ -30,6 +33,13 @@ export type Metadata = {|
   +duration: number
 |};
 
+export type SortColumn = 'TITLE' | 'ARTIST' | 'DURATION' | 'DATE';
+
+export type SortType = {|
+  +column: SortColumn,
+  +direction: boolean
+|};
+
 // Redux types
 export type Store = ReduxStore<StoreState, Action, Dispatch>;
 
@@ -39,7 +49,8 @@ export type StoreState = {|
   +currScreen?: ?string,
   +songs: {| [id: SongID]: Song |},
   +playlists: {| [id: PlaylistID]: Playlist |},
-  +volume: number
+  +volume: number,
+  +sort: SortType
 |};
 
 export type Dispatch = (action: Action) => void;
@@ -63,6 +74,8 @@ export type Action =
   | {| +type: 'CHANGE_VOLUME', +volume: number |}
   | {| +type: 'SKIP_PREVIOUS' |}
   | {| +type: 'SKIP_NEXT' |}
+  | {| +type: 'UPDATE_TAGS', +id: SongID, +title: string, +artist: string |}
+  | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {|
       +type: 'CLEAR_DATA'
     |};

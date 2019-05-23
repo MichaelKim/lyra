@@ -1,7 +1,7 @@
 // @flow strict
 
 import { save, initialState } from './storage';
-import { getSongList } from '../util';
+import { values, getSongList } from '../util';
 
 import type { StoreState, Action, Song } from '../types';
 
@@ -83,7 +83,7 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         return state;
       }
 
-      const songs = getSongList(state.songs, state.currScreen);
+      const songs = getSongList(state.songs, state.currScreen, state.sort);
       const index = songs.findIndex(song => song.id === currSong.id);
       if (action.type === 'SKIP_PREVIOUS') {
         if (index <= 0) {
@@ -101,6 +101,48 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       return {
         ...state,
         currSong: songs[index + 1]
+      };
+    }
+
+    case 'UPDATE_TAGS': {
+      const song = values(state.songs).find(song => song.id === action.id);
+      if (song == null) {
+        return state;
+      }
+
+      const updated = {
+        ...song,
+        title: action.title,
+        artist: action.artist
+      };
+
+      if (state.currSong != null && state.currSong.id === action.id) {
+        return {
+          ...state,
+          songs: {
+            ...state.songs,
+            [song.id]: updated
+          },
+          currSong: updated
+        };
+      }
+
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          [song.id]: updated
+        }
+      };
+    }
+
+    case 'SET_SORT': {
+      return {
+        ...state,
+        sort: {
+          column: action.column,
+          direction: action.direction
+        }
       };
     }
 
@@ -127,6 +169,8 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
     case 'CHANGE_VOLUME':
     case 'SKIP_PREVIOUS':
     case 'SKIP_NEXT':
+    case 'UPDATE_TAGS':
+    case 'SET_SORT':
     case 'CLEAR_DATA':
       save(newState);
       break;

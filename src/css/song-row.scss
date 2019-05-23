@@ -23,22 +23,22 @@
   }
 
   /* Title Column */
-  div:nth-child(1) {
+  & > div:nth-child(1) {
     width: 40%;
   }
 
   /* Artist Column */
-  div:nth-child(2) {
+  & > div:nth-child(2) {
     width: 30%;
   }
 
   /* Song Duration Column */
-  div:nth-child(3) {
+  & > div:nth-child(3) {
     width: 15%;
   }
 
   /* Date Added Column */
-  div:nth-child(4) {
+  & > div:nth-child(4) {
     width: 15%;
     text-align: right;
   }

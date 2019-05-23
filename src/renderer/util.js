@@ -6,7 +6,7 @@ import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
 
-import type { Song, Metadata, Tags, SongID } from './types';
+import type { Song, Metadata, Tags, SongID, SortType } from './types';
 
 export function fileExists(path: string) {
   return new Promise<boolean>((resolve, reject) => {
@@ -25,17 +25,23 @@ export function getSongs(dir: string) {
       }
 
       const names = files.filter(file => path.extname(file) === '.mp3');
-      resolve(
-        names.map(name => ({
+
+      const promises: Promise<Song>[] = names.map(name =>
+        getMetadata(dir, name).then(metadata => ({
           id: createHash('sha256')
             .update(path.join(dir, name))
             .digest('hex'),
+          title: metadata.title,
+          artist: metadata.artist,
+          duration: metadata.duration,
           name,
           dir,
           playlists: [],
           date: Date.now()
         }))
       );
+
+      Promise.all(promises).then(songs => resolve(songs));
     });
   });
 }
@@ -47,7 +53,8 @@ export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
 
 export function getSongList(
   songs: { [id: SongID]: Song },
-  playlist: ?string
+  playlist: ?string,
+  sort: SortType
 ): Song[] {
   const songlist = values(songs);
   const filtered =
@@ -55,27 +62,41 @@ export function getSongList(
       ? songlist.filter(song => song.name.includes(playlist))
       : songlist;
   const sorted = filtered.sort((a, b) => {
-    if (a.date < b.date) return -1;
-    if (a.date > b.date) return 1;
-    return 0;
+    switch (sort.column) {
+      case 'TITLE':
+        return spaceship(a.title, b.title);
+      case 'ARTIST':
+        return spaceship(a.artist, b.artist);
+      case 'DURATION':
+        return spaceship(a.duration, b.duration);
+      default:
+        return spaceship(a.date, b.date);
+    }
   });
+
+  if (sort.direction) {
+    return sorted.reverse();
+  }
 
   return sorted;
 }
 
-export function getMetadata(song: Song): Promise<Metadata> {
-  const filepath = path.join(song.dir, song.name);
+function spaceship(a, b) {
+  // $FlowFixMe: how to type this function properly?
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+export function getMetadata(dir: string, name: string): Promise<Metadata> {
+  const filepath = path.join(dir, name);
   return mm
     .parseFile(filepath)
     .then(metadata => ({
-      title:
-        metadata.common.title ||
-        path.basename(song.name, path.extname(song.name)),
+      title: metadata.common.title || path.basename(name, path.extname(name)),
       artist: metadata.common.artist || '',
       duration: metadata.format.duration
     }))
     .catch(err => ({
-      title: song.name,
+      title: name,
       artist: '',
       duration: ''
     }));

@@ -2,14 +2,12 @@
 
 TODO:
 
-- Songs screen
-  - Sort by table column
 - More playback controls
-  - Continuous playing
-    - Shuffle
+  - Shuffle
 - Add media button listeners
   - MediaNextTrack, MediaPreviousTrack, MediaPlayPause (maybe MediaStop)
 - Add search bar on top of song list
+- Display title and artist on bottom left
 
 Long term features:
 

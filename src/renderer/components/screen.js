@@ -7,7 +7,14 @@ import { connect } from 'react-redux';
 import SongItem from './songItem';
 import { getSongList } from '../util';
 
-import type { StoreState, Dispatch, Song, SongID } from '../types';
+import type {
+  StoreState,
+  Dispatch,
+  Song,
+  SongID,
+  SortType,
+  SortColumn
+} from '../types';
 
 import '../../css/screen.scss';
 import '../../css/song-row.scss';
@@ -15,7 +22,9 @@ import '../../css/song-row.scss';
 type Props = {|
   +songs: Song[],
   +currScreen: ?string,
-  +selectSong: (song: Song) => void
+  +sort: SortType,
+  +selectSong: (song: Song) => void,
+  +setSort: (column: SortColumn, direction: boolean) => void
 |};
 
 class Screen extends React.Component<Props> {
@@ -23,20 +32,49 @@ class Screen extends React.Component<Props> {
     this.props.selectSong(song);
   };
 
+  _onSort = (column: SortColumn) => {
+    const { setSort, sort } = this.props;
+    if (column === sort.column) {
+      setSort(column, !sort.direction);
+    } else {
+      setSort(column, false);
+    }
+  };
+
   render() {
-    const { songs, currScreen } = this.props;
+    const { songs, currScreen, sort } = this.props;
 
     const title = currScreen || 'All Songs';
+
+    const arrow = (
+      <img
+        src={`sort-${sort.direction ? 'up' : 'down'}.svg`}
+        className='sort-icon'
+      />
+    );
+
+    const columns = [
+      { enum: 'TITLE', name: 'Title' },
+      { enum: 'ARTIST', name: 'Artist' },
+      { enum: 'DURATION', name: 'Duration' },
+      { enum: 'DATE', name: 'Date Added' }
+    ];
 
     return (
       <div className='screen'>
         <h1>{title}</h1>
         <div className='song-table'>
           <div className='song-row'>
-            <div className='label'>Title</div>
-            <div className='label'>Artist</div>
-            <div className='label'>Duration</div>
-            <div className='label'>Date Added</div>
+            {columns.map(col => (
+              <div
+                key={col.enum}
+                className='label'
+                onClick={() => this._onSort(col.enum)}
+              >
+                {col.name}
+                {sort.column === col.enum ? arrow : null}
+              </div>
+            ))}
           </div>
           {songs.map(song => (
             <SongItem key={song.id} song={song} />
@@ -49,14 +87,17 @@ class Screen extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    songs: getSongList(state.songs, state.currScreen),
-    currScreen: state.currScreen
+    songs: getSongList(state.songs, state.currScreen, state.sort),
+    currScreen: state.currScreen,
+    sort: state.sort
   };
 }
 
 function mapDispatch(dispatch: Dispatch) {
   return {
-    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song })
+    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
+    setSort: (column: SortColumn, direction: boolean) =>
+      dispatch({ type: 'SET_SORT', column, direction })
   };
 }
 
