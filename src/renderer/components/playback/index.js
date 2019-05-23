@@ -27,11 +27,14 @@ class PlaybackBar extends React.Component<Props, State> {
   state = {
     currentTime: 0
   };
+  _tempVol = null;
   _audio = React.createRef();
 
   _onVolumeChange = (volume: number) => {
     if (this._audio.current) {
       this._audio.current.volume = volume / 100;
+    } else {
+      this._tempVol = volume;
     }
   };
 
@@ -78,6 +81,10 @@ class PlaybackBar extends React.Component<Props, State> {
     });
 
     console.log(ret);
+
+    if (this._tempVol != null) {
+      this._onVolumeChange(this._tempVol);
+    }
   }
 
   componentWillUnmount() {
@@ -96,7 +103,7 @@ class PlaybackBar extends React.Component<Props, State> {
     const maxTime = formatDuration(max);
 
     return (
-      <div className="playback-box">
+      <div className='playback-box'>
         <audio
           ref={this._audio}
           src={
@@ -106,7 +113,7 @@ class PlaybackBar extends React.Component<Props, State> {
           onTimeUpdate={this._onTimeUpdate}
           onEnded={this._onEnded}
         />
-        <div className="playback-bar">
+        <div className='playback-bar'>
           <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
@@ -119,9 +126,9 @@ class PlaybackBar extends React.Component<Props, State> {
           )}
           <p>{maxTime}</p>
         </div>
-        <div className="playback-controls">
-          <button className="skip-previous" onClick={() => {}} />
-          <button className="replay-btn" onClick={this._onReplay} />
+        <div className='playback-controls'>
+          <button className='skip-previous' onClick={() => {}} />
+          <button className='replay-btn' onClick={this._onReplay} />
           <button
             className={
               'play-pause ' +
@@ -132,8 +139,8 @@ class PlaybackBar extends React.Component<Props, State> {
             onClick={this._onTogglePause}
             disabled={currSong == null}
           />
-          <button className="forward-btn" onClick={this._onForward} />
-          <button className="skip-next" onClick={() => {}} />
+          <button className='forward-btn' onClick={this._onForward} />
+          <button className='skip-next' onClick={() => {}} />
         </div>
         <VolumeBar onChange={this._onVolumeChange} />
       </div>

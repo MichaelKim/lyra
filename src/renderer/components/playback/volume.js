@@ -41,6 +41,10 @@ class VolumeBar extends React.Component<Props, State> {
     this.props.onChange(!this.state.muted ? 0 : this.props.volume);
   };
 
+  componentDidMount() {
+    this.props.onChange(this.props.volume);
+  }
+
   render() {
     const { volume } = this.props;
     const { muted } = this.state;
