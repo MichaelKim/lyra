@@ -4,14 +4,9 @@ TODO:
 
 - Songs screen
   - Sort by table column
-  - Add time added as column (default sort)
 - More playback controls
   - Continuous playing
     - Shuffle
-    - Play in order
-  - Skip
-    - To next song
-    - Previous song
 - Add media button listeners
   - MediaNextTrack, MediaPreviousTrack, MediaPlayPause (maybe MediaStop)
 - Add search bar on top of song list

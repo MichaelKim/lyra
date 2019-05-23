@@ -1,6 +1,7 @@
 // @flow strict
 
 import { save, initialState } from './storage';
+import { getSongList } from '../util';
 
 import type { StoreState, Action, Song } from '../types';
 
@@ -74,6 +75,35 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       };
     }
 
+    case 'SKIP_PREVIOUS':
+    case 'SKIP_NEXT': {
+      const { currSong } = state;
+      if (currSong == null) {
+        // Nothing is playing right now
+        return state;
+      }
+
+      const songs = getSongList(state.songs, state.currScreen);
+      const index = songs.findIndex(song => song.id === currSong.id);
+      if (action.type === 'SKIP_PREVIOUS') {
+        if (index <= 0) {
+          return state;
+        }
+        return {
+          ...state,
+          currSong: songs[index - 1]
+        };
+      }
+
+      if (index < 0 || index >= songs.length - 1) {
+        return state;
+      }
+      return {
+        ...state,
+        currSong: songs[index + 1]
+      };
+    }
+
     case 'CLEAR_DATA':
       return {
         ...initialState,
@@ -90,10 +120,13 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
 
   switch (action.type) {
     case 'ADD_SONGS':
+    case 'SELECT_SONG':
     case 'CREATE_PLAYLIST':
     case 'SELECT_PLAYLIST':
     case 'DELETE_PLAYLIST':
     case 'CHANGE_VOLUME':
+    case 'SKIP_PREVIOUS':
+    case 'SKIP_NEXT':
     case 'CLEAR_DATA':
       save(newState);
       break;

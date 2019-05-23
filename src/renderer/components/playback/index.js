@@ -11,12 +11,14 @@ import VolumeBar from './volume';
 import RangeInput from './range';
 import { formatDuration } from '../../util';
 
-import type { StoreState, Song } from '../../types';
+import type { StoreState, Song, Dispatch } from '../../types';
 
 import '../../../css/playback.scss';
 
 type Props = {|
-  +currSong?: Song
+  +currSong?: Song,
+  +skipPrevious: () => void,
+  +skipNext: () => void
 |};
 
 type State = {|
@@ -72,6 +74,8 @@ class PlaybackBar extends React.Component<Props, State> {
 
   _onEnded = () => {
     this._audio.current && this._audio.current.pause();
+
+    this.props.skipNext();
   };
 
   componentDidMount() {
@@ -127,7 +131,7 @@ class PlaybackBar extends React.Component<Props, State> {
           <p>{maxTime}</p>
         </div>
         <div className='playback-controls'>
-          <button className='skip-previous' onClick={() => {}} />
+          <button className='skip-previous' onClick={this.props.skipPrevious} />
           <button className='replay-btn' onClick={this._onReplay} />
           <button
             className={
@@ -140,7 +144,7 @@ class PlaybackBar extends React.Component<Props, State> {
             disabled={currSong == null}
           />
           <button className='forward-btn' onClick={this._onForward} />
-          <button className='skip-next' onClick={() => {}} />
+          <button className='skip-next' onClick={this.props.skipNext} />
         </div>
         <VolumeBar onChange={this._onVolumeChange} />
       </div>
@@ -154,7 +158,17 @@ function mapState(state: StoreState) {
   };
 }
 
-const ConnectedComp: React.ComponentType<{||}> = connect(mapState)(PlaybackBar);
+function mapDispatch(dispatch: Dispatch) {
+  return {
+    skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
+    skipNext: () => dispatch({ type: 'SKIP_NEXT' })
+  };
+}
+
+const ConnectedComp: React.ComponentType<{||}> = connect(
+  mapState,
+  mapDispatch
+)(PlaybackBar);
 
 export default ConnectedComp;
 

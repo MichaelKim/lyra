@@ -6,7 +6,7 @@ import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
 
-import type { Song, Metadata, Tags } from './types';
+import type { Song, Metadata, Tags, SongID } from './types';
 
 export function fileExists(path: string) {
   return new Promise<boolean>((resolve, reject) => {
@@ -43,6 +43,24 @@ export function getSongs(dir: string) {
 // Flow doesn't like Object.values(), so this is an alternative with Object.keys()
 export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
   return Object.keys(obj).map<V>((key: K) => obj[key]);
+}
+
+export function getSongList(
+  songs: { [id: SongID]: Song },
+  playlist: ?string
+): Song[] {
+  const songlist = values(songs);
+  const filtered =
+    playlist != null
+      ? songlist.filter(song => song.name.includes(playlist))
+      : songlist;
+  const sorted = filtered.sort((a, b) => {
+    if (a.date < b.date) return -1;
+    if (a.date > b.date) return 1;
+    return 0;
+  });
+
+  return sorted;
 }
 
 export function getMetadata(song: Song): Promise<Metadata> {

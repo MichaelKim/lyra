@@ -61,6 +61,8 @@ export type Action =
   | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}
   | {| +type: 'CHANGE_VOLUME', +volume: number |}
+  | {| +type: 'SKIP_PREVIOUS' |}
+  | {| +type: 'SKIP_NEXT' |}
   | {|
       +type: 'CLEAR_DATA'
     |};

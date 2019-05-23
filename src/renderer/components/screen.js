@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import SongItem from './songItem';
-import { values } from '../util';
+import { getSongList } from '../util';
 
 import type { StoreState, Dispatch, Song, SongID } from '../types';
 
@@ -28,11 +28,6 @@ class Screen extends React.Component<Props> {
 
     const title = currScreen || 'All Songs';
 
-    const filtered =
-      currScreen == null
-        ? songs
-        : songs.filter(song => song.name.includes(currScreen));
-
     return (
       <div className='screen'>
         <h1>{title}</h1>
@@ -43,7 +38,7 @@ class Screen extends React.Component<Props> {
             <div className='label'>Duration</div>
             <div className='label'>Date Added</div>
           </div>
-          {filtered.map(song => (
+          {songs.map(song => (
             <SongItem key={song.id} song={song} />
           ))}
         </div>
@@ -54,7 +49,7 @@ class Screen extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
-    songs: values(state.songs),
+    songs: getSongList(state.songs, state.currScreen),
     currScreen: state.currScreen
   };
 }
