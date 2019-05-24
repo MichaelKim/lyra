@@ -50,7 +50,8 @@ export type StoreState = {|
   +songs: {| [id: SongID]: Song |},
   +playlists: {| [id: PlaylistID]: Playlist |},
   +volume: number,
-  +sort: SortType
+  +sort: SortType,
+  +shuffle: boolean
 |};
 
 export type Dispatch = (action: Action) => void;
@@ -76,6 +77,7 @@ export type Action =
   | {| +type: 'SKIP_NEXT' |}
   | {| +type: 'UPDATE_TAGS', +id: SongID, +title: string, +artist: string |}
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
+  | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
   | {|
       +type: 'CLEAR_DATA'
     |};

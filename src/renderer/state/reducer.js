@@ -83,6 +83,16 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         return state;
       }
 
+      if (state.shuffle) {
+        const songs = getSongList(state.songs, state.currScreen).filter(
+          song => song.id !== currSong.id
+        );
+        return {
+          ...state,
+          currSong: songs[0 | (Math.random() * songs.length)]
+        };
+      }
+
       const songs = getSongList(state.songs, state.currScreen, state.sort);
       const index = songs.findIndex(song => song.id === currSong.id);
       if (action.type === 'SKIP_PREVIOUS') {
@@ -143,6 +153,13 @@ function rootReducer(state: StoreState = initialState, action: Action) {
           column: action.column,
           direction: action.direction
         }
+      };
+    }
+
+    case 'SET_SHUFFLE': {
+      return {
+        ...state,
+        shuffle: action.shuffle
       };
     }
 

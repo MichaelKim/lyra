@@ -55,13 +55,18 @@ export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
 export function getSongList(
   songs: { [id: SongID]: Song },
   playlist: ?string,
-  sort: SortType
+  sort?: SortType
 ): Song[] {
   const songlist = values(songs);
   const filtered =
     playlist != null
       ? songlist.filter(song => song.name.includes(playlist))
       : songlist;
+
+  if (sort == null) {
+    return filtered;
+  }
+
   const sorted = filtered.sort((a, b) => {
     switch (sort.column) {
       case 'TITLE':

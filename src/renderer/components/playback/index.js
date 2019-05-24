@@ -17,8 +17,10 @@ import '../../../css/playback.scss';
 
 type Props = {|
   +currSong?: Song,
+  +shuffle: boolean,
   +skipPrevious: () => void,
-  +skipNext: () => void
+  +skipNext: () => void,
+  +setShuffle: (shuffle: boolean) => void
 |};
 
 type State = {|
@@ -78,6 +80,10 @@ class PlaybackBar extends React.Component<Props, State> {
     this.props.skipNext();
   };
 
+  _onShuffle = () => {
+    this.props.setShuffle(!this.props.shuffle);
+  };
+
   componentDidMount() {
     if (this._tempVol != null) {
       this._onVolumeChange(this._tempVol);
@@ -107,7 +113,7 @@ class PlaybackBar extends React.Component<Props, State> {
     const maxTime = formatDuration(max);
 
     return (
-      <div className='playback-box'>
+      <div className="playback-box">
         <audio
           ref={this._audio}
           src={
@@ -117,7 +123,7 @@ class PlaybackBar extends React.Component<Props, State> {
           onTimeUpdate={this._onTimeUpdate}
           onEnded={this._onEnded}
         />
-        <div className='playback-bar'>
+        <div className="playback-bar">
           <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
@@ -130,9 +136,9 @@ class PlaybackBar extends React.Component<Props, State> {
           )}
           <p>{maxTime}</p>
         </div>
-        <div className='playback-controls'>
-          <button className='skip-previous' onClick={this.props.skipPrevious} />
-          <button className='replay-btn' onClick={this._onReplay} />
+        <div className="playback-controls">
+          <button className="skip-previous" onClick={this.props.skipPrevious} />
+          <button className="replay-btn" onClick={this._onReplay} />
           <button
             className={
               'play-pause ' +
@@ -143,10 +149,18 @@ class PlaybackBar extends React.Component<Props, State> {
             onClick={this._onTogglePause}
             disabled={currSong == null}
           />
-          <button className='forward-btn' onClick={this._onForward} />
-          <button className='skip-next' onClick={this.props.skipNext} />
+          <button className="forward-btn" onClick={this._onForward} />
+          <button className="skip-next" onClick={this.props.skipNext} />
         </div>
-        <VolumeBar onChange={this._onVolumeChange} />
+        <div className="playback-right">
+          <button
+            className={
+              'shuffle-btn ' + (this.props.shuffle ? '' : 'shuffle-off')
+            }
+            onClick={this._onShuffle}
+          />
+          <VolumeBar onChange={this._onVolumeChange} />
+        </div>
       </div>
     );
   }
@@ -154,14 +168,16 @@ class PlaybackBar extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSong: state.currSong
+    currSong: state.currSong,
+    shuffle: state.shuffle
   };
 }
 
 function mapDispatch(dispatch: Dispatch) {
   return {
     skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    skipNext: () => dispatch({ type: 'SKIP_NEXT' })
+    skipNext: () => dispatch({ type: 'SKIP_NEXT' }),
+    setShuffle: (shuffle: boolean) => dispatch({ type: 'SET_SHUFFLE', shuffle })
   };
 }
 

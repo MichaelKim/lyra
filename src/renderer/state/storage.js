@@ -12,7 +12,8 @@ export const initialState: StoreState = {
   sort: {
     column: 'TITLE',
     direction: false
-  }
+  },
+  shuffle: false
 };
 
 export function save(state: StoreState) {

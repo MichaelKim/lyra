@@ -62,6 +62,5 @@ Note:
 - Media button shortcuts don't work normally in Linux. To get around it, the player uses `dbus` to directly access shortcuts. `dbus` requires several other packages to install:
   - `npm i -g node-gyp`
   - `sudo apt-get install libdbus-1-dev libglib2.0-dev`
-  - Upon installing `dbus`, node will build the package for use. However, there may be differences in Node and Electron `NODE_MODULE_VERSION`s. To fix this, `electron-rebuild` is used, and must be run after running `npm i`:
-    - `./node_modules/.bin/electron-rebuild`
+  - Upon installing `dbus`, node will build the package for use. However, there may be differences in Node and Electron `NODE_MODULE_VERSION`s.
     - See more here: https://electronjs.org/docs/tutorial/using-native-node-modules

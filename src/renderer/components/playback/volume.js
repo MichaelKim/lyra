@@ -57,9 +57,9 @@ class VolumeBar extends React.Component<Props, State> {
         : 'volume-high';
 
     return (
-      <div className='volume'>
+      <>
         <button className={'volume-btn ' + icon} onClick={this._toggleMute} />
-        <div className='volume-bar'>
+        <div className="volume-bar">
           <RangeInput
             min={0}
             max={100}
@@ -67,7 +67,7 @@ class VolumeBar extends React.Component<Props, State> {
             onChange={this._onChange}
           />
         </div>
-      </div>
+      </>
     );
   }
 }

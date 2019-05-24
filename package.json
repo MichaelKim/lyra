@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "build": "electron-webpack",
-    "dist": "electron-webpack && electron-builder --dir"
+    "dist": "electron-webpack && electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
   },
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
@@ -23,7 +24,6 @@
     "@babel/preset-react": "^7.0.0",
     "electron": "^4.1.1",
     "electron-builder": "^20.41.0",
-    "electron-rebuild": "^1.8.4",
     "electron-webpack": "^2.6.2",
     "flow-bin": "^0.95.1",
     "node-sass": "^4.12.0",

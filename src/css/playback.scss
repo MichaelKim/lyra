@@ -20,19 +20,19 @@
     }
   }
 
+  button {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
   .playback-controls {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    
-    button {
-      width: 30px;
-      height: 30px;
-      background-color: transparent;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
 
     .play-pause {
       width: 40px;
@@ -41,6 +41,13 @@
       // background-color: $accent-color;
       border: 2px solid $accent-color;
     }
+  }
+
+  .playback-right {
+    top: 27px;
+    right: 50px;
+    position: absolute;
+    display: flex;
   }
 
   .play {
@@ -65,5 +72,13 @@
   
   .skip-next {
     background-image: url('../../static/skip-next.svg');
+  }
+
+  .shuffle-btn {
+    background-image: url('../../static/shuffle.svg');
+  }
+
+  .shuffle-off {
+    filter: invert(1);
   }
 }

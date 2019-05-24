@@ -1,34 +1,27 @@
 /* Volume Controls */
-.volume {
-  width: 150px;
-  top: 27px;
-  right: 50px;
-  position: absolute;
-  display: flex;
 
-  .volume-btn {
-    width: 30px;
-    height: 30px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-  }
+.volume-btn {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+}
 
-  .volume-none {
-    background-image: url('../../static/volume-off.svg');
-  }
+.volume-none {
+  background-image: url('../../static/volume-off.svg');
+}
 
-  .volume-low {
-    background-image: url('../../static/volume-low.svg');
-  }
+.volume-low {
+  background-image: url('../../static/volume-low.svg');
+}
 
-  .volume-high {
-    background-image: url('../../static/volume-high.svg');
-  }
+.volume-high {
+  background-image: url('../../static/volume-high.svg');
+}
 
-  .volume-bar {
-    display: inline-block;
-    width: 120px;
-  }
+.volume-bar {
+  display: inline-block;
+  width: 120px;
 }
