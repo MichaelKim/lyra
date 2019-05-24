@@ -4,10 +4,21 @@ TODO:
 
 - More playback controls
   - Shuffle
-- Add media button listeners
-  - MediaNextTrack, MediaPreviousTrack, MediaPlayPause (maybe MediaStop)
 - Add search bar on top of song list
 - Display title and artist on bottom left
+- Highlight row of current song
+- Stylize scroll bar (like mercurywm)
+
+Minor fixes:
+
+- Adjust icon sizing / padding
+  - Sort up/down
+    - Position up and down
+    - Last column's sort arrows should be on the left
+  - Skip, replay/forward
+- Scroll bar
+  - Screen's scroll bar should only scroll song rows, not the title, search bar, or header row of table
+  - Sidebar scroll bar should only scroll playlists?
 
 Long term features:
 
@@ -45,3 +56,12 @@ Ideas:
       - Edit is same
 - Download from Youtube
   - Server download, since it requires converting to mp3
+
+Note:
+
+- Media button shortcuts don't work normally in Linux. To get around it, the player uses `dbus` to directly access shortcuts. `dbus` requires several other packages to install:
+  - `npm i -g node-gyp`
+  - `sudo apt-get install libdbus-1-dev libglib2.0-dev`
+  - Upon installing `dbus`, node will build the package for use. However, there may be differences in Node and Electron `NODE_MODULE_VERSION`s. To fix this, `electron-rebuild` is used, and must be run after running `npm i`:
+    - `./node_modules/.bin/electron-rebuild`
+    - See more here: https://electronjs.org/docs/tutorial/using-native-node-modules

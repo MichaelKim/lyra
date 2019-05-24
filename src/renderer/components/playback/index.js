@@ -4,7 +4,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
-import { remote } from 'electron';
+import { ipcRenderer } from 'electron';
 // import ReactPlayer from 'react-player';
 
 import VolumeBar from './volume';
@@ -79,21 +79,21 @@ class PlaybackBar extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const ret = remote.globalShortcut.register('MediaPlayPause', () => {
-      console.log('toggle');
-      this._onTogglePause();
-    });
-
-    console.log(ret);
-
     if (this._tempVol != null) {
       this._onVolumeChange(this._tempVol);
     }
-  }
 
-  componentWillUnmount() {
-    console.log('dead');
-    remote.globalShortcut.unregister('MediaPlayPause');
+    ipcRenderer.on('play-pause', event => {
+      this._onTogglePause();
+    });
+
+    ipcRenderer.on('skip-previous', event => {
+      this.props.skipPrevious();
+    });
+
+    ipcRenderer.on('skip-next', event => {
+      this.props.skipNext();
+    });
   }
 
   render() {

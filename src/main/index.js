@@ -1,6 +1,7 @@
 // @flow strict
 
 import { app, BrowserWindow } from 'electron';
+import { globalAgent } from 'http';
 
 let win = null;
 
@@ -32,6 +33,10 @@ function createWindow() {
   } else {
     win.loadURL('file://' + __dirname + '/index.html');
   }
+
+  global.windowID = win.id;
+
+  require('./shortcuts');
 
   win.on('closed', () => {
     win = null;
