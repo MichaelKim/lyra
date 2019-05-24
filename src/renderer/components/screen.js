@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import SongItem from './songItem';
-import { getSongList } from '../util';
+import { getSongList, getStatic } from '../util';
 
 import type {
   StoreState,
@@ -48,7 +48,7 @@ class Screen extends React.Component<Props> {
 
     const arrow = (
       <img
-        src={`sort-${sort.direction ? 'up' : 'down'}.svg`}
+        src={getStatic(`sort-${sort.direction ? 'up' : 'down'}.svg`)}
         className='sort-icon'
       />
     );

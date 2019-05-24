@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import url from 'url';
 import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
@@ -114,4 +115,12 @@ export function formatDuration(duration: number) {
   const min = (duration / 60) | 0;
   const sec = String(duration % 60 | 0).padStart(2, '0');
   return `${min}:${sec}`;
+}
+
+declare var __static: string;
+export function getStatic(filename: string) {
+  if (process.env.NODE_ENV !== 'production') {
+    return url.resolve(window.location.origin, filename);
+  }
+  return path.resolve(__static, filename);
 }
