@@ -7,6 +7,7 @@
     "dev": "electron-webpack dev",
     "build": "electron-webpack",
     "dist": "electron-webpack && electron-builder --dir",
+    "pack": "electron-webpack && electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
   "author": "Michael Kim <micklepickle98@gmail.com>",
@@ -40,6 +41,9 @@
     "appId": "com.music-player",
     "win": {
       "target": "portable"
+    },
+    "linux": {
+      "category": "Audio"
     }
   },
   "optionalDependencies": {

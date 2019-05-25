@@ -2,13 +2,14 @@
 
 import { app, BrowserWindow } from 'electron';
 import { globalAgent } from 'http';
+import path from 'path';
 
 let win = null;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 function createWindow() {
-  win = new BrowserWindow({
+  const options = {
     minWidth: 800,
     minHeight: 600,
     width: 1280,
@@ -18,11 +19,16 @@ function createWindow() {
       nodeIntegration: true,
       webSecurity: false
     }
-  });
+  };
+
+  if (process.platform === 'linux') {
+    // $FlowFixMe
+    options.icon = path.join(__static, 'icon');
+  }
+
+  win = new BrowserWindow(options);
 
   win.setMenu(null);
-
-  win.webContents.openDevTools();
 
   if (isDevelopment) {
     if (process.env.ELECTRON_WEBPACK_WDS_PORT == null) {
@@ -30,6 +36,7 @@ function createWindow() {
     }
 
     win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    win.webContents.openDevTools();
   } else {
     win.loadURL('file://' + __dirname + '/index.html');
   }

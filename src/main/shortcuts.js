@@ -42,6 +42,7 @@ function registerBindings(desktopEnv, session) {
 
 if (process.platform === 'linux') {
   try {
+    // $FlowFixMe: dbus is only required for linux
     const DBus = require('dbus');
     const dbus = new DBus();
     const session = dbus.getBus('session');

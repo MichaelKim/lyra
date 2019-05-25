@@ -122,7 +122,6 @@ export function formatDuration(duration: number) {
   return `${min}:${sec}`;
 }
 
-declare var __static: string;
 export function getStatic(filename: string) {
   if (process.env.NODE_ENV !== 'production') {
     return url.resolve(window.location.origin, filename);
