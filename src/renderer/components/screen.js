@@ -65,6 +65,7 @@ class Screen extends React.Component<Props> {
         <h1>{title}</h1>
         <div className="song-table">
           <div className="song-row">
+            <div />
             {columns.map(col => (
               <div
                 key={col.enum}

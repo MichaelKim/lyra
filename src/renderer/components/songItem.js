@@ -15,6 +15,7 @@ type PassedProps = {|
 |};
 
 type Props = PassedProps & {|
+  +currSong: ?Song,
   +selectSong: (song: Song) => void,
   +updateTags: (id: SongID, title: string, artist: string) => void
 |};
@@ -143,7 +144,7 @@ class SongItem extends React.Component<Props, State> {
         {status === 'EDITING' ? (
           <input
             autoFocus={editStart === name}
-            type='text'
+            type="text"
             value={value}
             onChange={onChange}
             onKeyDown={this._onKeyDown}
@@ -158,12 +159,25 @@ class SongItem extends React.Component<Props, State> {
   render() {
     const { status, title, artist } = this.state;
 
+    const isPlaying =
+      this.props.currSong != null &&
+      this.props.currSong.id === this.props.song.id;
+
     return (
       <div
         className={'song-row ' + (status === 'MISSING' ? 'song-missing' : '')}
         onFocus={this._onFocus}
         onBlur={this._onBlur}
       >
+        <div className="is-playing">
+          {isPlaying ? (
+            <>
+              <div />
+              <div />
+              <div />
+            </>
+          ) : null}
+        </div>
         {this._renderInput('TITLE', title, this._changeTitle)}
         {this._renderInput('ARTIST', artist, this._changeArtist)}
         <div>{formatDuration(this.props.song.duration)}</div>
@@ -171,6 +185,12 @@ class SongItem extends React.Component<Props, State> {
       </div>
     );
   }
+}
+
+function mapState(state: StoreState) {
+  return {
+    currSong: state.currSong
+  };
 }
 
 function mapDispatch(dispatch: Dispatch) {
@@ -182,7 +202,7 @@ function mapDispatch(dispatch: Dispatch) {
 }
 
 const ConnectedComp: React.ComponentType<PassedProps> = connect(
-  null,
+  mapState,
   mapDispatch
 )(SongItem);
 

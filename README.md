@@ -2,10 +2,7 @@
 
 TODO:
 
-- More playback controls
-  - Shuffle
 - Add search bar on top of song list
-- Display title and artist on bottom left
 - Highlight row of current song
 - Stylize scroll bar (like mercurywm)
 

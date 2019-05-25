@@ -43,6 +43,20 @@
     }
   }
 
+  .playback-left {
+    position: absolute;
+    color: $text-color;
+    top: 20px;
+    text-align: left;
+    justify-content: center;
+    margin-left: 20px;
+
+    h3,
+    h5 {
+      margin: 0;
+    }
+  }
+
   .playback-right {
     top: 27px;
     right: 50px;
@@ -69,7 +83,7 @@
   .skip-previous {
     background-image: url('../../static/skip-previous.svg');
   }
-  
+
   .skip-next {
     background-image: url('../../static/skip-next.svg');
   }

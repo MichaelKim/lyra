@@ -136,6 +136,12 @@ class PlaybackBar extends React.Component<Props, State> {
           )}
           <p>{maxTime}</p>
         </div>
+        {currSong != null ? (
+          <div className="playback-left">
+            <h3>{currSong.title}</h3>
+            <h5>{currSong.artist}</h5>
+          </div>
+        ) : null}
         <div className="playback-controls">
           <button className="skip-previous" onClick={this.props.skipPrevious} />
           <button className="replay-btn" onClick={this._onReplay} />
