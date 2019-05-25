@@ -8,6 +8,10 @@ import fs from 'fs';
 import path from 'path';
 import ytdl from 'ytdl-core';
 import storage from 'electron-json-storage';
+import ffmpegPath from '@ffmpeg-installer/ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
+
+ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 
 import { setTags } from '../../../util';
 
@@ -44,24 +48,39 @@ class Sources extends React.Component<Props, State> {
     const dlPath = path.join(storage.getDataPath(), 'download.mp3');
 
     let info;
+    let currDuration;
 
-    ytdl(this.state.link, { quality: 'highestaudio' })
-      .on('info', ytinfo => {
+    const stream = ytdl(this.state.link, { quality: 'highestaudio' }).on(
+      'info',
+      ytinfo => {
         info = ytinfo;
         console.log(info);
-      })
-      .on('response', res => {
-        // console.log(res);
-      })
-      .on('progress', (chunkLen, totalDl, total) => {
+      }
+    );
+
+    /*
+    The info object from ytdl contains a "length_seconds" value,
+    but it's only precise to seconds. The progress event from ffmpeg
+    has a precision of 0.01s, but doesn't contain total duration information.
+
+    The following calculation uses ytdl's info as an approximate duration
+    to calculate percent downloaded. Then, it uses the last duration from
+    ffmpeg's progress to store as song duration metadata.
+    */
+
+    ffmpeg(stream)
+      .audioBitrate(128)
+      .save(dlPath)
+      .on('progress', progress => {
+        console.log(progress);
+        const [h, m, s] = progress.timemark.split(':').map(Number);
+        currDuration = h * 3600 + m * 60 + s;
         this.setState({
-          progress: 0 | ((totalDl / total) * 100)
+          progress: Math.min(100 * (currDuration / info.length_seconds), 100)
         });
       })
-      .pipe(fs.createWriteStream(dlPath))
-      .on('finish', () => {
+      .on('end', () => {
         console.log('Done downloading!');
-
         setTags(dlPath, {
           title: info.title,
           artist: info.author.name
@@ -77,7 +96,7 @@ class Sources extends React.Component<Props, State> {
               name: safeName,
               title: info.title,
               artist: info.author.title,
-              duration: 0,
+              duration: currDuration,
               dir: storage.getDataPath(),
               playlists: [],
               date: Date.now()
@@ -96,8 +115,8 @@ class Sources extends React.Component<Props, State> {
       <div>
         <button onClick={this._onAdd}>Add Link</button>
         <input
-          type='text'
-          placeholder='Youtube URL'
+          type="text"
+          placeholder="Youtube URL"
           value={this.state.link}
           onChange={this._onChange}
           disabled={this.state.loading}

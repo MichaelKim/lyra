@@ -13,7 +13,9 @@
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.17",
     "electron-json-storage": "^4.1.6",
+    "fluent-ffmpeg": "^2.1.2",
     "music-metadata": "^3.5.3",
     "node-id3": "^0.1.7",
     "source-map-support": "^0.5.11",
