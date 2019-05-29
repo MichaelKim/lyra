@@ -15,6 +15,7 @@ function createWindow() {
     width: 1280,
     height: 720,
     title: 'Music Player',
+    backgroundColor: '#aaa',
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false
@@ -23,7 +24,7 @@ function createWindow() {
 
   if (process.platform === 'linux') {
     // $FlowFixMe
-    options.icon = path.join(__static, 'icon');
+    options.icon = path.join(__static, 'icon.png');
   }
 
   win = new BrowserWindow(options);

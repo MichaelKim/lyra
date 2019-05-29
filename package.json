@@ -45,7 +45,11 @@
       "target": "portable"
     },
     "linux": {
-      "category": "Audio"
+      "category": "Audio",
+      "artifactName": "Music-Player-${version}.${ext}"
+    },
+    "appImage": {
+      "systemIntegration": "doNotAsk"
     }
   },
   "optionalDependencies": {
