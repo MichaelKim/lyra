@@ -11,6 +11,8 @@ import { escapeHTML, parseDuration } from '../../util';
 
 import type { StoreState, Dispatch, Song } from '../../types';
 
+import '../../../css/youtube.scss';
+
 type Props = {|
   +selectSong: (song: Song) => void
 |};
@@ -104,14 +106,20 @@ class Youtube extends React.Component<Props, State> {
         <Search onEnter={this._onSearch} />
         {this.state.searching ? <Loading /> : null}
         {this.state.videos.map(video => (
-          <div key={video.id} onClick={() => this._playVideo(video)}>
+          <div
+            key={video.id}
+            className="youtube-item"
+            onClick={() => this._playVideo(video)}
+          >
             <img
               src={video.thumbnail.url}
               width={video.thumbnail.width}
               height={video.thumbnail.height}
             />
-            <h3>{video.title}</h3>
-            <h5>{video.channel}</h5>
+            <div>
+              <h3>{video.title}</h3>
+              <h5>{video.channel}</h5>
+            </div>
           </div>
         ))}
       </>

@@ -1,0 +1,21 @@
+@import './variables.scss';
+
+.youtube-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  img {
+    margin: 5px;
+  }
+
+  div {
+    display: inline-block;
+
+    h3,
+    h5 {
+      margin: 0;
+    }
+  }
+}

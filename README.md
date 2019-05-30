@@ -27,6 +27,17 @@ Bugs:
 - Uncontrolled to controlled component warning
   - On song item edit, switching focus for the first time
 
+Youtube:
+
+- New sidebar item: "YouTube"
+- Two modes:
+  - Search
+    - Shows search bar and list of search results
+    - Click on a result to play it
+  - Playing
+    - Streams a youtube song
+    - Option to add to library
+
 Long term features:
 
 - Playlists
