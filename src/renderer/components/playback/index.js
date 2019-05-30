@@ -5,12 +5,12 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
 import { ipcRenderer } from 'electron';
-import ytdl from 'ytdl-core';
 // import ReactPlayer from 'react-player';
 
 import VolumeBar from './volume';
 import RangeInput from './range';
 import { formatDuration } from '../../util';
+import { getStreamURL } from '../../yt-util';
 
 import type { StoreState, Song, Dispatch } from '../../types';
 
@@ -96,15 +96,11 @@ class PlaybackBar extends React.Component<Props, State> {
 
     // Load song data
     if (currSong.dir === 'youtube') {
-      ytdl.getInfo(currSong.id).then(info => {
-        const format = ytdl.chooseFormat(info.formats, {
-          quality: 'highestaudio'
-        });
-
+      getStreamURL(currSong.id).then(url =>
         this.setState({
-          src: format.url
-        });
-      });
+          src: url
+        })
+      );
     } else {
       this.setState({
         src: path.join('file://', currSong.dir, currSong.name)

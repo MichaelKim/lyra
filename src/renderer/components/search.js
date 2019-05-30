@@ -23,6 +23,7 @@ class Search extends React.Component<Props> {
   render() {
     return (
       <div className='search-box'>
+        <img />
         <input
           type='text'
           placeholder='Search...'

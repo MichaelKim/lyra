@@ -1,21 +1,42 @@
 @import './variables.scss';
 
-.youtube-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
+.youtube-item-box {
+  flex: 1;
+  overflow: hidden auto;
+  padding: 0;
+  margin: 5px 0 0 0;
 
-  img {
-    margin: 5px;
-  }
+  .youtube-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
 
-  div {
-    display: inline-block;
+    &:hover {
+      background-color: $light-color;
+    }
 
-    h3,
-    h5 {
-      margin: 0;
+    .youtube-item-thumbnail {
+      margin: 5px;
+      width: 120px; // Regular thumbnail size
+      height: 90px;
+    }
+
+    .youtube-item-text {
+      flex: 1;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h3,
+      h5 {
+        margin: 0;
+      }
+    }
+
+    &:not(:last-child) .youtube-item-text {
+      border-bottom: 1px solid $border-color;
     }
   }
 }

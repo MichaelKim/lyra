@@ -7,7 +7,11 @@ type Props = {||};
 
 class Loading extends React.Component<Props> {
   render() {
-    return <div className='loading' />;
+    return (
+      <div className='loading-box'>
+        <div className='loading' />
+      </div>
+    );
   }
 }
 

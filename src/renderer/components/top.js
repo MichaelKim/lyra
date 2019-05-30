@@ -19,29 +19,29 @@ class Top extends React.Component<Props> {
   render() {
     const { currScreen } = this.props;
 
+    const screens = [
+      { key: 'settings', Container: Settings },
+      { key: 'youtube', Container: Youtube }
+    ];
+
     return (
       <div className='top'>
         <Sidebar />
+        {screens.map(screen => (
+          <div
+            key={screen.key}
+            className={'screen ' + (currScreen !== screen.key ? 'hidden' : '')}
+          >
+            <screen.Container />
+          </div>
+        ))}
         <div
-          className='screen'
-          style={{ display: currScreen === 'settings' ? 'block' : 'none' }}
-        >
-          <Settings />
-        </div>
-        <div
-          className='screen'
-          style={{ display: currScreen === 'youtube' ? 'block' : 'none' }}
-        >
-          <Youtube />
-        </div>
-        <div
-          className='screen'
-          style={{
-            display:
-              currScreen !== 'settings' && currScreen !== 'youtube'
-                ? 'block'
-                : 'none'
-          }}
+          className={
+            'screen ' +
+            (screens.findIndex(({ key }) => key === currScreen) > -1
+              ? 'hidden'
+              : '')
+          }
         >
           <Screen />
         </div>

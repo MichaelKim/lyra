@@ -15,7 +15,7 @@ function createWindow() {
     width: 1280,
     height: 720,
     title: 'Music Player',
-    backgroundColor: '#aaa',
+    backgroundColor: '#333',
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false

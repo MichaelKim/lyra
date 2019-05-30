@@ -104,24 +104,31 @@ class Youtube extends React.Component<Props, State> {
       <>
         <h1>YouTube</h1>
         <Search onEnter={this._onSearch} />
-        {this.state.searching ? <Loading /> : null}
-        {this.state.videos.map(video => (
-          <div
-            key={video.id}
-            className="youtube-item"
-            onClick={() => this._playVideo(video)}
-          >
-            <img
-              src={video.thumbnail.url}
-              width={video.thumbnail.width}
-              height={video.thumbnail.height}
-            />
-            <div>
-              <h3>{video.title}</h3>
-              <h5>{video.channel}</h5>
-            </div>
-          </div>
-        ))}
+        {this.state.searching ? (
+          <Loading />
+        ) : (
+          <ul className='youtube-item-box'>
+            {this.state.videos.map(video => (
+              <li
+                key={video.id}
+                className='youtube-item'
+                onClick={() => this._playVideo(video)}
+              >
+                <div className='youtube-item-thumbnail'>
+                  <img
+                    src={video.thumbnail.url}
+                    width={video.thumbnail.width}
+                    height={video.thumbnail.height}
+                  />
+                </div>
+                <div className='youtube-item-text'>
+                  <h3>{video.title}</h3>
+                  <h5>{video.channel}</h5>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </>
     );
   }

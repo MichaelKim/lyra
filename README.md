@@ -7,9 +7,6 @@ TODO:
 - Stylize scroll bar (like mercurywm)
 - Right click song item for more options
   - Delete song
-- Youtube
-  - Stream similar to autoplay
-    - No video, only thumbnail
 
 Minor fixes:
 
@@ -30,10 +27,6 @@ Bugs:
 Youtube:
 
 - New sidebar item: "YouTube"
-- Two modes:
-  - Search
-    - Shows search bar and list of search results
-    - Click on a result to play it
   - Playing
     - Streams a youtube song
     - Option to add to library
