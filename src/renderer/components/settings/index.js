@@ -20,13 +20,13 @@ class Settings extends React.Component<Props> {
 
   render() {
     return (
-      <div className="screen">
+      <>
         <h1>Settings</h1>
         <Sources />
         <Playlists />
 
         <button onClick={this._onClear}>Clear all data</button>
-      </div>
+      </>
     );
   }
 }

@@ -128,3 +128,20 @@ export function getStatic(filename: string) {
   }
   return path.resolve(__static, filename);
 }
+
+export function escapeHTML(html: string) {
+  return html.replace(/&quot;/g, '"');
+}
+
+export function parseDuration(iso: string) {
+  const matches = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/g);
+  if (matches == null) {
+    return 0;
+  }
+
+  return (
+    Number(matches[1] || 0) * 3600 +
+    Number(matches[2] || 0) * 60 +
+    Number(matches[3] || 0)
+  );
+}

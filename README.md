@@ -5,6 +5,11 @@ TODO:
 - Add search bar on top of song list
 - Highlight row of current song
 - Stylize scroll bar (like mercurywm)
+- Right click song item for more options
+  - Delete song
+- Youtube
+  - Stream similar to autoplay
+    - No video, only thumbnail
 
 Minor fixes:
 
@@ -16,6 +21,11 @@ Minor fixes:
 - Scroll bar
   - Screen's scroll bar should only scroll song rows, not the title, search bar, or header row of table
   - Sidebar scroll bar should only scroll playlists?
+
+Bugs:
+
+- Uncontrolled to controlled component warning
+  - On song item edit, switching focus for the first time
 
 Long term features:
 
@@ -35,8 +45,6 @@ Long term features:
   - Download songs
   - Upload songs
 - Youtube
-  - Stream similar to autoplay
-    - No video, only thumbnail
   - Save song to library
   - Skip to next / previous
   - Show several related songs

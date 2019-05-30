@@ -20,28 +20,28 @@ class Sidebar extends React.Component<Props> {
   render() {
     const { currScreen, playlists, selectPlaylist } = this.props;
 
+    const items = [
+      { name: 'All Songs', enum: null },
+      { name: 'YouTube', enum: 'youtube' },
+      { name: 'Settings', enum: 'settings' }
+    ];
+
     return (
       <div className='sidebar'>
         <h3 className='sidebar-title'>Music Player</h3>
         <p className='sidebar-section label'>Library</p>
-        <p
-          className={
-            'sidebar-link sidebar-section ' +
-            (currScreen == null ? ' sidebar-selected' : '')
-          }
-          onClick={() => selectPlaylist(null)}
-        >
-          All Songs
-        </p>
-        <p
-          className={
-            'sidebar-link sidebar-section ' +
-            (currScreen == 'settings' ? ' sidebar-selected' : '')
-          }
-          onClick={() => selectPlaylist('settings')}
-        >
-          Settings
-        </p>
+        {items.map(item => (
+          <p
+            key={item.enum}
+            className={
+              'sidebar-link sidebar-section ' +
+              (currScreen == null ? ' sidebar-selected' : '')
+            }
+            onClick={() => selectPlaylist(item.enum)}
+          >
+            {item.name}
+          </p>
+        ))}
         <p className='sidebar-section label'>Playlists</p>
         {playlists.map(playlist => (
           <p

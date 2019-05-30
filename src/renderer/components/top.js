@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import Sidebar from './sidebar';
 import Screen from './screen';
+import Youtube from './youtube';
 import Settings from './settings';
 
 import type { StoreState } from '../types';
@@ -16,10 +17,34 @@ type Props = {|
 
 class Top extends React.Component<Props> {
   render() {
+    const { currScreen } = this.props;
+
     return (
-      <div className="top">
+      <div className='top'>
         <Sidebar />
-        {this.props.currScreen === 'settings' ? <Settings /> : <Screen />}
+        <div
+          className='screen'
+          style={{ display: currScreen === 'settings' ? 'block' : 'none' }}
+        >
+          <Settings />
+        </div>
+        <div
+          className='screen'
+          style={{ display: currScreen === 'youtube' ? 'block' : 'none' }}
+        >
+          <Youtube />
+        </div>
+        <div
+          className='screen'
+          style={{
+            display:
+              currScreen !== 'settings' && currScreen !== 'youtube'
+                ? 'block'
+                : 'none'
+          }}
+        >
+          <Screen />
+        </div>
       </div>
     );
   }

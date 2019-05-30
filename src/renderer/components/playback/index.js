@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import path from 'path';
 import { ipcRenderer } from 'electron';
+import ytdl from 'ytdl-core';
 // import ReactPlayer from 'react-player';
 
 import VolumeBar from './volume';
@@ -24,11 +25,13 @@ type Props = {|
 |};
 
 type State = {|
+  src: string,
   currentTime: number
 |};
 
 class PlaybackBar extends React.Component<Props, State> {
   state = {
+    src: '',
     currentTime: 0
   };
   _tempVol = null;
@@ -84,6 +87,31 @@ class PlaybackBar extends React.Component<Props, State> {
     this.props.setShuffle(!this.props.shuffle);
   };
 
+  _loadSong = () => {
+    const { currSong } = this.props;
+
+    if (!currSong) {
+      return;
+    }
+
+    // Load song data
+    if (currSong.dir === 'youtube') {
+      ytdl.getInfo(currSong.id).then(info => {
+        const format = ytdl.chooseFormat(info.formats, {
+          quality: 'highestaudio'
+        });
+
+        this.setState({
+          src: format.url
+        });
+      });
+    } else {
+      this.setState({
+        src: path.join('file://', currSong.dir, currSong.name)
+      });
+    }
+  };
+
   componentDidMount() {
     if (this._tempVol != null) {
       this._onVolumeChange(this._tempVol);
@@ -100,6 +128,22 @@ class PlaybackBar extends React.Component<Props, State> {
     ipcRenderer.on('skip-next', event => {
       this.props.skipNext();
     });
+
+    this._loadSong();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { currSong } = this.props;
+
+    if (
+      (this.state.src || !currSong) &&
+      (!currSong ||
+        (prevProps.currSong && currSong.id === prevProps.currSong.id))
+    ) {
+      return;
+    }
+
+    this._loadSong();
   }
 
   render() {
@@ -113,17 +157,15 @@ class PlaybackBar extends React.Component<Props, State> {
     const maxTime = formatDuration(max);
 
     return (
-      <div className="playback-box">
+      <div className='playback-box'>
         <audio
           ref={this._audio}
-          src={
-            currSong ? path.join('file://', currSong.dir, currSong.name) : null
-          }
+          src={this.state.src}
           autoPlay
           onTimeUpdate={this._onTimeUpdate}
           onEnded={this._onEnded}
         />
-        <div className="playback-bar">
+        <div className='playback-bar'>
           <p>{currTime}</p>
           {currSong != null ? (
             <RangeInput
@@ -137,14 +179,14 @@ class PlaybackBar extends React.Component<Props, State> {
           <p>{maxTime}</p>
         </div>
         {currSong != null ? (
-          <div className="playback-left">
+          <div className='playback-left'>
             <h3>{currSong.title}</h3>
             <h5>{currSong.artist}</h5>
           </div>
         ) : null}
-        <div className="playback-controls">
-          <button className="skip-previous" onClick={this.props.skipPrevious} />
-          <button className="replay-btn" onClick={this._onReplay} />
+        <div className='playback-controls'>
+          <button className='skip-previous' onClick={this.props.skipPrevious} />
+          <button className='replay-btn' onClick={this._onReplay} />
           <button
             className={
               'play-pause ' +
@@ -155,10 +197,10 @@ class PlaybackBar extends React.Component<Props, State> {
             onClick={this._onTogglePause}
             disabled={currSong == null}
           />
-          <button className="forward-btn" onClick={this._onForward} />
-          <button className="skip-next" onClick={this.props.skipNext} />
+          <button className='forward-btn' onClick={this._onForward} />
+          <button className='skip-next' onClick={this.props.skipNext} />
         </div>
-        <div className="playback-right">
+        <div className='playback-right'>
           <button
             className={
               'shuffle-btn ' + (this.props.shuffle ? '' : 'shuffle-off')
