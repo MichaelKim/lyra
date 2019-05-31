@@ -4,7 +4,6 @@ TODO:
 
 - Add search bar on top of song list
 - Highlight row of current song
-- Stylize scroll bar (like mercurywm)
 - Right click song item for more options
   - Delete song
 
@@ -23,13 +22,19 @@ Bugs:
 
 - Uncontrolled to controlled component warning
   - On song item edit, switching focus for the first time
+- Sorting by duration doesn't work
+- Sorting by name should ignore punctuation (like brackets)
 
 Youtube:
 
 - New sidebar item: "YouTube"
   - Playing
-    - Streams a youtube song
-    - Option to add to library
+    - Save song to library
+    - Skip to next / previous
+    - Show several related songs
+  - Song item
+    - Add options
+      - Add to library
 
 Long term features:
 
@@ -48,10 +53,6 @@ Long term features:
   - Stream songs
   - Download songs
   - Upload songs
-- Youtube
-  - Save song to library
-  - Skip to next / previous
-  - Show several related songs
 
 Ideas:
 
