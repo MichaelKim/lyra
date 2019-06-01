@@ -24,6 +24,8 @@ Bugs:
   - On song item edit, switching focus for the first time
 - Sorting by duration doesn't work
 - Sorting by name should ignore punctuation (like brackets)
+- Don't allow adding a song more than once
+- YouTube video titles can contain HTML entities
 
 Youtube:
 

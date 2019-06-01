@@ -50,7 +50,7 @@ class Youtube extends React.Component<Props, State> {
 
     const youtube = google.youtube({
       version: 'v3',
-      auth: 'AIzaSyAYBZ8JEpF0UmHnd-N0va38qIqeg_T2UGM'
+      auth: process.env.ELECTRON_WEBPACK_APP_YT_API
     });
 
     const res = await youtube.search.list({
