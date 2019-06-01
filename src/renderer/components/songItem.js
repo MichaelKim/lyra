@@ -7,6 +7,7 @@ import path from 'path';
 
 import { fileExists, formatDuration } from '../util';
 import Sidebar from './sidebar';
+import Click from './click';
 
 import type { StoreState, Dispatch, Song, SongID } from '../types';
 
@@ -34,35 +35,14 @@ class SongItem extends React.Component<Props, State> {
     artist: '',
     editStart: 'TITLE'
   };
-  // Double click
-  _isDblClick: boolean = false;
-  _clickTimer: ?TimeoutID = null;
   // Focus switching
   _focusTimer: ?TimeoutID = null;
 
-  _onClick = editStart => {
-    // Make it easier to double click
-    if (this._clickTimer != null) {
-      this._onDblClick(editStart);
-      return;
-    }
-
-    // Don't fire click handler if double click
-    this._clickTimer = setTimeout(() => {
-      if (!this._isDblClick && this.state.status === 'READY') {
-        this.props.selectSong(this.props.song);
-      }
-      this._clickTimer = null;
-      this._isDblClick = false;
-    }, 250);
+  _onClick = () => {
+    this.props.selectSong(this.props.song);
   };
 
   _onDblClick = editStart => {
-    // Don't fire single click handler
-    this._clickTimer && clearTimeout(this._clickTimer);
-    this._clickTimer = null;
-    this._isDblClick = true;
-
     this.setState({
       status: 'EDITING',
       editStart
@@ -136,15 +116,15 @@ class SongItem extends React.Component<Props, State> {
     const { status, editStart } = this.state;
 
     return (
-      <div
+      <Click
         className={status === 'EDITING' ? 'song-row-edit' : ''}
-        onClick={() => this._onClick(name)}
-        onDoubleClick={() => this._onDblClick(name)}
+        onClick={this._onClick}
+        onDblClick={() => this._onDblClick(name)}
       >
         {status === 'EDITING' ? (
           <input
             autoFocus={editStart === name}
-            type="text"
+            type='text'
             value={value}
             onChange={onChange}
             onKeyDown={this._onKeyDown}
@@ -152,7 +132,7 @@ class SongItem extends React.Component<Props, State> {
         ) : (
           value
         )}
-      </div>
+      </Click>
     );
   };
 
@@ -169,7 +149,7 @@ class SongItem extends React.Component<Props, State> {
         onFocus={this._onFocus}
         onBlur={this._onBlur}
       >
-        <div className="is-playing">
+        <div className='is-playing'>
           {isPlaying ? (
             <>
               <div />
