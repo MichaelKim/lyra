@@ -1,6 +1,6 @@
 // @flow strict
 
-import { save, initialState } from './storage';
+import { save, clear, initialState } from './storage';
 import { values, getSongList } from '../util';
 
 import type { StoreState, Action, Song } from '../types';
@@ -188,8 +188,11 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
     case 'SKIP_NEXT':
     case 'UPDATE_TAGS':
     case 'SET_SORT':
-    case 'CLEAR_DATA':
       save(newState);
+      break;
+
+    case 'CLEAR_DATA':
+      clear();
       break;
   }
 

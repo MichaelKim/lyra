@@ -6,9 +6,6 @@ import url from 'url';
 import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
-import ffmpegPath from '@ffmpeg-installer/ffmpeg';
-import ffmpeg from 'fluent-ffmpeg';
-ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 
 import type { Song, Metadata, Tags, SongID, SortType } from './types';
 
@@ -97,23 +94,13 @@ function spaceship(a, b) {
 
 export function getMetadata(dir: string, name: string): Promise<Metadata> {
   const filepath = path.join(dir, name);
-  ffmpeg(filepath)
-    .on('codecData', data => {
-      console.log(data);
-    })
-    .on('error', err => {
-      console.log(err);
-    });
   return mm
     .parseFile(filepath)
-    .then(metadata => {
-      console.log(metadata);
-      return {
-        title: metadata.common.title || path.basename(name, path.extname(name)),
-        artist: metadata.common.artist || '',
-        duration: metadata.format.duration
-      };
-    })
+    .then(metadata => ({
+      title: metadata.common.title || path.basename(name, path.extname(name)),
+      artist: metadata.common.artist || '',
+      duration: metadata.format.duration
+    }))
     .catch(err => ({
       title: name,
       artist: '',
@@ -132,7 +119,6 @@ export function setTags(filepath: string, tags: Tags) {
 export function formatDuration(duration: number) {
   const min = (duration / 60) | 0;
   const sec = String(duration % 60 | 0).padStart(2, '0');
-  console.log(duration, `${min}:${sec}`);
   return `${min}:${sec}`;
 }
 
