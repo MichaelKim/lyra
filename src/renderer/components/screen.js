@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import SongItem from './songItem';
+import Search from './search';
 import { getSongList, getStatic } from '../util';
 
 import type {
@@ -27,7 +28,15 @@ type Props = {|
   +setSort: (column: SortColumn, direction: boolean) => void
 |};
 
-class Screen extends React.Component<Props> {
+type State = {|
+  +search: string
+|};
+
+class Screen extends React.Component<Props, State> {
+  state = {
+    search: ''
+  };
+
   _onClick = (song: Song) => {
     this.props.selectSong(song);
   };
@@ -41,6 +50,12 @@ class Screen extends React.Component<Props> {
     }
   };
 
+  _onSearch = (value: string) => {
+    this.setState({
+      search: value.toUpperCase()
+    });
+  };
+
   render() {
     const { songs, currScreen, sort } = this.props;
 
@@ -49,7 +64,7 @@ class Screen extends React.Component<Props> {
     const arrow = (
       <img
         src={getStatic(`sort-${sort.direction ? 'up' : 'down'}.svg`)}
-        className='sort-icon'
+        className="sort-icon"
       />
     );
 
@@ -60,16 +75,25 @@ class Screen extends React.Component<Props> {
       { enum: 'DATE', name: 'Date Added' }
     ];
 
+    const filtered = this.state.search
+      ? songs.filter(song =>
+          song.title.toUpperCase().includes(this.state.search)
+        )
+      : songs;
+
     return (
       <>
         <h1>{title}</h1>
-        <div className='song-table'>
-          <div className='song-row'>
+        <div>
+          <Search onChange={this._onSearch} />
+        </div>
+        <div className="song-table">
+          <div className="song-row">
             <div />
             {columns.map(col => (
               <div
                 key={col.enum}
-                className='label'
+                className="label"
                 onClick={() => this._onSort(col.enum)}
               >
                 {col.name}
@@ -77,7 +101,7 @@ class Screen extends React.Component<Props> {
               </div>
             ))}
           </div>
-          {songs.map(song => (
+          {filtered.map(song => (
             <SongItem key={song.id} song={song} />
           ))}
         </div>
