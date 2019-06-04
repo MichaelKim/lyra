@@ -2,8 +2,6 @@
 
 TODO:
 
-- Add search bar on top of song list
-- Highlight row of current song
 - Right click song item for more options
   - Delete song
 
@@ -15,14 +13,12 @@ Minor fixes:
     - Last column's sort arrows should be on the left
   - Skip, replay/forward
 - Scroll bar
-  - Screen's scroll bar should only scroll song rows, not the title, search bar, or header row of table
   - Sidebar scroll bar should only scroll playlists?
 
 Bugs:
 
 - Uncontrolled to controlled component warning
   - On song item edit, switching focus for the first time
-- Sorting by duration doesn't work
 - Sorting by name should ignore punctuation (like brackets)
 - Don't allow adding a song more than once
 - YouTube video titles can contain HTML entities
@@ -37,6 +33,7 @@ Youtube:
   - Song item
     - Add options
       - Add to library
+    - Show # of views, upload date
 
 Long term features:
 

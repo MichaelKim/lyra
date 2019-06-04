@@ -64,7 +64,7 @@ class Screen extends React.Component<Props, State> {
     const arrow = (
       <img
         src={getStatic(`sort-${sort.direction ? 'up' : 'down'}.svg`)}
-        className="sort-icon"
+        className='sort-icon'
       />
     );
 
@@ -87,13 +87,13 @@ class Screen extends React.Component<Props, State> {
         <div>
           <Search onChange={this._onSearch} />
         </div>
-        <div className="song-table">
-          <div className="song-row">
+        <div className='song-row-header'>
+          <div className='song-row'>
             <div />
             {columns.map(col => (
               <div
                 key={col.enum}
-                className="label"
+                className='label'
                 onClick={() => this._onSort(col.enum)}
               >
                 {col.name}
@@ -101,6 +101,8 @@ class Screen extends React.Component<Props, State> {
               </div>
             ))}
           </div>
+        </div>
+        <div className='song-table'>
           {filtered.map(song => (
             <SongItem key={song.id} song={song} />
           ))}

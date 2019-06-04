@@ -46,6 +46,7 @@ button {
 #app {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .top {

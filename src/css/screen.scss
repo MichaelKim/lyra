@@ -7,12 +7,16 @@
   background-color: $screen-color;
   color: $text-color;
   padding: 20px;
-  overflow: hidden auto;
   font-size: 16px;
 
   .song-table {
     width: 100%;
     word-wrap: break-word;
+    overflow: auto;
+  }
+
+  .song-row-header {
+    margin-right: 15px;
   }
 
   /* Local Source Song Items */

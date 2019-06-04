@@ -35,7 +35,7 @@ class Sidebar extends React.Component<Props> {
             key={item.enum}
             className={
               'sidebar-link sidebar-section ' +
-              (currScreen == null ? ' sidebar-selected' : '')
+              (currScreen == item.enum ? ' sidebar-selected' : '')
             }
             onClick={() => selectPlaylist(item.enum)}
           >
