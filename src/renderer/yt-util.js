@@ -1,6 +1,13 @@
 // @flow strict
 
-// YouTube related utility methods
+/*
+  YouTube related utility methods
+
+  Some of the packages that are used for YouTube integration
+  require some setup before running (e.g. ffmpeg, googleapis).
+  Moving all of them to this file helps centralize the setup
+  code, and avoid duplication across the codebase.
+*/
 
 import { createHash } from 'crypto';
 import fs from 'fs';
@@ -10,23 +17,28 @@ import storage from 'electron-json-storage';
 import ytdl from 'ytdl-core';
 import ffmpegPath from '@ffmpeg-installer/ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
+import { google } from 'googleapis';
+import he from 'he';
 
-import { setTags } from './util';
+import { setTags, parseDuration } from './util';
 
-import type { Song, SongID } from './types';
+import type { Song, SongID, Video } from './types';
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 
-export function getStreamURL(id: SongID) {
-  return new Promise<string>((resolve, reject) => {
-    ytdl.getInfo(id).then(info => {
-      const format = ytdl.chooseFormat(info.formats, {
-        quality: 'highestaudio'
-      });
+const youtube = google.youtube({
+  version: 'v3',
+  auth: process.env.ELECTRON_WEBPACK_APP_YT_API
+});
 
-      resolve(format.url);
-    });
+export async function getStreamURL(id: SongID): Promise<string> {
+  const info = await ytdl.getInfo(id);
+
+  const format = ytdl.chooseFormat(info.formats, {
+    quality: 'highestaudio'
   });
+
+  return format.url;
 }
 
 export function downloadVideo(id: SongID) {
@@ -67,33 +79,59 @@ export function downloadVideo(id: SongID) {
 
       emitter.emit('progress', percent);
     })
-    .on('end', () => {
-      setTags(dlPath, {
+    .on('end', async () => {
+      await setTags(dlPath, {
         title: info.title,
         artist: info.author.name
-      }).then(() => {
-        // Sanitize for file name
-        const safeName =
-          info.title.replace(/[\/\\\?%\*:|"<>. ]/g, '_') + '.mp3';
+      });
 
-        fs.rename(dlPath, path.join(storage.getDataPath(), safeName), err => {
-          const song = {
-            id: createHash('sha256')
-              .update(info.video_id)
-              .digest('hex'),
-            name: safeName,
-            title: info.title,
-            artist: info.author.title,
-            duration: currDuration,
-            dir: storage.getDataPath(),
-            playlists: [],
-            date: Date.now()
-          };
+      // Sanitize for file name
+      const safeName = info.title.replace(/[\/\\\?%\*:|"<>. ]/g, '_') + '.mp3';
 
-          emitter.emit('end', song);
-        });
+      fs.rename(dlPath, path.join(storage.getDataPath(), safeName), err => {
+        const song = {
+          id: createHash('sha256')
+            .update(info.video_id)
+            .digest('hex'),
+          name: safeName,
+          title: info.title,
+          artist: info.author.title,
+          duration: currDuration,
+          dir: storage.getDataPath(),
+          playlists: [],
+          date: Date.now()
+        };
+
+        emitter.emit('end', song);
       });
     });
 
   return emitter;
+}
+
+export async function ytSearch(keyword: string): Promise<Video[]> {
+  const res = await youtube.search.list({
+    part: 'snippet',
+    q: keyword,
+    maxResults: 25,
+    type: 'video'
+  });
+
+  const videos = res.data.items.map(item => ({
+    id: item.id.videoId,
+    title: he.decode(item.snippet.title),
+    channel: item.snippet.channelTitle,
+    thumbnail: item.snippet.thumbnails.default
+  }));
+
+  const res2 = await youtube.videos.list({
+    part: 'contentDetails,statistics',
+    id: videos.map(v => v.id).join(',')
+  });
+
+  return videos.map((v, i) => ({
+    ...v,
+    duration: parseDuration(res2.data.items[i].contentDetails.duration),
+    views: res2.data.items[i].statistics.viewCount
+  }));
 }

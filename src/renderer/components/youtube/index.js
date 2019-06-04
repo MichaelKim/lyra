@@ -3,30 +3,18 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import { google } from 'googleapis';
 
 import Search from '../search';
 import Loading from '../loading';
-import { escapeHTML, parseDuration } from '../../util';
+import { formatDuration, readableViews } from '../../util';
+import { ytSearch } from '../../yt-util';
 
-import type { StoreState, Dispatch, Song } from '../../types';
+import type { StoreState, Dispatch, Song, Video } from '../../types';
 
 import '../../../css/youtube.scss';
 
 type Props = {|
   +selectSong: (song: Song) => void
-|};
-
-type Video = {|
-  +id: string,
-  +title: string,
-  +channel: string,
-  +thumbnail: {|
-    +width: number,
-    +height: number,
-    +url: string
-  |},
-  +duration: number
 |};
 
 type State = {|
@@ -42,47 +30,18 @@ class Youtube extends React.Component<Props, State> {
     videos: []
   };
 
-  _onSearch = async (value: string) => {
+  _onSearch = (value: string) => {
     this.setState({
       keyword: value,
       searching: true
     });
 
-    const youtube = google.youtube({
-      version: 'v3',
-      auth: process.env.ELECTRON_WEBPACK_APP_YT_API
-    });
-
-    const res = await youtube.search.list({
-      part: 'snippet',
-      q: value,
-      maxResults: 25,
-      type: 'video'
-    });
-
-    const videos = res.data.items.map(item => ({
-      id: item.id.videoId,
-      title: escapeHTML(item.snippet.title),
-      channel: item.snippet.channelTitle,
-      thumbnail: item.snippet.thumbnails.default
-    }));
-
-    const res2 = await youtube.videos.list({
-      part: 'contentDetails',
-      id: videos.map(v => v.id).join(',')
-    });
-
-    const durations = res2.data.items.map(item =>
-      parseDuration(item.contentDetails.duration)
+    ytSearch(value).then(videos =>
+      this.setState({
+        searching: false,
+        videos
+      })
     );
-
-    this.setState({
-      searching: false,
-      videos: videos.map((v, i) => ({
-        ...v,
-        duration: durations[i]
-      }))
-    });
   };
 
   _playVideo = (video: Video) => {
@@ -108,7 +67,7 @@ class Youtube extends React.Component<Props, State> {
           <Loading />
         ) : (
           <ul className='youtube-item-box'>
-            {this.state.videos.map(video => (
+            {this.state.videos.map((video: Video) => (
               <li
                 key={video.id}
                 className='youtube-item'
@@ -123,7 +82,10 @@ class Youtube extends React.Component<Props, State> {
                 </div>
                 <div className='youtube-item-text'>
                   <h3>{video.title}</h3>
-                  <h5>{video.channel}</h5>
+                  <h5>
+                    {video.channel} • {formatDuration(video.duration)} •{' '}
+                    {readableViews(video.views)} views
+                  </h5>
                 </div>
               </li>
             ))}

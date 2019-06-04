@@ -14,6 +14,8 @@ Minor fixes:
   - Skip, replay/forward
 - Scroll bar
   - Sidebar scroll bar should only scroll playlists?
+- Split up `components/playback/index.js` (big file)
+  - Limit files to 200 lines?
 
 Bugs:
 
@@ -21,7 +23,6 @@ Bugs:
   - On song item edit, switching focus for the first time
 - Sorting by name should ignore punctuation (like brackets)
 - Don't allow adding a song more than once
-- YouTube video titles can contain HTML entities
 
 Youtube:
 
@@ -30,10 +31,11 @@ Youtube:
     - Save song to library
     - Skip to next / previous
     - Show several related songs
+  - Search
+    - Pagination
   - Song item
     - Add options
       - Add to library
-    - Show # of views, upload date
 
 Long term features:
 

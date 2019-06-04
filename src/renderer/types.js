@@ -16,6 +16,19 @@ export type Song = {|
   +date: number
 |};
 
+export type Video = {|
+  +id: string,
+  +title: string,
+  +channel: string,
+  +thumbnail: {|
+    +width: number,
+    +height: number,
+    +url: string
+  |},
+  +duration: number,
+  +views: number
+|};
+
 export type Playlist = {|
   +id: PlaylistID, // timestamp
   +name: string,

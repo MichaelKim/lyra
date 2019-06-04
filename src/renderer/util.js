@@ -129,12 +129,9 @@ export function getStatic(filename: string) {
   return path.resolve(__static, filename);
 }
 
-export function escapeHTML(html: string) {
-  return html.replace(/&quot;/g, '"');
-}
-
+// Format: PT1H2M34S
 export function parseDuration(iso: string) {
-  const matches = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/g);
+  const matches = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (matches == null) {
     return 0;
   }
@@ -143,5 +140,27 @@ export function parseDuration(iso: string) {
     Number(matches[1] || 0) * 3600 +
     Number(matches[2] || 0) * 60 +
     Number(matches[3] || 0)
+  );
+}
+
+// As of 2019, the most viewed YouTube video has ~6B views.
+// This method works up to billions, and should be enough.
+export function readableViews(viewCount: number) {
+  const length = 0 | Math.log10(viewCount);
+
+  if (length < 3) return viewCount;
+  if (length < 6)
+    return (
+      (0 | (viewCount / Math.pow(10, length - 2))) / Math.pow(10, 5 - length) +
+      'K'
+    );
+  if (length < 9)
+    return (
+      (0 | (viewCount / Math.pow(10, length - 2))) / Math.pow(10, 8 - length) +
+      'M'
+    );
+  return (
+    (0 | (viewCount / Math.pow(10, length - 2))) / Math.pow(10, 11 - length) +
+    'B'
   );
 }

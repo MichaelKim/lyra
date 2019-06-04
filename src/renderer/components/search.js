@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 type Props = {|
   +initialValue?: string,
   +onChange?: (value: string) => void,
-  +onEnter?: (value: string) => Promise<void> | void
+  +onEnter?: (value: string) => void
 |};
 
 class Search extends React.Component<Props> {
