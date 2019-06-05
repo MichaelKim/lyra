@@ -6,46 +6,30 @@ import { connect } from 'react-redux';
 
 import Search from '../search';
 import Loading from '../loading';
-import { formatDuration, readableViews } from '../../util';
-import { ytSearch } from '../../yt-util';
+import YtSearch from './yt-search';
+import YtPlaying from './playing.js';
 
 import type { StoreState, Dispatch, Song, Video } from '../../types';
 
 import '../../../css/youtube.scss';
 
 type Props = {|
+  +currSong: Song,
   +selectSong: (song: Song) => void
 |};
 
 type State = {|
-  keyword: string,
-  searching: boolean,
+  loading: boolean,
   videos: Video[]
 |};
 
 class Youtube extends React.Component<Props, State> {
   state = {
-    keyword: '',
-    searching: false,
+    loading: false,
     videos: []
   };
 
-  _onSearch = (value: string) => {
-    this.setState({
-      keyword: value,
-      searching: true
-    });
-
-    ytSearch(value).then(videos =>
-      this.setState({
-        searching: false,
-        videos
-      })
-    );
-  };
-
   _playVideo = (video: Video) => {
-    console.log(video);
     this.props.selectSong({
       id: video.id,
       title: video.title,
@@ -54,50 +38,23 @@ class Youtube extends React.Component<Props, State> {
       name: '',
       dir: 'youtube',
       playlists: [],
-      date: Date.now()
+      date: Date.now(),
+      thumbnail: video.thumbnail,
+      views: video.views
     });
   };
 
   render() {
     return (
-      <>
-        <h1>YouTube</h1>
-        <Search onEnter={this._onSearch} />
-        {this.state.searching ? (
-          <Loading />
-        ) : (
-          <ul className='youtube-item-box'>
-            {this.state.videos.map((video: Video) => (
-              <li
-                key={video.id}
-                className='youtube-item'
-                onClick={() => this._playVideo(video)}
-              >
-                <div className='youtube-item-thumbnail'>
-                  <img
-                    src={video.thumbnail.url}
-                    width={video.thumbnail.width}
-                    height={video.thumbnail.height}
-                  />
-                </div>
-                <div className='youtube-item-text'>
-                  <h3>{video.title}</h3>
-                  <h5>
-                    {video.channel} • {formatDuration(video.duration)} •{' '}
-                    {readableViews(video.views)} views
-                  </h5>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </>
+      <YtPlaying currSong={this.props.currSong} playVideo={this._playVideo} />
     );
   }
 }
 
 function mapState(state: StoreState) {
-  return {};
+  return {
+    currSong: state.currSong
+  };
 }
 
 function mapDispatch(dispatch: Dispatch) {

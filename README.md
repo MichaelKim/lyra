@@ -27,6 +27,7 @@ Bugs:
 Youtube:
 
 - New sidebar item: "YouTube"
+  - Show currently playing song
   - Playing
     - Save song to library
     - Skip to next / previous
@@ -39,6 +40,10 @@ Youtube:
 
 Long term features:
 
+- History
+  - Pressing back should go back to start of current song
+  - Pressing back again within ~2 sec of song starting should go back to previously played song
+    - Need to store history of played songs
 - Playlists
   - Add song to playlist
   - Remove song to playlist

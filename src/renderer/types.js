@@ -13,18 +13,22 @@ export type Song = {|
   +name: string, // filename
   +dir: string,
   +playlists: PlaylistID[],
-  +date: number
+  +date: number,
+  +views?: number,
+  +thumbnail?: Thumbnail
+|};
+
+type Thumbnail = {|
+  +width: number,
+  +height: number,
+  +url: string
 |};
 
 export type Video = {|
   +id: string,
   +title: string,
   +channel: string,
-  +thumbnail: {|
-    +width: number,
-    +height: number,
-    +url: string
-  |},
+  +thumbnail: Thumbnail,
   +duration: number,
   +views: number
 |};

@@ -134,4 +134,43 @@ export async function ytSearch(keyword: string): Promise<Video[]> {
     duration: parseDuration(res2.data.items[i].contentDetails.duration),
     views: res2.data.items[i].statistics.viewCount
   }));
+
+  // This doesn't always work, but avoids making an API call
+  // const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
+
+  // return videos.map((v, i) => ({
+  //   ...v,
+  //   duration: infos[i].length_seconds,
+  //   views: infos[i].player_response.videoDetails.viewCount
+  // }));
+}
+
+export async function getRelatedVideos(id: SongID): Promise<Video[]> {
+  const res = await youtube.search.list({
+    part: 'snippet',
+    relatedToVideoId: id,
+    maxResults: 25,
+    type: 'video'
+  });
+
+  const videos = res.data.items.map(item => ({
+    id: item.id.videoId,
+    title: he.decode(item.snippet.title),
+    channel: item.snippet.channelTitle,
+    thumbnail: item.snippet.thumbnails.default
+  }));
+
+  const res2 = await youtube.videos.list({
+    part: 'contentDetails,statistics',
+    id: videos.map(v => v.id).join(',')
+  });
+
+  return videos.map((v, i) => ({
+    ...v,
+    duration: parseDuration(res2.data.items[i].contentDetails.duration),
+    views: res2.data.items[i].statistics.viewCount
+  }));
+
+  // const info = await ytdl.getInfo(id);
+  // return info.related_videos;
 }

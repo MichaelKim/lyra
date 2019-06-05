@@ -1,42 +1,60 @@
 @import './variables.scss';
 
-.youtube-item-box {
+.youtube-item-list {
   flex: 1;
   overflow: hidden auto;
   padding: 0;
   margin: 5px 0 0 0;
+}
 
-  .youtube-item {
+.youtube-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $light-color;
+  }
+
+  .youtube-item-thumbnail {
+    margin: 5px;
+    width: 120px; // Regular thumbnail size
+    height: 90px;
+  }
+
+  .youtube-item-text {
+    flex: 1;
+    height: 100px;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
 
-    &:hover {
-      background-color: $light-color;
+    h3,
+    h5 {
+      margin: 0;
     }
+  }
 
-    .youtube-item-thumbnail {
-      margin: 5px;
-      width: 120px; // Regular thumbnail size
-      height: 90px;
-    }
+  &:not(:last-child) .youtube-item-text {
+    border-bottom: 1px solid $border-color;
+  }
+}
 
-    .youtube-item-text {
-      flex: 1;
-      height: 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+.yt-playing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-      h3,
-      h5 {
-        margin: 0;
-      }
-    }
+  & > * {
+    display: inline-block;
+  }
+}
 
-    &:not(:last-child) .youtube-item-text {
-      border-bottom: 1px solid $border-color;
-    }
+.yt-playing-current {
+  border-bottom: 1px solid $border-color;
+
+  h3 {
+    margin: 0;
   }
 }
