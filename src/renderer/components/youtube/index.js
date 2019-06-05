@@ -7,14 +7,14 @@ import { connect } from 'react-redux';
 import Search from '../search';
 import Loading from '../loading';
 import YtSearch from './yt-search';
-import YtPlaying from './playing.js';
+import YtPlaying from './yt-playing.js';
 
 import type { StoreState, Dispatch, Song, Video } from '../../types';
 
 import '../../../css/youtube.scss';
 
 type Props = {|
-  +currSong: Song,
+  +currSong?: Song,
   +selectSong: (song: Song) => void
 |};
 
@@ -44,9 +44,22 @@ class Youtube extends React.Component<Props, State> {
     });
   };
 
+  _onSearch = (value: string) => {};
+
   render() {
+    const { currSong } = this.props;
+
+    if (currSong == null || currSong.dir !== 'youtube') {
+      return <YtSearch playVideo={this._playVideo} />;
+    }
+
     return (
-      <YtPlaying currSong={this.props.currSong} playVideo={this._playVideo} />
+      <YtPlaying
+        key={currSong.id}
+        currSong={currSong}
+        playVideo={this._playVideo}
+        onSearch={this._onSearch}
+      />
     );
   }
 }

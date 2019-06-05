@@ -2,6 +2,13 @@
 
 TODO:
 
+- Youtube sidebar
+  - Youtube should be a heading instead of an item
+  - Items under youtube: search, playing
+- Youtube screen
+  - Handle switching between search screen and playing screen
+  - Pressing next should play first related video
+  - Shuffle on should autoplay
 - Right click song item for more options
   - Delete song
 
@@ -27,11 +34,9 @@ Bugs:
 Youtube:
 
 - New sidebar item: "YouTube"
-  - Show currently playing song
   - Playing
     - Save song to library
     - Skip to next / previous
-    - Show several related songs
   - Search
     - Pagination
   - Song item

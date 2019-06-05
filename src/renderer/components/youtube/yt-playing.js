@@ -12,7 +12,8 @@ import type { Song, Video } from '../../types';
 
 type Props = {|
   +currSong: Song,
-  +playVideo: (video: Video) => void
+  +playVideo: (video: Video) => void,
+  +onSearch: (value: string) => void
 |};
 
 type State = {|
@@ -67,23 +68,26 @@ class YtPlaying extends React.Component<Props, State> {
         <div className='yt-playing-header'>
           <h1>YouTube</h1>
           <div>
-            <Search />
+            <Search onEnter={this.props.onSearch} />
           </div>
         </div>
         <div className='yt-playing-current'>
-          <h3>Currently Playing:</h3>
+          <h3 className='yt-playing-heading'>Currently Playing:</h3>
           <YtItem video={video} />
         </div>
         {this.state.loading ? (
           <Loading />
         ) : (
-          <ul className='youtube-item-list'>
-            {this.state.related.map(v => (
-              <li key={v.id} onClick={() => this._playVideo(v)}>
-                <YtItem video={v} />
-              </li>
-            ))}
-          </ul>
+          <>
+            <h3 className='yt-playing-heading'>Related Videos:</h3>
+            <ul className='youtube-item-list'>
+              {this.state.related.map(v => (
+                <li key={v.id} onClick={() => this._playVideo(v)}>
+                  <YtItem video={v} />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </>
     );

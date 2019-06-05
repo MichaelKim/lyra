@@ -11,7 +11,6 @@ import { ytSearch } from '../../yt-util';
 import type { Song, Video } from '../../types';
 
 type Props = {|
-  +selectSong: (song: Song) => void,
   +playVideo: (video: Video) => void
 |};
 
