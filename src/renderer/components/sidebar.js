@@ -17,44 +17,52 @@ type Props = {|
 |};
 
 class Sidebar extends React.Component<Props> {
+  _renderItem(key: ?string, name: string, selected: boolean) {
+    const { currScreen, selectPlaylist } = this.props;
+
+    return (
+      <p
+        key={key}
+        className={
+          'sidebar-link sidebar-section ' +
+          (selected ? ' sidebar-selected' : '')
+        }
+        onClick={() => selectPlaylist(key)}
+      >
+        {name}
+      </p>
+    );
+  }
+
   render() {
     const { currScreen, playlists, selectPlaylist } = this.props;
 
     const items = [
       { name: 'All Songs', enum: null },
-      { name: 'YouTube', enum: 'youtube' },
       { name: 'Settings', enum: 'settings' }
     ];
 
     return (
       <div className='sidebar'>
         <h3 className='sidebar-title'>Music Player</h3>
+
         <p className='sidebar-section label'>Library</p>
-        {items.map(item => (
-          <p
-            key={item.enum}
-            className={
-              'sidebar-link sidebar-section ' +
-              (currScreen == item.enum ? ' sidebar-selected' : '')
-            }
-            onClick={() => selectPlaylist(item.enum)}
-          >
-            {item.name}
-          </p>
-        ))}
+        {items.map(item =>
+          this._renderItem(item.enum, item.name, currScreen == item.enum)
+        )}
+
+        <p className='sidebar-section label'>YouTube</p>
+        {this._renderItem('yt-search', 'Search', currScreen === 'yt-search')}
+        {this._renderItem('yt-playing', 'Playing', currScreen === 'yt-playing')}
+
         <p className='sidebar-section label'>Playlists</p>
-        {playlists.map(playlist => (
-          <p
-            key={playlist.id}
-            className={
-              'sidebar-link ' +
-              (currScreen == playlist.name ? ' sidebar-selected' : '')
-            }
-            onClick={() => selectPlaylist(playlist.name)}
-          >
-            {playlist.name}
-          </p>
-        ))}
+        {playlists.map(playlist =>
+          this._renderItem(
+            playlist.id,
+            playlist.name,
+            currScreen === playlist.name
+          )
+        )}
       </div>
     );
   }

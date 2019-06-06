@@ -75,19 +75,17 @@ class YtPlaying extends React.Component<Props, State> {
           <h3 className='yt-playing-heading'>Currently Playing:</h3>
           <YtItem video={video} />
         </div>
+        <h3 className='yt-playing-heading'>Related Videos:</h3>
         {this.state.loading ? (
           <Loading />
         ) : (
-          <>
-            <h3 className='yt-playing-heading'>Related Videos:</h3>
-            <ul className='youtube-item-list'>
-              {this.state.related.map(v => (
-                <li key={v.id} onClick={() => this._playVideo(v)}>
-                  <YtItem video={v} />
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className='youtube-item-list'>
+            {this.state.related.map(v => (
+              <li key={v.id} onClick={() => this._playVideo(v)}>
+                <YtItem video={v} />
+              </li>
+            ))}
+          </ul>
         )}
       </>
     );

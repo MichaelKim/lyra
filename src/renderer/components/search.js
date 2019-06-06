@@ -9,9 +9,19 @@ type Props = {|
   +onEnter?: (value: string) => void
 |};
 
-class Search extends React.Component<Props> {
+type State = {|
+  value: string
+|};
+
+class Search extends React.Component<Props, State> {
+  state = {
+    value: this.props.initialValue || ''
+  };
+
   _onChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
-    this.props.onChange && this.props.onChange(e.currentTarget.value);
+    const { value } = e.currentTarget;
+    this.props.onChange && this.props.onChange(value);
+    this.setState({ value });
   };
 
   _onEnter = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
@@ -29,6 +39,7 @@ class Search extends React.Component<Props> {
           placeholder='Search...'
           onChange={this._onChange}
           onKeyDown={this._onEnter}
+          value={this.state.value}
         />
       </div>
     );

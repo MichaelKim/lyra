@@ -15,18 +15,18 @@ import '../../../css/youtube.scss';
 
 type Props = {|
   +currSong?: Song,
-  +selectSong: (song: Song) => void
+  +currScreen: ?string,
+  +selectSong: (song: Song) => void,
+  +selectPlaylist: (name: string) => void
 |};
 
 type State = {|
-  loading: boolean,
-  videos: Video[]
+  keyword: string
 |};
 
 class Youtube extends React.Component<Props, State> {
   state = {
-    loading: false,
-    videos: []
+    keyword: ''
   };
 
   _playVideo = (video: Video) => {
@@ -44,13 +44,31 @@ class Youtube extends React.Component<Props, State> {
     });
   };
 
-  _onSearch = (value: string) => {};
+  _onSearch = (value: string) => {
+    this.props.selectPlaylist('yt-search');
+    this.setState({
+      keyword: value
+    });
+  };
 
   render() {
-    const { currSong } = this.props;
+    const { currSong, currScreen } = this.props;
 
-    if (currSong == null || currSong.dir !== 'youtube') {
-      return <YtSearch playVideo={this._playVideo} />;
+    if (currScreen !== 'yt-search' && currScreen !== 'yt-playing') {
+      return null;
+    }
+
+    if (currScreen === 'yt-search') {
+      return (
+        <YtSearch
+          playVideo={this._playVideo}
+          initialKeyword={this.state.keyword}
+        />
+      );
+    }
+
+    if (currSong == null) {
+      return null;
     }
 
     return (
@@ -66,13 +84,16 @@ class Youtube extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSong: state.currSong
+    currSong: state.currSong,
+    currScreen: state.currScreen
   };
 }
 
 function mapDispatch(dispatch: Dispatch) {
   return {
-    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song })
+    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
+    selectPlaylist: (name: string) =>
+      dispatch({ type: 'SELECT_PLAYLIST', name })
   };
 }
 

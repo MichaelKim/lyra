@@ -11,25 +11,23 @@ import { ytSearch } from '../../yt-util';
 import type { Song, Video } from '../../types';
 
 type Props = {|
-  +playVideo: (video: Video) => void
+  +playVideo: (video: Video) => void,
+  +initialKeyword?: string
 |};
 
 type State = {|
-  keyword: string,
   searching: boolean,
   videos: Video[]
 |};
 
 class YtSearch extends React.Component<Props, State> {
   state = {
-    keyword: '',
     searching: false,
     videos: []
   };
 
   _onSearch = (value: string) => {
     this.setState({
-      keyword: value,
       searching: true
     });
 
@@ -41,11 +39,20 @@ class YtSearch extends React.Component<Props, State> {
     );
   };
 
+  componentDidMount() {
+    if (this.props.initialKeyword) {
+      this._onSearch(this.props.initialKeyword);
+    }
+  }
+
   render() {
     return (
       <>
         <h1>YouTube</h1>
-        <Search onEnter={this._onSearch} />
+        <Search
+          onEnter={this._onSearch}
+          initialValue={this.props.initialKeyword || ''}
+        />
         {this.state.searching ? (
           <Loading />
         ) : (
