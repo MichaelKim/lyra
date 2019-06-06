@@ -9,15 +9,16 @@ import Screen from './screen';
 import Youtube from './youtube';
 import Settings from './settings';
 
-import type { StoreState } from '../types';
+import type { StoreState, Song } from '../types';
 
 type Props = {|
+  +currSong: ?Song,
   +currScreen: ?string
 |};
 
 class Top extends React.Component<Props> {
   render() {
-    const { currScreen } = this.props;
+    const { currSong, currScreen } = this.props;
 
     const screens = [
       { key: 'settings', Container: Settings },
@@ -39,7 +40,7 @@ class Top extends React.Component<Props> {
             (currScreen && currScreen.startsWith('yt-') ? '' : 'hidden')
           }
         >
-          <Youtube />
+          <Youtube key={currSong ? currSong.id : null} />
         </div>
 
         <div
@@ -59,6 +60,7 @@ class Top extends React.Component<Props> {
 
 function mapState(state: StoreState) {
   return {
+    currSong: state.currSong,
     currScreen: state.currScreen
   };
 }

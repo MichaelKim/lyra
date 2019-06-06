@@ -2,9 +2,6 @@
 
 TODO:
 
-- Youtube screen
-  - Pressing next should play first related video
-  - Shuffle on should autoplay
 - Right click song item for more options
   - Delete song
 
@@ -26,6 +23,7 @@ Bugs:
   - On song item edit, switching focus for the first time
 - Sorting by name should ignore punctuation (like brackets)
 - Don't allow adding a song more than once
+- If the song skips before related songs are loaded, it won't autoplay the next song
 
 Youtube:
 

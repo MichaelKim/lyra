@@ -15,7 +15,8 @@ export const initialState: StoreState = {
     column: 'TITLE',
     direction: false
   },
-  shuffle: false
+  shuffle: false,
+  nextSong: null
 };
 
 export function save(state: StoreState) {

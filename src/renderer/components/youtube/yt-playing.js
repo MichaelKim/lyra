@@ -6,45 +6,23 @@ import { render } from 'react-dom';
 import Search from '../search';
 import Loading from '../loading';
 import YtItem from './yt-item';
-import { getRelatedVideos } from '../../yt-util';
 
 import type { Song, Video } from '../../types';
 
 type Props = {|
   +currSong: Song,
+  +related: Video[],
   +playVideo: (video: Video) => void,
   +onSearch: (value: string) => void
 |};
 
-type State = {|
-  loading: boolean,
-  related: Video[]
-|};
-
-class YtPlaying extends React.Component<Props, State> {
-  state = {
-    loading: true,
-    related: []
-  };
-
-  async componentDidMount() {
-    const { currSong } = this.props;
-    if (currSong.dir !== 'youtube') return;
-
-    const related = await getRelatedVideos(currSong.id);
-
-    this.setState({
-      loading: false,
-      related
-    });
-  }
-
+class YtPlaying extends React.Component<Props> {
   _playVideo = (video: Video) => {
     this.props.playVideo(video);
   };
 
   render() {
-    const { currSong } = this.props;
+    const { currSong, related } = this.props;
 
     if (
       currSong.dir !== 'youtube' ||
@@ -76,11 +54,11 @@ class YtPlaying extends React.Component<Props, State> {
           <YtItem video={video} />
         </div>
         <h3 className='yt-playing-heading'>Related Videos:</h3>
-        {this.state.loading ? (
+        {this.props.related.length === 0 ? (
           <Loading />
         ) : (
           <ul className='youtube-item-list'>
-            {this.state.related.map(v => (
+            {this.props.related.map(v => (
               <li key={v.id} onClick={() => this._playVideo(v)}>
                 <YtItem video={v} />
               </li>

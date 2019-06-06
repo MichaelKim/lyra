@@ -83,6 +83,17 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         return state;
       }
 
+      // Autoplay
+      if (state.shuffle && currSong.dir === 'youtube') {
+        if (!state.nextSong) return state;
+
+        return {
+          ...state,
+          currSong: state.nextSong,
+          nextSong: null
+        };
+      }
+
       if (state.shuffle) {
         const songs = getSongList(state.songs, state.currScreen).filter(
           song => song.id !== currSong.id
@@ -163,6 +174,13 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       };
     }
 
+    case 'SET_NEXT_SONG': {
+      return {
+        ...state,
+        nextSong: action.song
+      };
+    }
+
     case 'CLEAR_DATA':
       return {
         ...initialState,
@@ -188,6 +206,7 @@ function saveWrapper(state: StoreState = initialState, action: Action) {
     case 'SKIP_NEXT':
     case 'UPDATE_TAGS':
     case 'SET_SORT':
+    case 'SET_NEXT_SONG':
       save(newState);
       break;
 

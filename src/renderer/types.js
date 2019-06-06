@@ -68,24 +68,16 @@ export type StoreState = {|
   +playlists: {| [id: PlaylistID]: Playlist |},
   +volume: number,
   +sort: SortType,
-  +shuffle: boolean
+  +shuffle: boolean,
+  +nextSong: ?Song // Only for YouTube
 |};
 
 export type Dispatch = (action: Action) => void;
 
 export type Action =
-  | {|
-      +type: 'LOAD_STORAGE',
-      +state: StoreState
-    |}
-  | {|
-      +type: 'SELECT_SONG',
-      +song: Song
-    |}
-  | {|
-      +type: 'SELECT_PLAYLIST',
-      +name: ?string
-    |}
+  | {| +type: 'LOAD_STORAGE', +state: StoreState |}
+  | {| +type: 'SELECT_SONG', +song: Song |}
+  | {| +type: 'SELECT_PLAYLIST', +name: ?string |}
   | {| +type: 'ADD_SONGS', +songs: Song[] |}
   | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}
@@ -95,6 +87,5 @@ export type Action =
   | {| +type: 'UPDATE_TAGS', +id: SongID, +title: string, +artist: string |}
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
-  | {|
-      +type: 'CLEAR_DATA'
-    |};
+  | {| +type: 'SET_NEXT_SONG', +song: Song |}
+  | {| +type: 'CLEAR_DATA' |};
