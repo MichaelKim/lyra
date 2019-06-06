@@ -121,3 +121,14 @@ button {
     }
   }
 }
+
+// Scrolling
+.scroll {
+  overflow: hidden auto;
+}
+
+.scroll-box {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

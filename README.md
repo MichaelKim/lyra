@@ -1,5 +1,23 @@
 # Music Player
 
+## Features
+
+- Add songs on your computer and play them
+- Playback
+  - Volume control
+  - Shuffle
+  - Skip forward / back 10 seconds
+  - Skip to previous / next song
+- Song metadata
+  - Parses title and artist metadata
+  - Edit metadata within the player
+- YouTube
+  - Search for YouTube videos
+  - YouTube video playback
+  - Autoplay
+  - Shows related videos
+  - Download YouTube video
+
 TODO:
 
 - Right click song item for more options

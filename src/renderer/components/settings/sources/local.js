@@ -36,6 +36,12 @@ class Sources extends React.Component<Props, State> {
       song => this.state.toggle[song.id]
     );
     this.props.addSongs(songs);
+    this.setState({
+      selected: false,
+      tempDirs: [],
+      tempSongs: [],
+      toggle: {}
+    });
   };
 
   _onSelect = () => {
@@ -75,20 +81,22 @@ class Sources extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <button onClick={this._onSelect}>Select Directory</button>
+      <div className='scroll-box'>
+        <div>
+          <button onClick={this._onSelect}>Select Directory</button>
+        </div>
 
         {this.state.selected ? (
           <>
             {this.state.tempDirs.map(dir => (
-              <div key={dir}>
+              <div key={dir} className='scroll-box'>
                 <h5>{dir}</h5>
-                <div>
+                <div className='scroll'>
                   {this.state.tempSongs
                     .filter(song => song.dir === dir)
                     .map(song => (
-                      <div className="sources-song-item" key={song.name}>
-                        <span className="sources-song-name">{song.name}</span>
+                      <div className='sources-song-item' key={song.name}>
+                        <span className='sources-song-name'>{song.name}</span>
                         <Toggle
                           onToggle={() => this._onToggle(song.id)}
                           selected={this.state.toggle[song.id]}
@@ -99,7 +107,9 @@ class Sources extends React.Component<Props, State> {
               </div>
             ))}
 
-            <button onClick={this._onAdd}>Import</button>
+            <div>
+              <button onClick={this._onAdd}>Import</button>
+            </div>
           </>
         ) : null}
       </div>

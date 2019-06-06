@@ -25,7 +25,9 @@ class Settings extends React.Component<Props> {
         <Sources />
         <Playlists />
 
-        <button onClick={this._onClear}>Clear all data</button>
+        <div>
+          <button onClick={this._onClear}>Clear all data</button>
+        </div>
       </>
     );
   }
