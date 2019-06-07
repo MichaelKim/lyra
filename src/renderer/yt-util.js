@@ -109,12 +109,13 @@ export function downloadVideo(id: SongID) {
   return emitter;
 }
 
-export async function ytSearch(keyword: string): Promise<Video[]> {
+async function ytQuery(options): Promise<Video[]> {
   const res = await youtube.search.list({
     part: 'snippet',
-    q: keyword,
+    fields: 'items(id,snippet(title,channelTitle,thumbnails/default))',
     maxResults: 25,
-    type: 'video'
+    type: 'video',
+    ...options
   });
 
   const videos = res.data.items.map(item => ({
@@ -126,6 +127,7 @@ export async function ytSearch(keyword: string): Promise<Video[]> {
 
   const res2 = await youtube.videos.list({
     part: 'contentDetails,statistics',
+    fields: 'items(contentDetails/duration, statistics/viewCount)',
     id: videos.map(v => v.id).join(',')
   });
 
@@ -137,7 +139,6 @@ export async function ytSearch(keyword: string): Promise<Video[]> {
 
   // This doesn't always work, but avoids making an API call
   // const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
-
   // return videos.map((v, i) => ({
   //   ...v,
   //   duration: infos[i].length_seconds,
@@ -145,32 +146,18 @@ export async function ytSearch(keyword: string): Promise<Video[]> {
   // }));
 }
 
+export async function ytSearch(keyword: string): Promise<Video[]> {
+  return ytQuery({
+    q: keyword
+  });
+}
+
 export async function getRelatedVideos(id: SongID): Promise<Video[]> {
-  const res = await youtube.search.list({
-    part: 'snippet',
-    relatedToVideoId: id,
-    maxResults: 25,
-    type: 'video'
+  return ytQuery({
+    relatedToVideoId: id
   });
 
-  const videos = res.data.items.map(item => ({
-    id: item.id.videoId,
-    title: he.decode(item.snippet.title),
-    channel: item.snippet.channelTitle,
-    thumbnail: item.snippet.thumbnails.default
-  }));
-
-  const res2 = await youtube.videos.list({
-    part: 'contentDetails,statistics',
-    id: videos.map(v => v.id).join(',')
-  });
-
-  return videos.map((v, i) => ({
-    ...v,
-    duration: parseDuration(res2.data.items[i].contentDetails.duration),
-    views: res2.data.items[i].statistics.viewCount
-  }));
-
+  // Alternative using ytdl
   // const info = await ytdl.getInfo(id);
   // return info.related_videos;
 }

@@ -10,6 +10,10 @@
     "pack": "electron-webpack && electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LenKagamine/music-player.git"
+  },
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
   "dependencies": {

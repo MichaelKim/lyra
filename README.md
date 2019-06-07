@@ -48,7 +48,6 @@ Youtube:
 - New sidebar item: "YouTube"
   - Playing
     - Save song to library
-    - Skip to next / previous
   - Search
     - Pagination
   - Song item

@@ -14,7 +14,7 @@ function createWindow() {
     minHeight: 600,
     width: 1280,
     height: 720,
-    title: 'Music Player',
+    title: 'Lyra Music Player',
     backgroundColor: '#333',
     webPreferences: {
       nodeIntegration: true,

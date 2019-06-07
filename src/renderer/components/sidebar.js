@@ -44,7 +44,7 @@ class Sidebar extends React.Component<Props> {
 
     return (
       <div className='sidebar'>
-        <h3 className='sidebar-title'>Music Player</h3>
+        <h3 className='sidebar-title'>Lyra Player</h3>
 
         <p className='sidebar-section label'>Library</p>
         {items.map(item =>
