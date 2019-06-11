@@ -83,8 +83,8 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         return state;
       }
 
-      // Autoplay
-      if (state.shuffle && currSong.dir === 'youtube') {
+      // Enable autoplay for youtube if shuffle is on
+      if (state.shuffle && currSong.source === 'YOUTUBE') {
         if (!state.nextSong) return state;
 
         return {
@@ -131,11 +131,11 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         return state;
       }
 
-      const updated = {
-        ...song,
+      // Using ...spread doesn't work with Flow
+      const updated = Object.assign(song, {
         title: action.title,
         artist: action.artist
-      };
+      });
 
       if (state.currSong != null && state.currSong.id === action.id) {
         return {
@@ -193,7 +193,7 @@ function rootReducer(state: StoreState = initialState, action: Action) {
 }
 
 function saveWrapper(state: StoreState = initialState, action: Action) {
-  const newState = rootReducer(state, action);
+  const newState: StoreState = rootReducer(state, action);
 
   switch (action.type) {
     case 'ADD_SONGS':

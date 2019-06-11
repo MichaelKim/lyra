@@ -7,7 +7,14 @@ import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
 
-import type { Song, Metadata, Tags, SongID, SortType } from './types';
+import type {
+  Song,
+  LocalSong,
+  Metadata,
+  Tags,
+  SongID,
+  SortType
+} from './types';
 
 export function fileExists(path: string) {
   return new Promise<boolean>((resolve, reject) => {
@@ -17,8 +24,8 @@ export function fileExists(path: string) {
   });
 }
 
-export function getSongs(dir: string) {
-  return new Promise<Song[]>((resolve, reject) => {
+export function getSongs(dir: string): Promise<LocalSong[]> {
+  return new Promise<LocalSong[]>((resolve, reject) => {
     fs.readdir(dir, (err, files) => {
       if (err) {
         resolve([]);
@@ -27,7 +34,7 @@ export function getSongs(dir: string) {
 
       const names = files.filter(file => path.extname(file) === '.mp3');
 
-      const promises: Promise<Song>[] = names.map(name =>
+      const promises: Promise<LocalSong>[] = names.map(name =>
         getMetadata(dir, name).then(metadata => ({
           id: createHash('sha256')
             .update(path.join(dir, name))
@@ -35,8 +42,8 @@ export function getSongs(dir: string) {
           title: metadata.title,
           artist: metadata.artist,
           duration: metadata.duration,
-          name,
-          dir,
+          source: 'LOCAL',
+          filepath: path.join(dir, name),
           playlists: [],
           date: Date.now()
         }))
@@ -60,7 +67,7 @@ export function getSongList(
   const songlist = values(songs);
   const filtered =
     playlist != null
-      ? songlist.filter(song => song.name.includes(playlist))
+      ? songlist.filter(song => song.playlists.includes(playlist))
       : songlist;
 
   if (sort == null) {

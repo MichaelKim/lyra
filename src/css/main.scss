@@ -132,3 +132,9 @@ button {
   display: flex;
   flex-direction: column;
 }
+
+// Options button
+
+.options-btn {
+  background: transparent url('../../static/options.svg') center no-repeat;
+}

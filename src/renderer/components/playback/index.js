@@ -94,7 +94,7 @@ class PlaybackBar extends React.Component<Props, State> {
     }
 
     // Load song data
-    if (currSong.dir === 'youtube') {
+    if (currSong.source === 'YOUTUBE') {
       getStreamURL(currSong.id).then(url =>
         this.setState({
           src: url
@@ -102,7 +102,7 @@ class PlaybackBar extends React.Component<Props, State> {
       );
     } else {
       this.setState({
-        src: path.join('file://', currSong.dir, currSong.name)
+        src: path.join('file://', currSong.filepath)
       });
     }
   };

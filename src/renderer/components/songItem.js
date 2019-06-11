@@ -30,8 +30,8 @@ type State = {|
 class SongItem extends React.Component<Props, State> {
   state = {
     status: 'LOADING',
-    title: '',
-    artist: '',
+    title: this.props.song.title,
+    artist: this.props.song.artist,
     editStart: 'TITLE'
   };
   // Focus switching
@@ -91,24 +91,18 @@ class SongItem extends React.Component<Props, State> {
     });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { song } = this.props;
-    const filepath = path.join(song.dir, song.name);
-
-    fileExists(filepath).then(exists => {
-      if (!exists) {
-        this.setState({
-          status: 'MISSING',
-          title: this.props.song.name
-        });
-      } else {
-        this.setState({
-          status: 'READY',
-          title: song.title,
-          artist: song.artist
-        });
-      }
-    });
+    // Youtube sources don't require a file check
+    if (song.source === 'YOUTUBE' || (await fileExists(song.filepath))) {
+      this.setState({
+        status: 'READY'
+      });
+    } else {
+      this.setState({
+        status: 'MISSING'
+      });
+    }
   }
 
   _renderInput = (name, value: string, onChange) => {

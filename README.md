@@ -54,6 +54,44 @@ Youtube:
     - Add options
       - Add to library
 
+Song types:
+
+- Shared data format:
+  - id
+  - title
+  - artist
+  - duration
+  - date
+  - playlists
+  - source
+  - location
+- Locally sourced song
+  - Data format
+    - id: hash of filepath
+    - source: "LOCAL"
+    - location: filepath
+- Youtube video
+  - Data format
+    - id: video id
+    - artist: channel name
+    - views
+    - thumbnail
+    - source: "YT"
+    - location: video id
+    - local: whether it is downloaded or not ?
+- Downloaded Youtube song
+
+  - Data format
+    - id: video id
+    - source: "YT-LOCAL"
+    - location: filepath
+
+- new data
+  - where the current song is playing from
+  - all songs? playlist? youtube?
+  - Add new sidebar item: "Now Playing"
+  - opens the respective screen for the song
+
 Long term features:
 
 - History

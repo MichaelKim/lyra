@@ -5,32 +5,35 @@ import type { Store as ReduxStore } from 'redux';
 export type SongID = string;
 export type PlaylistID = string;
 
-export type Song = {|
+type SongShared = {|
   +id: SongID, // hash of filepath or url
   +title: string, // metadata title
   +artist: string,
   +duration: number,
-  +name: string, // filename
-  +dir: string,
   +playlists: PlaylistID[],
-  +date: number,
-  +views?: number,
-  +thumbnail?: Thumbnail
+  +date: number
 |};
+
+export type LocalSong = {|
+  ...SongShared,
+  +source: 'LOCAL',
+  +filepath: string
+|};
+
+export type VideoSong = {|
+  ...SongShared,
+  +source: 'YOUTUBE',
+  +url: SongID,
+  +views: number,
+  +thumbnail: Thumbnail
+|};
+
+export type Song = LocalSong | VideoSong;
 
 type Thumbnail = {|
   +width: number,
   +height: number,
   +url: string
-|};
-
-export type Video = {|
-  +id: string,
-  +title: string,
-  +channel: string,
-  +thumbnail: Thumbnail,
-  +duration: number,
-  +views: number
 |};
 
 export type Playlist = {|

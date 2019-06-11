@@ -1,23 +1,22 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 
 import Search from '../search';
 import Loading from '../loading';
 import YtItem from './yt-item';
 import { ytSearch } from '../../yt-util';
 
-import type { Song, Video } from '../../types';
+import type { Song, VideoSong } from '../../types';
 
 type Props = {|
-  +playVideo: (video: Video) => void,
+  +playVideo: (video: VideoSong) => void,
   +initialKeyword?: string
 |};
 
 type State = {|
   searching: boolean,
-  videos: Video[]
+  videos: VideoSong[]
 |};
 
 class YtSearch extends React.Component<Props, State> {
@@ -57,7 +56,7 @@ class YtSearch extends React.Component<Props, State> {
           <Loading />
         ) : (
           <ul className='youtube-item-list'>
-            {this.state.videos.map((video: Video) => (
+            {this.state.videos.map((video: VideoSong) => (
               <li key={video.id} onClick={() => this.props.playVideo(video)}>
                 <YtItem video={video} />
               </li>

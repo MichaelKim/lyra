@@ -6,38 +6,38 @@ import Search from '../search';
 import Loading from '../loading';
 import YtItem from './yt-item';
 
-import type { Song, Video } from '../../types';
+import type { Song, VideoSong } from '../../types';
 
 type Props = {|
   +currSong: Song,
-  +related: Video[],
-  +playVideo: (video: Video) => void,
+  +related: VideoSong[],
+  +playVideo: (video: VideoSong) => void,
   +onSearch: (value: string) => void
 |};
 
 class YtPlaying extends React.Component<Props> {
-  _playVideo = (video: Video) => {
+  _playVideo = (video: VideoSong) => {
     this.props.playVideo(video);
   };
 
   render() {
     const { currSong, related } = this.props;
 
-    if (
-      currSong.dir !== 'youtube' ||
-      currSong.thumbnail == null ||
-      currSong.views == null
-    ) {
+    if (currSong.source !== 'YOUTUBE') {
       return null;
     }
 
-    const video: Video = {
+    const video: VideoSong = {
       id: currSong.id,
       title: currSong.title,
-      channel: currSong.artist,
-      thumbnail: currSong.thumbnail,
+      artist: currSong.artist,
       duration: currSong.duration,
-      views: currSong.views
+      playlists: [],
+      date: Date.now(),
+      source: 'YOUTUBE',
+      url: currSong.id,
+      views: currSong.views,
+      thumbnail: currSong.thumbnail
     };
 
     return (
@@ -58,8 +58,12 @@ class YtPlaying extends React.Component<Props> {
         ) : (
           <ul className='youtube-item-list'>
             {this.props.related.map(v => (
-              <li key={v.id} onClick={() => this._playVideo(v)}>
-                <YtItem video={v} />
+              <li key={v.id}>
+                <YtItem
+                  video={v}
+                  onClick={() => this._playVideo(v)}
+                  showOptions
+                />
               </li>
             ))}
           </ul>

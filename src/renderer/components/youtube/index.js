@@ -9,7 +9,13 @@ import YtSearch from './yt-search';
 import YtPlaying from './yt-playing.js';
 import { getRelatedVideos } from '../../yt-util';
 
-import type { StoreState, Dispatch, Song, SongID, Video } from '../../types';
+import type {
+  StoreState,
+  Dispatch,
+  Song,
+  SongID,
+  VideoSong
+} from '../../types';
 
 import '../../../css/youtube.scss';
 
@@ -23,7 +29,7 @@ type Props = {|
 
 type State = {|
   keyword: string,
-  related: Video[]
+  related: VideoSong[]
 |};
 
 class Youtube extends React.Component<Props, State> {
@@ -32,30 +38,15 @@ class Youtube extends React.Component<Props, State> {
     related: []
   };
 
-  _videoToSong = (video: Video): Song => {
-    return {
-      id: video.id,
-      title: video.title,
-      artist: video.channel,
-      duration: video.duration,
-      name: '',
-      dir: 'youtube',
-      playlists: [],
-      date: Date.now(),
-      thumbnail: video.thumbnail,
-      views: video.views
-    };
-  };
-
   _loadRelated = (id: SongID) => {
     getRelatedVideos(id).then(related => {
       this.setState({ related });
-      this.props.setNextSong(this._videoToSong(related[0]));
+      this.props.setNextSong(related[0]);
     });
   };
 
-  _playVideo = (video: Video) => {
-    this.props.selectSong(this._videoToSong(video));
+  _playVideo = (video: VideoSong) => {
+    this.props.selectSong(video);
     this._loadRelated(video.id);
   };
 
@@ -67,7 +58,7 @@ class Youtube extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    if (this.props.currSong && this.props.currSong.dir === 'youtube') {
+    if (this.props.currSong && this.props.currSong.source === 'YOUTUBE') {
       this._loadRelated(this.props.currSong.id);
     }
   }

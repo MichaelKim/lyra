@@ -9,16 +9,23 @@ import { remote } from 'electron';
 import { getSongs } from '../../../util';
 import Toggle from '../../toggle';
 
-import type { StoreState, Dispatch, Song, SongID } from '../../../types';
+import type {
+  StoreState,
+  Dispatch,
+  LocalSong,
+  VideoSong,
+  Song,
+  SongID
+} from '../../../types';
 
 type Props = {|
-  +addSongs: (songs: Song[]) => void
+  +addSongs: (songs: LocalSong[] | VideoSong[]) => void
 |};
 
 type State = {|
   selected: boolean,
   tempDirs: string[],
-  tempSongs: Song[],
+  tempSongs: LocalSong[],
   toggle: { [id: SongID]: boolean }
 |};
 
@@ -43,7 +50,7 @@ class Sources extends React.Component<Props, State> {
     });
   };
 
-  _onSelect = () => {
+  _onSelect = async () => {
     const dirs: ?(string[]) = remote.dialog.showOpenDialog({
       properties: ['openDirectory', 'multiSelections']
     });
@@ -52,19 +59,18 @@ class Sources extends React.Component<Props, State> {
       return;
     }
 
-    const promises = dirs.map(dir => getSongs(dir));
+    const values = await Promise.all(dirs.map(dir => getSongs(dir)));
 
-    Promise.all(promises).then(values => {
-      // $FlowFixMe: Array.flat() not in Flow
-      const songs: Song[] = values.flat();
-      const ids = songs.map(song => song.id);
-      const toggle = ids.reduce((acc, val) => ({ ...acc, [val]: true }), {});
-      this.setState({
-        selected: true,
-        tempDirs: dirs,
-        tempSongs: songs,
-        toggle
-      });
+    // $FlowFixMe: Array.flat() not in Flow
+    const songs: Song[] = values.flat();
+    const ids = songs.map(song => song.id);
+    // Change reduce-spread?
+    const toggle = ids.reduce((acc, val) => ({ ...acc, [val]: true }), {});
+    this.setState({
+      selected: true,
+      tempDirs: dirs,
+      tempSongs: songs,
+      toggle
     });
   };
 
@@ -92,10 +98,12 @@ class Sources extends React.Component<Props, State> {
                 <h5>{dir}</h5>
                 <div className='scroll'>
                   {this.state.tempSongs
-                    .filter(song => song.dir === dir)
+                    .filter(
+                      (song: LocalSong) => path.dirname(song.filepath) === dir
+                    )
                     .map(song => (
-                      <div className='sources-song-item' key={song.name}>
-                        <span className='sources-song-name'>{song.name}</span>
+                      <div className='sources-song-item' key={song.id}>
+                        <span className='sources-song-name'>{song.title}</span>
                         <Toggle
                           onToggle={() => this._onToggle(song.id)}
                           selected={this.state.toggle[song.id]}

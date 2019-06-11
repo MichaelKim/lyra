@@ -3,6 +3,7 @@
 import { app, BrowserWindow } from 'electron';
 import { globalAgent } from 'http';
 import path from 'path';
+import os from 'os';
 
 let win = null;
 
@@ -37,6 +38,13 @@ function createWindow() {
     }
 
     win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+
+    BrowserWindow.addDevToolsExtension(
+      path.join(
+        os.homedir(),
+        '.config/google-chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.6.0_0'
+      )
+    );
     win.webContents.openDevTools();
   } else {
     win.loadURL('file://' + __dirname + '/index.html');

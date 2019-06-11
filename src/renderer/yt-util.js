@@ -22,7 +22,7 @@ import he from 'he';
 
 import { setTags, parseDuration } from './util';
 
-import type { Song, SongID, Video } from './types';
+import type { Song, SongID, VideoSong } from './types';
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 
@@ -109,7 +109,7 @@ export function downloadVideo(id: SongID) {
   return emitter;
 }
 
-async function ytQuery(options): Promise<Video[]> {
+async function ytQuery(options): Promise<VideoSong[]> {
   const res = await youtube.search.list({
     part: 'snippet',
     fields: 'items(id,snippet(title,channelTitle,thumbnails/default))',
@@ -121,43 +121,61 @@ async function ytQuery(options): Promise<Video[]> {
   const videos = res.data.items.map(item => ({
     id: item.id.videoId,
     title: he.decode(item.snippet.title),
-    channel: item.snippet.channelTitle,
+    artist: item.snippet.channelTitle,
     thumbnail: item.snippet.thumbnails.default
   }));
 
-  const res2 = await youtube.videos.list({
-    part: 'contentDetails,statistics',
-    fields: 'items(contentDetails/duration, statistics/viewCount)',
-    id: videos.map(v => v.id).join(',')
-  });
+  // const res2 = await youtube.videos.list({
+  //   part: 'contentDetails,statistics',
+  //   fields: 'items(contentDetails/duration, statistics/viewCount)',
+  //   id: videos.map(v => v.id).join(',')
+  // });
 
-  return videos.map((v, i) => ({
-    ...v,
-    duration: parseDuration(res2.data.items[i].contentDetails.duration),
-    views: res2.data.items[i].statistics.viewCount
-  }));
-
-  // This doesn't always work, but avoids making an API call
-  // const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
   // return videos.map((v, i) => ({
   //   ...v,
-  //   duration: infos[i].length_seconds,
-  //   views: infos[i].player_response.videoDetails.viewCount
+  //   duration: parseDuration(res2.data.items[i].contentDetails.duration),
+  //   views: res2.data.items[i].statistics.viewCount
   // }));
+
+  // This doesn't always work, but avoids making an API call
+  const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
+  return videos.map((v, i) => ({
+    ...v,
+    playlists: [],
+    date: Date.now(),
+    source: 'YOUTUBE',
+    url: v.id,
+    duration: infos[i].length_seconds,
+    views: infos[i].player_response.videoDetails.viewCount
+  }));
 }
 
-export async function ytSearch(keyword: string): Promise<Video[]> {
+export async function ytSearch(keyword: string): Promise<VideoSong[]> {
   return ytQuery({
     q: keyword
   });
 }
 
-export async function getRelatedVideos(id: SongID): Promise<Video[]> {
-  return ytQuery({
-    relatedToVideoId: id
-  });
+export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
+  // return ytQuery({
+  //   relatedToVideoId: id
+  // });
 
   // Alternative using ytdl
-  // const info = await ytdl.getInfo(id);
-  // return info.related_videos;
+  const { related_videos } = await ytdl.getInfo(id);
+  const infos = await Promise.all(
+    related_videos.filter(v => v.id).map(v => ytdl.getInfo(v.id))
+  );
+  return infos.map(v => ({
+    id: v.video_id,
+    title: v.title,
+    artist: v.author.name,
+    duration: v.length_seconds,
+    playlists: [],
+    date: Date.now(),
+    source: 'YOUTUBE',
+    url: v.video_id,
+    views: v.player_response.videoDetails.viewCount,
+    thumbnail: v.player_response.videoDetails.thumbnail.thumbnails[0]
+  }));
 }
