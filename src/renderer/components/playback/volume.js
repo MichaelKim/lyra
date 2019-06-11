@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import RangeInput from './range';
@@ -59,7 +58,7 @@ class VolumeBar extends React.Component<Props, State> {
     return (
       <>
         <button className={'volume-btn ' + icon} onClick={this._toggleMute} />
-        <div className="volume-bar">
+        <div className='volume-bar'>
           <RangeInput
             min={0}
             max={100}

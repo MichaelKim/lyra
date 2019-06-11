@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 
 import { formatDuration, readableViews } from '../../util';
 
@@ -20,11 +19,7 @@ class YtItem extends React.Component<Props> {
     return (
       <div className='youtube-item'>
         <div className='youtube-item-thumbnail'>
-          <img
-            src={video.thumbnail.url}
-            width={video.thumbnail.width}
-            height={video.thumbnail.height}
-          />
+          <img src={video.thumbnail.url} />
         </div>
         <div className='youtube-item-text'>
           <h3>{video.title}</h3>

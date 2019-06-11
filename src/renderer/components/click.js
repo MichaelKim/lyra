@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 
 // Max delay in ms between two clicks
 const DBL_CLICK_DELAY = 250;

@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 
 import Search from '../search';
 import Loading from '../loading';

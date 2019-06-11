@@ -21,6 +21,16 @@
     margin: 5px;
     width: 120px; // Regular thumbnail size
     height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
 
   .youtube-item-text {

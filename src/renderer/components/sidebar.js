@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { render } from 'react-dom';
 import { connect } from 'react-redux';
 
 import { values } from '../util';
