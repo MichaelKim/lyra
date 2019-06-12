@@ -6,7 +6,7 @@ import * as React from 'react';
 const DBL_CLICK_DELAY = 250;
 
 type Props = {|
-  +onClick: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
+  +onSngClick?: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
   +onDblClick: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
   +children: React.Node,
   +className?: string
@@ -27,7 +27,7 @@ class Click extends React.Component<Props> {
     // Don't fire click handler if double click
     this._clickTimer = setTimeout(() => {
       if (!this._isDblClick) {
-        this.props.onClick(e);
+        this.props.onSngClick && this.props.onSngClick(e);
       }
       this._clickTimer = null;
       this._isDblClick = false;

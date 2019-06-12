@@ -3,8 +3,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import path from 'path';
+import { remote } from 'electron';
 
-import { fileExists, formatDuration } from '../util';
+import { fileExists, formatDuration, showContextMenu } from '../util';
 import Sidebar from './sidebar';
 import Click from './click';
 
@@ -39,6 +40,17 @@ class SongItem extends React.Component<Props, State> {
 
   _onClick = () => {
     this.props.selectSong(this.props.song);
+  };
+
+  _onContextMenu = () => {
+    showContextMenu([
+      {
+        label: 'Add to Playlist',
+        click: () => {
+          console.log('yeet');
+        }
+      }
+    ]);
   };
 
   _onDblClick = editStart => {
@@ -111,7 +123,6 @@ class SongItem extends React.Component<Props, State> {
     return (
       <Click
         className={status === 'EDITING' ? 'song-row-edit' : ''}
-        onClick={this._onClick}
         onDblClick={() => this._onDblClick(name)}
       >
         {status === 'EDITING' ? (
@@ -141,6 +152,8 @@ class SongItem extends React.Component<Props, State> {
         className={'song-row ' + (status === 'MISSING' ? 'song-missing' : '')}
         onFocus={this._onFocus}
         onBlur={this._onBlur}
+        onClick={this._onClick}
+        onContextMenu={this._onContextMenu}
       >
         <div className='is-playing'>
           {isPlaying ? (

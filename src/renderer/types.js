@@ -80,7 +80,7 @@ export type Dispatch = (action: Action) => void;
 export type Action =
   | {| +type: 'LOAD_STORAGE', +state: StoreState |}
   | {| +type: 'SELECT_SONG', +song: Song |}
-  | {| +type: 'SELECT_PLAYLIST', +name: ?string |}
+  | {| +type: 'SELECT_PLAYLIST', +id: ?string |}
   | {| +type: 'ADD_SONGS', +songs: Song[] |}
   | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}

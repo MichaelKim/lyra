@@ -23,7 +23,7 @@ function rootReducer(state: StoreState = initialState, action: Action) {
     case 'SELECT_PLAYLIST':
       return {
         ...state,
-        currScreen: action.name
+        currScreen: action.id
       };
 
     case 'ADD_SONGS':
@@ -61,6 +61,15 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         if (index !== -1) songs[id].playlists.splice(index, 1);
       });
       delete playlists[action.id];
+
+      if (state.currScreen === action.id) {
+        return {
+          ...state,
+          playlists,
+          songs,
+          currScreen: null
+        };
+      }
 
       return {
         ...state,

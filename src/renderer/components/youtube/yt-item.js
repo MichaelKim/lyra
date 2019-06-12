@@ -2,9 +2,8 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { remote } from 'electron';
 
-import { formatDuration, readableViews } from '../../util';
+import { formatDuration, readableViews, showContextMenu } from '../../util';
 
 import type { Song, VideoSong, Dispatch } from '../../types';
 
@@ -12,7 +11,6 @@ import '../../../css/youtube.scss';
 
 type PassedProps = {|
   +onClick?: () => void,
-  +showOptions?: boolean,
   +video: VideoSong
 |};
 
@@ -22,19 +20,18 @@ type Props = PassedProps & {|
 
 class YtItem extends React.Component<Props> {
   _showOptions = () => {
-    const menu = new remote.Menu();
-    const item = new remote.MenuItem({
-      label: 'Add to Library',
-      click: () => {
-        this.props.addSong(this.props.video);
+    showContextMenu([
+      {
+        label: 'Add to Library',
+        click: () => {
+          this.props.addSong(this.props.video);
+        }
       }
-    });
-    menu.append(item);
-    menu.popup(remote.getCurrentWindow());
+    ]);
   };
 
   render() {
-    const { video, onClick, showOptions } = this.props;
+    const { video, onClick } = this.props;
 
     return (
       <div className='youtube-item'>
@@ -48,11 +45,9 @@ class YtItem extends React.Component<Props> {
             {readableViews(video.views)} views
           </h5>
         </div>
-        {showOptions ? (
-          <div>
-            <button className='options-btn' onClick={this._showOptions} />
-          </div>
-        ) : null}
+        <div>
+          <button className='options-btn' onClick={this._showOptions} />
+        </div>
       </div>
     );
   }

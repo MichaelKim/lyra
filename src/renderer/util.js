@@ -6,6 +6,7 @@ import url from 'url';
 import { createHash } from 'crypto';
 import * as mm from 'music-metadata';
 import id3 from 'node-id3';
+import { remote } from 'electron';
 
 import type {
   Song,
@@ -170,4 +171,15 @@ export function readableViews(viewCount: number) {
     (0 | (viewCount / Math.pow(10, length - 2))) / Math.pow(10, 11 - length) +
     'B'
   );
+}
+
+export function showContextMenu(
+  items: Array<{| +label: string, +click: () => void, |}>
+) {
+  const menu = new remote.Menu();
+  for (const item of items) {
+    const menuItem = new remote.MenuItem(item);
+    menu.append(menuItem);
+  }
+  menu.popup(remote.getCurrentWindow());
 }

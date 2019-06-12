@@ -93,6 +93,20 @@ button {
   }
 }
 
+input[type='text'] {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid $border-color;
+  color: $text-color;
+  width: 100%;
+  outline: none;
+
+  &:focus {
+    color: $text-light-color;
+    border-bottom: 2px solid $underline-color;
+  }
+}
+
 // Search input
 .search-box {
   margin: 0 5px;
@@ -105,20 +119,6 @@ button {
     width: 15px;
     height: 15px;
     margin-right: 5px;
-  }
-
-  input {
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid $border-color;
-    color: $text-color;
-    width: 100%;
-    outline: none;
-
-    &:focus {
-      color: $text-light-color;
-      border-bottom: 2px solid $underline-color;
-    }
   }
 }
 
@@ -134,7 +134,6 @@ button {
 }
 
 // Options button
-
 .options-btn {
   background: transparent url('../../static/options.svg') center no-repeat;
 }

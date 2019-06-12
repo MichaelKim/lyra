@@ -21,7 +21,7 @@ import '../../css/song-row.scss';
 
 type Props = {|
   +songs: Song[],
-  +currScreen: ?string,
+  +title: string,
   +sort: SortType,
   +selectSong: (song: Song) => void,
   +setSort: (column: SortColumn, direction: boolean) => void
@@ -34,10 +34,6 @@ type State = {|
 class Screen extends React.Component<Props, State> {
   state = {
     search: ''
-  };
-
-  _onClick = (song: Song) => {
-    this.props.selectSong(song);
   };
 
   _onSort = (column: SortColumn) => {
@@ -56,9 +52,7 @@ class Screen extends React.Component<Props, State> {
   };
 
   render() {
-    const { songs, currScreen, sort } = this.props;
-
-    const title = currScreen || 'All Songs';
+    const { songs, title, sort } = this.props;
 
     const arrow = (
       <img
@@ -112,9 +106,21 @@ class Screen extends React.Component<Props, State> {
 }
 
 function mapState(state: StoreState) {
+  const { currScreen } = state;
+  let title = 'All Songs';
+  if (
+    !(
+      currScreen == null ||
+      currScreen === 'settings' ||
+      currScreen.startsWith('yt-')
+    )
+  ) {
+    title = state.playlists[currScreen].name;
+  }
+
   return {
     songs: getSongList(state.songs, state.currScreen, state.sort),
-    currScreen: state.currScreen,
+    title,
     sort: state.sort
   };
 }

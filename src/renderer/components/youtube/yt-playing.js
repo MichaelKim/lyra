@@ -59,11 +59,7 @@ class YtPlaying extends React.Component<Props> {
           <ul className='youtube-item-list'>
             {this.props.related.map(v => (
               <li key={v.id}>
-                <YtItem
-                  video={v}
-                  onClick={() => this._playVideo(v)}
-                  showOptions
-                />
+                <YtItem video={v} onClick={() => this._playVideo(v)} />
               </li>
             ))}
           </ul>

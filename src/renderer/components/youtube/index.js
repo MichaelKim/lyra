@@ -23,7 +23,7 @@ type Props = {|
   +currSong?: Song,
   +currScreen: ?string,
   +selectSong: (song: Song) => void,
-  +selectPlaylist: (name: string) => void,
+  +selectPlaylist: (id: string) => void,
   +setNextSong: (song: Song) => void
 |};
 
@@ -105,8 +105,7 @@ function mapState(state: StoreState) {
 function mapDispatch(dispatch: Dispatch) {
   return {
     selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
-    selectPlaylist: (name: string) =>
-      dispatch({ type: 'SELECT_PLAYLIST', name }),
+    selectPlaylist: (id: string) => dispatch({ type: 'SELECT_PLAYLIST', id }),
     setNextSong: (song: Song) => dispatch({ type: 'SET_NEXT_SONG', song })
   };
 }

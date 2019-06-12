@@ -16,12 +16,24 @@
   - YouTube video playback
   - Autoplay
   - Shows related videos
+  - Add video to library
   - Download YouTube video
 
 TODO:
 
 - Right click song item for more options
   - Delete song
+  - Add to playlist
+  - Remove from playlist
+
+Refactor:
+
+- Screen display
+  - currently, it's hacked together with playlists
+  - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)
+  - loading all songs is laggy due to reloading all songs again
+    - bring `getSongList` into component, and only update if props change
+- currSong should only be an ID, rather than another copy of the song
 
 Minor fixes:
 
@@ -34,6 +46,8 @@ Minor fixes:
   - Sidebar scroll bar should only scroll playlists?
 - Split up `components/playback/index.js` (big file)
   - Limit files to 200 lines?
+- Deleting playlist
+  - Show confirmation modal?
 
 Bugs:
 
@@ -42,17 +56,7 @@ Bugs:
 - Sorting by name should ignore punctuation (like brackets)
 - Don't allow adding a song more than once
 - If the song skips before related songs are loaded, it won't autoplay the next song
-
-Youtube:
-
-- New sidebar item: "YouTube"
-  - Playing
-    - Save song to library
-  - Search
-    - Pagination
-  - Song item
-    - Add options
-      - Add to library
+- Clicking the options button in yt-search will play the song
 
 Song types:
 
@@ -107,6 +111,8 @@ Long term features:
   - Add songs to all songs
   - Add songs to playlists
   - Add songs into playlists
+- Youtube
+  - Pagination
 - Online
   - Make account
   - Show songs saved online
