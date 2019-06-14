@@ -3,8 +3,7 @@
 import { app, BrowserWindow } from 'electron';
 import { globalAgent } from 'http';
 import path from 'path';
-
-import { createRenderer } from './window';
+import os from 'os';
 
 let win = null;
 
@@ -29,12 +28,27 @@ function createWindow() {
     options.icon = path.join(__static, 'icon.png');
   }
 
-  win = createRenderer(
-    {
-      name: 'main'
-    },
-    options
-  );
+  win = new BrowserWindow(options);
+
+  win.setMenu(null);
+
+  if (isDevelopment) {
+    if (process.env.ELECTRON_WEBPACK_WDS_PORT == null) {
+      throw 'Missing electron-webpack port';
+    }
+
+    win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+
+    BrowserWindow.addDevToolsExtension(
+      path.join(
+        os.homedir(),
+        '.config/google-chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.6.0_0'
+      )
+    );
+    win.webContents.openDevTools();
+  } else {
+    win.loadURL('file://' + __dirname + '/index.html');
+  }
 
   global.windowID = win.id;
 

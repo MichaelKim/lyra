@@ -47,13 +47,7 @@ class SongItem extends React.Component<Props, State> {
       {
         label: 'Add to Playlist',
         click: () => {
-          console.log(remote.require('../../main/window'));
-          // const win = new remote.BrowserWindow({
-          //   parent: remote.getCurrentWindow(),
-          //   modal: true
-          // });
-
-          // win.loadURL('http://google.com');
+          console.log('yeet');
         }
       }
     ]);

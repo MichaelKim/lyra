@@ -3,20 +3,27 @@
 require('dotenv').config();
 import * as React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 
-import App from './app';
-import Modal from './modals';
+import Root from './components/root';
 
-const name = window.location.hash.slice(1);
+import store from './state/store';
+
+import '../css/fonts.scss';
+import '../css/main.scss';
 
 const root = document.getElementById('app');
 
-if (!root) {
-  throw 'Missing app root';
+class App extends React.Component<{||}> {
+  render() {
+    return (
+      <Provider store={store}>
+        <Root />
+      </Provider>
+    );
+  }
 }
 
-if (name === 'main') {
+if (root) {
   render(<App />, root);
-} else if (name === 'modal') {
-  render(<Modal />, root);
 }
