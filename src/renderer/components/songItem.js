@@ -140,6 +140,7 @@ class SongItem extends React.Component<Props, State> {
     return (
       <Click
         className={status === 'EDITING' ? 'song-row-edit' : ''}
+        onSngClick={this._onClick}
         onDblClick={() => this._onDblClick(name)}
       >
         {status === 'EDITING' ? (

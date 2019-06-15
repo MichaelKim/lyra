@@ -11,6 +11,10 @@
 - Song metadata
   - Parses title and artist metadata
   - Edit metadata within the player
+- Playlists
+  - Create and delete playlists
+  - Add and remove songs to playlists
+  - Play songs in a playlist
 - YouTube
   - Search for YouTube videos
   - YouTube video playback
@@ -54,7 +58,6 @@ Bugs:
 - Uncontrolled to controlled component warning
   - On song item edit, switching focus for the first time
 - Sorting by name should ignore punctuation (like brackets)
-- Don't allow adding a song more than once
 - If the song skips before related songs are loaded, it won't autoplay the next song
 - Clicking the options button in yt-search will play the song
 
@@ -102,9 +105,6 @@ Long term features:
   - Pressing back should go back to start of current song
   - Pressing back again within ~2 sec of song starting should go back to previously played song
     - Need to store history of played songs
-- Playlists
-  - Add song to playlist
-  - Remove song to playlist
 - Music metadata
   - Edit metadata on song add
 - Drag and drop

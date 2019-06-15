@@ -33,6 +33,7 @@ type State = {|
 |};
 
 class Youtube extends React.Component<Props, State> {
+  mounted = false;
   state = {
     keyword: '',
     related: []
@@ -40,8 +41,10 @@ class Youtube extends React.Component<Props, State> {
 
   _loadRelated = (id: SongID) => {
     getRelatedVideos(id).then(related => {
-      this.setState({ related });
-      this.props.setNextSong(related[0]);
+      if (this.mounted) {
+        this.setState({ related });
+        this.props.setNextSong(related[0]);
+      }
     });
   };
 
@@ -58,9 +61,14 @@ class Youtube extends React.Component<Props, State> {
   };
 
   componentDidMount() {
+    this.mounted = true;
     if (this.props.currSong && this.props.currSong.source === 'YOUTUBE') {
       this._loadRelated(this.props.currSong.id);
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {

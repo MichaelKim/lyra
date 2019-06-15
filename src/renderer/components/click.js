@@ -18,6 +18,8 @@ class Click extends React.Component<Props> {
   _clickTimer: ?TimeoutID = null;
 
   _onClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
     // Make it easier to double click
     if (this._clickTimer != null) {
       this._onDblClick(e);
@@ -45,11 +47,7 @@ class Click extends React.Component<Props> {
 
   render() {
     return (
-      <div
-        className={this.props.className || ''}
-        onClick={this._onClick}
-        onDoubleClick={this._onDblClick}
-      >
+      <div className={this.props.className || ''} onClick={this._onClick}>
         {this.props.children}
       </div>
     );
