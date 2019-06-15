@@ -47,7 +47,7 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         }
       };
 
-    case 'DELETE_PLAYLIST':
+    case 'DELETE_PLAYLIST': {
       const playlist = state.playlists[action.id];
       if (playlist == null) {
         return state;
@@ -76,6 +76,35 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         playlists,
         songs
       };
+    }
+
+    case 'SET_PLAYLISTS': {
+      const { sid, pids } = action;
+      const song = state.songs[sid];
+
+      // Invalid song ID
+      if (song == null) {
+        return state;
+      }
+
+      for (let pid of pids) {
+        // Invalid playlist ID
+        if (state.playlists[pid] == null) {
+          return state;
+        }
+      }
+
+      return {
+        ...state,
+        songs: {
+          ...state.songs,
+          [sid]: {
+            ...state.songs[sid],
+            playlists: pids
+          }
+        }
+      };
+    }
 
     case 'CHANGE_VOLUME': {
       return {

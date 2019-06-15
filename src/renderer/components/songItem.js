@@ -5,11 +5,20 @@ import { connect } from 'react-redux';
 import path from 'path';
 import { remote } from 'electron';
 
-import { fileExists, formatDuration, showContextMenu } from '../util';
+import { fileExists, formatDuration, showContextMenu, values } from '../util';
 import Sidebar from './sidebar';
 import Click from './click';
+import Modal from './modal';
+import Toggle from './toggle';
 
-import type { StoreState, Dispatch, Song, SongID } from '../types';
+import type {
+  StoreState,
+  Dispatch,
+  Song,
+  SongID,
+  Playlist,
+  PlaylistID
+} from '../types';
 
 type PassedProps = {|
   +song: Song
@@ -17,15 +26,19 @@ type PassedProps = {|
 
 type Props = PassedProps & {|
   +currSong: ?Song,
+  +playlists: Playlist[],
   +selectSong: (song: Song) => void,
-  +updateTags: (id: SongID, title: string, artist: string) => void
+  +updateTags: (id: SongID, title: string, artist: string) => void,
+  +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void
 |};
 
 type State = {|
   status: 'LOADING' | 'READY' | 'MISSING' | 'EDITING',
   title: string,
   artist: string,
-  editStart: 'TITLE' | 'ARTIST'
+  editStart: 'TITLE' | 'ARTIST',
+  showModal: boolean,
+  toggle: Set<PlaylistID>
 |};
 
 class SongItem extends React.Component<Props, State> {
@@ -33,7 +46,13 @@ class SongItem extends React.Component<Props, State> {
     status: 'LOADING',
     title: this.props.song.title,
     artist: this.props.song.artist,
-    editStart: 'TITLE'
+    editStart: 'TITLE',
+    showModal: false,
+    toggle: new Set(
+      this.props.playlists
+        .filter(p => this.props.song.playlists.includes(p.id))
+        .map(p => p.id)
+    )
   };
   // Focus switching
   _focusTimer: ?TimeoutID = null;
@@ -46,9 +65,7 @@ class SongItem extends React.Component<Props, State> {
     showContextMenu([
       {
         label: 'Add to Playlist',
-        click: () => {
-          console.log('yeet');
-        }
+        click: () => this.setState({ showModal: true })
       }
     ]);
   };
@@ -140,6 +157,26 @@ class SongItem extends React.Component<Props, State> {
     );
   };
 
+  _onToggle = (pid: PlaylistID) => {
+    this.setState(prevState => {
+      const { toggle } = prevState;
+      if (toggle.has(pid)) {
+        toggle.delete(pid);
+      } else {
+        toggle.add(pid);
+      }
+
+      return {
+        toggle
+      };
+    });
+  };
+
+  _onModalClose = () => {
+    this.props.setPlaylists(this.props.song.id, [...this.state.toggle]);
+    this.setState({ showModal: false });
+  };
+
   render() {
     const { status, title, artist } = this.state;
 
@@ -168,6 +205,23 @@ class SongItem extends React.Component<Props, State> {
         {this._renderInput('ARTIST', artist, this._changeArtist)}
         <div>{formatDuration(this.props.song.duration)}</div>
         <div>{new Date(this.props.song.date).toLocaleDateString()}</div>
+
+        <Modal
+          isOpen={this.state.showModal}
+          onClose={() => this._onModalClose()}
+          className='modal-content'
+        >
+          <h3>Select Playlists</h3>
+          {this.props.playlists.map(p => (
+            <div key={p.id}>
+              <p>{p.name}</p>
+              <Toggle
+                onToggle={() => this._onToggle(p.id)}
+                selected={this.state.toggle.has(p.id)}
+              />
+            </div>
+          ))}
+        </Modal>
       </div>
     );
   }
@@ -175,7 +229,8 @@ class SongItem extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSong: state.currSong
+    currSong: state.currSong,
+    playlists: values(state.playlists)
   };
 }
 
@@ -183,7 +238,9 @@ function mapDispatch(dispatch: Dispatch) {
   return {
     selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
     updateTags: (id: SongID, title: string, artist: string) =>
-      dispatch({ type: 'UPDATE_TAGS', id, title, artist })
+      dispatch({ type: 'UPDATE_TAGS', id, title, artist }),
+    setPlaylists: (sid: SongID, pids: PlaylistID[]) =>
+      dispatch({ type: 'SET_PLAYLISTS', sid, pids })
   };
 }
 
