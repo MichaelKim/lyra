@@ -11,7 +11,7 @@ import RangeInput from './range';
 import { formatDuration } from '../../util';
 import { getStreamURL } from '../../yt-util';
 
-import type { StoreState, Song, Dispatch } from '../../types';
+import type { StoreState, Song, SongID, Dispatch } from '../../types';
 
 import '../../../css/playback.scss';
 
@@ -21,19 +21,21 @@ type Props = {|
   +skipPrevious: () => void,
   +skipNext: () => void,
   +setShuffle: (shuffle: boolean) => void,
-  +isDownloading: boolean,
+  +dlQueue: SongID[],
   +dlProgress: number
 |};
 
 type State = {|
   src: string,
-  currentTime: number
+  currentTime: number,
+  showDlQueue: boolean
 |};
 
 class PlaybackBar extends React.Component<Props, State> {
   state = {
     src: '',
-    currentTime: 0
+    currentTime: 0,
+    showDlQueue: false
   };
   _tempVol = null;
   _audio = React.createRef();
@@ -86,6 +88,12 @@ class PlaybackBar extends React.Component<Props, State> {
 
   _onShuffle = () => {
     this.props.setShuffle(!this.props.shuffle);
+  };
+
+  _onShowDlQueue = () => {
+    this.setState(prevState => ({
+      showDlQueue: !prevState.showDlQueue
+    }));
   };
 
   _loadSong = () => {
@@ -153,6 +161,8 @@ class PlaybackBar extends React.Component<Props, State> {
     const currTime = formatDuration(this.state.currentTime);
     const maxTime = formatDuration(max);
 
+    const dlProgress = (0 | (this.props.dlProgress * 100)) / 100;
+
     return (
       <div className='playback-box'>
         <audio
@@ -197,8 +207,26 @@ class PlaybackBar extends React.Component<Props, State> {
           <button className='forward-btn' onClick={this._onForward} />
           <button className='skip-next' onClick={this.props.skipNext} />
         </div>
-        {this.props.isDownloading ? <div>{this.props.dlProgress}%</div> : null}
         <div className='playback-right'>
+          <div className='dl-box'>
+            {this.props.dlQueue.length > 0 && (
+              <>
+                <button
+                  className='download-btn'
+                  onClick={this._onShowDlQueue}
+                />
+                {this.state.showDlQueue && (
+                  <div className='dl-popover'>
+                    <h3>Download Queue</h3>
+                    <div>{dlProgress}%</div>
+                    {this.props.dlQueue.map(id => (
+                      <div key={id}>{id}</div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
           <button
             className={
               'shuffle-btn ' + (this.props.shuffle ? '' : 'shuffle-off')
@@ -216,7 +244,7 @@ function mapState(state: StoreState) {
   return {
     currSong: state.currSong,
     shuffle: state.shuffle,
-    isDownloading: state.isDownloading,
+    dlQueue: state.dlQueue,
     dlProgress: state.dlProgress
   };
 }

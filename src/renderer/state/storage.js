@@ -17,7 +17,7 @@ export const initialState: StoreState = {
   },
   shuffle: false,
   nextSong: null,
-  isDownloading: false,
+  dlQueue: [],
   dlProgress: 0
 };
 

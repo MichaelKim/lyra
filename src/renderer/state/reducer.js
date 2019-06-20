@@ -2,11 +2,14 @@
 
 import { save, clear, initialState } from './storage';
 import { values, getSongList } from '../util';
+import { downloadVideo } from '../yt-util';
 
 import type { StoreState, Action, Song } from '../types';
 
-function rootReducer(state: StoreState = initialState, action: Action) {
-  console.log(action);
+export default function rootReducer(
+  state: StoreState = initialState,
+  action: Action
+): StoreState {
   switch (action.type) {
     case 'LOAD_STORAGE':
       return {
@@ -250,10 +253,10 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       };
     }
 
-    case 'DOWNLOAD_START': {
+    case 'DOWNLOAD_ADD': {
       return {
         ...state,
-        isDownloading: true
+        dlQueue: [...state.dlQueue, action.id]
       };
     }
 
@@ -267,7 +270,11 @@ function rootReducer(state: StoreState = initialState, action: Action) {
     case 'DOWNLOAD_FINISH': {
       return {
         ...state,
-        isDownloading: false,
+        songs: {
+          ...state.songs,
+          [action.song.id]: action.song
+        },
+        dlQueue: state.dlQueue.slice(1),
         dlProgress: 0
       };
     }
@@ -282,31 +289,3 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       return state;
   }
 }
-
-function saveWrapper(state: StoreState = initialState, action: Action) {
-  const newState: StoreState = rootReducer(state, action);
-
-  switch (action.type) {
-    case 'ADD_SONGS':
-    case 'SELECT_SONG':
-    case 'CREATE_PLAYLIST':
-    case 'SELECT_PLAYLIST':
-    case 'DELETE_PLAYLIST':
-    case 'CHANGE_VOLUME':
-    case 'SKIP_PREVIOUS':
-    case 'SKIP_NEXT':
-    case 'UPDATE_TAGS':
-    case 'SET_SORT':
-    case 'SET_NEXT_SONG':
-      save(newState);
-      break;
-
-    case 'CLEAR_DATA':
-      clear();
-      break;
-  }
-
-  return newState;
-}
-
-export default saveWrapper;

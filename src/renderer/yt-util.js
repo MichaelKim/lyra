@@ -20,7 +20,6 @@ import ffmpeg from 'fluent-ffmpeg';
 import { google } from 'googleapis';
 import he from 'he';
 
-import store from './state/store';
 import { setTags, parseDuration } from './util';
 
 import type { Song, SongID, VideoSong } from './types';
@@ -51,7 +50,7 @@ export function downloadVideo(id: SongID) {
   */
 
   let info, currDuration;
-  const dlPath = path.join(storage.getDataPath(), 'download.mp3');
+  const dlPath = path.join(storage.getDataPath(), `download-${id}.mp3`);
 
   const emitter = new events.EventEmitter();
 
@@ -60,6 +59,9 @@ export function downloadVideo(id: SongID) {
   });
 
   /*
+    ffmpeg's progress event contains a "percent" property, but
+    it can be really inaccurate at times.
+    
     The info object from ytdl contains a "length_seconds" value,
     but it's only precise to seconds. The progress event from ffmpeg
     has a precision of 0.01s, but doesn't contain total duration information.
@@ -71,7 +73,6 @@ export function downloadVideo(id: SongID) {
 
   ffmpeg(stream)
     .audioBitrate(128)
-    .save(dlPath)
     .on('progress', progress => {
       const [h, m, s] = progress.timemark.split(':').map(Number);
       currDuration = h * 3600 + m * 60 + s;
@@ -80,6 +81,7 @@ export function downloadVideo(id: SongID) {
 
       emitter.emit('progress', percent);
     })
+    .save(dlPath)
     .on('end', async () => {
       await setTags(dlPath, {
         title: info.title,
@@ -97,7 +99,7 @@ export function downloadVideo(id: SongID) {
             .digest('hex'),
           filepath,
           title: info.title,
-          artist: info.author.title,
+          artist: info.author.name,
           duration: currDuration,
           playlists: [],
           date: Date.now(),
@@ -109,26 +111,6 @@ export function downloadVideo(id: SongID) {
     });
 
   return emitter;
-}
-
-export function downloadAndAdd(id: SongID) {
-  // Downloads a YouTube video as audio, and adds it to the library
-
-  const state = store.getState();
-  if (state.isDownloading) {
-    return;
-  }
-
-  store.dispatch({ type: 'DOWNLOAD_START' });
-
-  downloadVideo(id)
-    .on('progress', progress =>
-      store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
-    )
-    .on('end', song => {
-      store.dispatch({ type: 'DOWNLOAD_FINISH' });
-      store.dispatch({ type: 'ADD_SONGS', songs: [song] });
-    });
 }
 
 async function ytQuery(options): Promise<VideoSong[]> {

@@ -1,15 +1,20 @@
 // @flow strict
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import storage from 'electron-json-storage';
 
 import reducer from './reducer';
+import { logger, saveToStorage } from './middleware';
 import { initialState } from './storage';
 
 import type { StoreState, Store } from '../types';
 
-const store: Store = createStore(reducer, initialState);
+const store: Store = createStore(
+  reducer,
+  initialState,
+  applyMiddleware(logger, saveToStorage)
+);
 
 storage.has('state', (err, exists) => {
   if (err) return;

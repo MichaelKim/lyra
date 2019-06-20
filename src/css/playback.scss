@@ -96,4 +96,28 @@
   .shuffle-off {
     filter: invert(1);
   }
+
+  .download-btn {
+    background-image: url('../../static/download.svg');
+  }
+
+  .dl-box {
+    position: relative;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .dl-popover {
+    position: absolute;
+    color: $text-color;
+    background-color: $sidebar-color;
+    transform: translate(-50%, -100%);
+    left: 50%;
+    top: 0%;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid $border-color;
+  }
 }

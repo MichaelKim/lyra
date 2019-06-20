@@ -73,7 +73,7 @@ export type StoreState = {|
   +sort: SortType,
   +shuffle: boolean,
   +nextSong: ?Song, // Only for YouTube
-  +isDownloading: boolean,
+  +dlQueue: SongID[], // Queue of downloading videos
   +dlProgress: number
 |};
 
@@ -95,7 +95,7 @@ export type Action =
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
   | {| +type: 'SET_NEXT_SONG', +song: Song |}
-  | {| +type: 'DOWNLOAD_START' |}
+  | {| +type: 'DOWNLOAD_ADD', +id: SongID |}
   | {| +type: 'DOWNLOAD_PROGRESS', +progress: number |}
-  | {| +type: 'DOWNLOAD_FINISH' |}
+  | {| +type: 'DOWNLOAD_FINISH', +song: Song |}
   | {| +type: 'CLEAR_DATA' |};

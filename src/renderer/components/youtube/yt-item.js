@@ -4,9 +4,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { formatDuration, readableViews, showContextMenu } from '../../util';
-import { downloadAndAdd } from '../../yt-util';
 
-import type { Song, VideoSong, Dispatch } from '../../types';
+import type { Song, SongID, VideoSong, Dispatch } from '../../types';
 
 import '../../../css/youtube.scss';
 
@@ -16,7 +15,8 @@ type PassedProps = {|
 |};
 
 type Props = PassedProps & {|
-  +addSong: (song: Song) => void
+  +addSong: (song: Song) => void,
+  +downloadAdd: (id: SongID) => void
 |};
 
 class YtItem extends React.Component<Props> {
@@ -31,7 +31,7 @@ class YtItem extends React.Component<Props> {
       {
         label: 'Download Audio',
         click: () => {
-          downloadAndAdd(this.props.video.id);
+          this.props.downloadAdd(this.props.video.id);
         }
       }
     ]);
@@ -62,7 +62,8 @@ class YtItem extends React.Component<Props> {
 
 function mapDispatch(dispatch: Dispatch) {
   return {
-    addSong: (song: Song) => dispatch({ type: 'ADD_SONGS', songs: [song] })
+    addSong: (song: Song) => dispatch({ type: 'ADD_SONGS', songs: [song] }),
+    downloadAdd: (id: SongID) => dispatch({ type: 'DOWNLOAD_ADD', id})
   };
 }
 
