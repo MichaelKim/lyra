@@ -16,7 +16,9 @@ export const initialState: StoreState = {
     direction: false
   },
   shuffle: false,
-  nextSong: null
+  nextSong: null,
+  isDownloading: false,
+  dlProgress: 0
 };
 
 export function save(state: StoreState) {

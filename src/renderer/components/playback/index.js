@@ -20,7 +20,9 @@ type Props = {|
   +shuffle: boolean,
   +skipPrevious: () => void,
   +skipNext: () => void,
-  +setShuffle: (shuffle: boolean) => void
+  +setShuffle: (shuffle: boolean) => void,
+  +isDownloading: boolean,
+  +dlProgress: number
 |};
 
 type State = {|
@@ -195,6 +197,7 @@ class PlaybackBar extends React.Component<Props, State> {
           <button className='forward-btn' onClick={this._onForward} />
           <button className='skip-next' onClick={this.props.skipNext} />
         </div>
+        {this.props.isDownloading ? <div>{this.props.dlProgress}%</div> : null}
         <div className='playback-right'>
           <button
             className={
@@ -212,7 +215,9 @@ class PlaybackBar extends React.Component<Props, State> {
 function mapState(state: StoreState) {
   return {
     currSong: state.currSong,
-    shuffle: state.shuffle
+    shuffle: state.shuffle,
+    isDownloading: state.isDownloading,
+    dlProgress: state.dlProgress
   };
 }
 

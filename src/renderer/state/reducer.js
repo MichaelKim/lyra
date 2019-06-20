@@ -250,6 +250,28 @@ function rootReducer(state: StoreState = initialState, action: Action) {
       };
     }
 
+    case 'DOWNLOAD_START': {
+      return {
+        ...state,
+        isDownloading: true
+      };
+    }
+
+    case 'DOWNLOAD_PROGRESS': {
+      return {
+        ...state,
+        dlProgress: action.progress
+      };
+    }
+
+    case 'DOWNLOAD_FINISH': {
+      return {
+        ...state,
+        isDownloading: false,
+        dlProgress: 0
+      };
+    }
+
     case 'CLEAR_DATA':
       return {
         ...initialState,

@@ -215,7 +215,7 @@ class SongItem extends React.Component<Props, State> {
 
         <Modal
           isOpen={this.state.showModal}
-          onClose={() => this._onModalClose()}
+          onClose={this._onModalClose}
           className='modal-content'
         >
           <h3>Select Playlists</h3>

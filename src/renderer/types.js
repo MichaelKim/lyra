@@ -72,7 +72,9 @@ export type StoreState = {|
   +volume: number,
   +sort: SortType,
   +shuffle: boolean,
-  +nextSong: ?Song // Only for YouTube
+  +nextSong: ?Song, // Only for YouTube
+  +isDownloading: boolean,
+  +dlProgress: number
 |};
 
 export type Dispatch = (action: Action) => void;
@@ -93,4 +95,7 @@ export type Action =
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
   | {| +type: 'SET_NEXT_SONG', +song: Song |}
+  | {| +type: 'DOWNLOAD_START' |}
+  | {| +type: 'DOWNLOAD_PROGRESS', +progress: number |}
+  | {| +type: 'DOWNLOAD_FINISH' |}
   | {| +type: 'CLEAR_DATA' |};

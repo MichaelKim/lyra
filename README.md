@@ -28,6 +28,25 @@ Named after the lyre constellation, Lyra is a music player that can play songs o
   - Add video to library
   - Download YouTube video as audio
 
+## Development
+
+To run locally, clone the repo and run the following:
+
+```
+npm install
+npm run dev
+```
+
+To build the executable, you have two options:
+
+```sh
+# Create unpacked release
+npm run dist
+
+# Create packaged executable
+npm run pack
+```
+
 TODO:
 
 Refactor:

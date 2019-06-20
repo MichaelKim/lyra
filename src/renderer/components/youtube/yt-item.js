@@ -4,6 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { formatDuration, readableViews, showContextMenu } from '../../util';
+import { downloadAndAdd } from '../../yt-util';
 
 import type { Song, VideoSong, Dispatch } from '../../types';
 
@@ -25,6 +26,12 @@ class YtItem extends React.Component<Props> {
         label: 'Add to Library',
         click: () => {
           this.props.addSong(this.props.video);
+        }
+      },
+      {
+        label: 'Download Audio',
+        click: () => {
+          downloadAndAdd(this.props.video.id);
         }
       }
     ]);
