@@ -16,7 +16,7 @@ import type { StoreState, Song, Dispatch } from '../../types';
 import '../../../css/playback.scss';
 
 type Props = {|
-  +currSong?: Song,
+  +currSong: ?Song,
   +shuffle: boolean,
   +skipPrevious: () => void,
   +skipNext: () => void,

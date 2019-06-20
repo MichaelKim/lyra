@@ -19,11 +19,6 @@ class Top extends React.Component<Props> {
   render() {
     const { currSong, currScreen } = this.props;
 
-    const screens = [
-      { key: 'settings', Container: Settings },
-      { key: 'youtube', Container: Youtube }
-    ];
-
     return (
       <div className='top'>
         <Sidebar />

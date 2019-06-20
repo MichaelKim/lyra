@@ -213,9 +213,18 @@ function rootReducer(state: StoreState = initialState, action: Action) {
     }
 
     case 'SET_NEXT_SONG': {
+      const { song } = action;
+
+      if (state.songs[song.id] != null) {
+        return {
+          ...state,
+          nextSong: state.songs[song.id]
+        };
+      }
+
       return {
         ...state,
-        nextSong: action.song
+        nextSong: song
       };
     }
 

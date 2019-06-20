@@ -20,7 +20,7 @@ import type {
 import '../../../css/youtube.scss';
 
 type Props = {|
-  +currSong?: Song,
+  +currSong: ?Song,
   +currScreen: ?string,
   +selectSong: (song: Song) => void,
   +selectPlaylist: (id: string) => void,

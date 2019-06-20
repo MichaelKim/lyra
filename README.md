@@ -1,4 +1,6 @@
-# Music Player
+# Lyra Music Player
+
+Named after the lyre constellation, Lyra is a music player that can play songs on your computer and on YouTube.
 
 ## Features
 
@@ -21,14 +23,12 @@
   - Autoplay
   - Shows related videos
   - Add video to library
-  - Download YouTube video
+  - Download YouTube video as audio
 
 TODO:
 
 - Right click song item for more options
   - Delete song
-  - Add to playlist
-  - Remove from playlist
 
 Refactor:
 
@@ -37,7 +37,9 @@ Refactor:
   - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)
   - loading all songs is laggy due to reloading all songs again
     - bring `getSongList` into component, and only update if props change
-- currSong should only be an ID, rather than another copy of the song
+  - new screen management:
+    - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
+    - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
 
 Minor fixes:
 
