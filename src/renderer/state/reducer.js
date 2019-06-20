@@ -38,6 +38,28 @@ function rootReducer(state: StoreState = initialState, action: Action) {
         state
       );
 
+    case 'REMOVE_SONG': {
+      const { songs } = state;
+      if (songs[action.id] == null) {
+        return state;
+      }
+
+      delete songs[action.id];
+
+      if (state.currSong != null && state.currSong.id === action.id) {
+        return {
+          ...state,
+          songs,
+          currSong: undefined
+        };
+      }
+
+      return {
+        ...state,
+        songs
+      };
+    }
+
     case 'CREATE_PLAYLIST':
       return {
         ...state,

@@ -4,12 +4,15 @@ Named after the lyre constellation, Lyra is a music player that can play songs o
 
 ## Features
 
-- Add songs on your computer and play them
+- Songs
+  - Add songs on your computer and play them
+  - Remove songs
 - Playback
   - Volume control
   - Shuffle
   - Skip forward / back 10 seconds
   - Skip to previous / next song
+  - Media button shortcuts (Play, Pause, Skip)
 - Song metadata
   - Parses title and artist metadata
   - Edit metadata within the player
@@ -26,9 +29,6 @@ Named after the lyre constellation, Lyra is a music player that can play songs o
   - Download YouTube video as audio
 
 TODO:
-
-- Right click song item for more options
-  - Delete song
 
 Refactor:
 

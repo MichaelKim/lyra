@@ -29,7 +29,8 @@ type Props = PassedProps & {|
   +playlists: Playlist[],
   +selectSong: (song: Song) => void,
   +updateTags: (id: SongID, title: string, artist: string) => void,
-  +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void
+  +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void,
+  +removeSong: (id: SongID) => void
 |};
 
 type State = {|
@@ -66,6 +67,10 @@ class SongItem extends React.Component<Props, State> {
       {
         label: 'Add to Playlist',
         click: () => this.setState({ showModal: true })
+      },
+      {
+        label: 'Remove Song',
+        click: () => this.props.removeSong(this.props.song.id)
       }
     ]);
   };
@@ -148,6 +153,7 @@ class SongItem extends React.Component<Props, State> {
             autoFocus={editStart === name}
             type='text'
             value={value}
+            onClick={e => e.stopPropagation()}
             onChange={onChange}
             onKeyDown={this._onKeyDown}
           />
@@ -241,7 +247,8 @@ function mapDispatch(dispatch: Dispatch) {
     updateTags: (id: SongID, title: string, artist: string) =>
       dispatch({ type: 'UPDATE_TAGS', id, title, artist }),
     setPlaylists: (sid: SongID, pids: PlaylistID[]) =>
-      dispatch({ type: 'SET_PLAYLISTS', sid, pids })
+      dispatch({ type: 'SET_PLAYLISTS', sid, pids }),
+    removeSong: (id: SongID) => dispatch({ type: 'REMOVE_SONG', id })
   };
 }
 

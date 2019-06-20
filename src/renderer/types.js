@@ -82,6 +82,7 @@ export type Action =
   | {| +type: 'SELECT_SONG', +song: Song |}
   | {| +type: 'SELECT_PLAYLIST', +id: ?string |}
   | {| +type: 'ADD_SONGS', +songs: Song[] |}
+  | {| +type: 'REMOVE_SONG', +id: SongID |}
   | {| +type: 'CREATE_PLAYLIST', +playlist: Playlist |}
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}
   | {| +type: 'SET_PLAYLISTS', +sid: SongID, +pids: PlaylistID[] |}
