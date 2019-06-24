@@ -62,11 +62,7 @@ Refactor:
 
 Minor fixes:
 
-- Adjust icon sizing / padding
-  - Sort up/down
-    - Position up and down
-    - Last column's sort arrows should be on the left
-  - Skip, replay/forward
+- Logarithmic volume bar
 - Scroll bar
   - Sidebar scroll bar should only scroll playlists?
 - Split up `components/playback/index.js` (big file)

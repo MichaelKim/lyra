@@ -46,7 +46,8 @@
   /* Date Added Column */
   & > div:nth-child(5) {
     width: 15%;
-    text-align: right;
+    display: inline-flex; // Align right
+    flex-direction: row-reverse;
   }
 
   .is-playing {

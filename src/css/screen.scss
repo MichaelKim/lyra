@@ -32,9 +32,19 @@
     text-overflow: ellipsis;
   }
 
-  .sort-icon {
+  .sort-icon-up,
+  .sort-icon-down {
     display: inline-block;
     width: 15px;
     height: 15px;
+    position: relative;
+  }
+
+  .sort-icon-up {
+    top: 1px;
+  }
+
+  .sort-icon-down {
+    top: 4px;
   }
 }

@@ -56,6 +56,9 @@ button {
 }
 
 .label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   font-variant-caps: all-small-caps;
   color: $text-dark-color;
   line-height: 1em;

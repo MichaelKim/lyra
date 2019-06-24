@@ -57,7 +57,7 @@ class Screen extends React.Component<Props, State> {
     const arrow = (
       <img
         src={getStatic(`sort-${sort.direction ? 'up' : 'down'}.svg`)}
-        className='sort-icon'
+        className={`sort-icon-${sort.direction ? 'up' : 'down'}`}
       />
     );
 
@@ -90,7 +90,7 @@ class Screen extends React.Component<Props, State> {
                 onClick={() => this._onSort(col.enum)}
               >
                 {col.name}
-                {sort.column === col.enum ? arrow : null}
+                {sort.column === col.enum && arrow}
               </div>
             ))}
           </div>
