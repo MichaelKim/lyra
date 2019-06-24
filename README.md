@@ -62,7 +62,6 @@ Refactor:
 
 Minor fixes:
 
-- Logarithmic volume bar
 - Scroll bar
   - Sidebar scroll bar should only scroll playlists?
 - Split up `components/playback/index.js` (big file)

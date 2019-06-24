@@ -41,10 +41,18 @@ class PlaybackBar extends React.Component<Props, State> {
   _audio = React.createRef();
 
   _onVolumeChange = (volume: number) => {
+    /*
+      This converts the linear slider to a logarithmic scale in order
+       to match our perception of loudnes. The magic number is 100^(1/100),
+       which forms a nice log scale from (0,1) to (100,99.999999991).
+       In order to mute at 0, the volume is dropped to 0, ignoring the log.
+       The 1% dropoff is small enough to be unnoticable.
+    */
+    const adjusted = volume === 0 ? 0 : Math.pow(1.04712854805, volume);
     if (this._audio.current) {
-      this._audio.current.volume = volume / 100;
+      this._audio.current.volume = adjusted / 100;
     } else {
-      this._tempVol = volume;
+      this._tempVol = adjusted;
     }
   };
 
