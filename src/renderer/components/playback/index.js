@@ -196,6 +196,7 @@ class PlaybackBar extends React.Component<Props, State> {
         {currSong != null ? (
           <div className='playback-left'>
             <h3>{currSong.title}</h3>
+            <br />
             <h5>{currSong.artist}</h5>
           </div>
         ) : null}

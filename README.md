@@ -76,6 +76,10 @@ Bugs:
 - Sorting by name should ignore punctuation (like brackets)
 - If the song skips before related songs are loaded, it won't autoplay the next song
 - Clicking the options button in yt-search will play the song
+- Linux:
+  - If something else takes control of the media buttons and releases them, the media buttons won't work anymore
+- Mac:
+  - Media button shortcuts don't work
 
 Song types:
 
@@ -129,6 +133,7 @@ Long term features:
   - Add songs into playlists
 - Youtube
   - Pagination
+  - Open in browser
 - Online
   - Make account
   - Show songs saved online
