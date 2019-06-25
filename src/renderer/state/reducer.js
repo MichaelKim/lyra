@@ -2,7 +2,6 @@
 
 import { save, clear, initialState } from './storage';
 import { values, getSongList } from '../util';
-import { downloadVideo } from '../yt-util';
 
 import type { StoreState, Action, Song } from '../types';
 

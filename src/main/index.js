@@ -5,6 +5,8 @@ import { globalAgent } from 'http';
 import path from 'path';
 import os from 'os';
 
+import checkAccessibility from './accessibility';
+
 let win = null;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -52,6 +54,7 @@ function createWindow() {
 
   global.windowID = win.id;
 
+  checkAccessibility();
   require('./shortcuts');
 
   win.on('closed', () => {

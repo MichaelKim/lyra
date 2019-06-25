@@ -78,8 +78,6 @@ Bugs:
 - Clicking the options button in yt-search will play the song
 - Linux:
   - If something else takes control of the media buttons and releases them, the media buttons won't work anymore
-- Mac:
-  - Media button shortcuts don't work
 
 Song types:
 
@@ -161,6 +159,7 @@ Note:
   - `sudo apt-get install libdbus-1-dev libglib2.0-dev`
   - Upon installing `dbus`, node will build the package for use. However, there may be differences in Node and Electron `NODE_MODULE_VERSION`s.
     - See more here: https://electronjs.org/docs/tutorial/using-native-node-modules
+- On macOS Mojave (and higher), access to media keys requires accessibility permissions. In this case, Lyra will display a dialog requesting permissions.
 - On Linux, running the AppImage for the first time will install the desktop file in `~/.local/share/applications/` for desktop integration. However, if the path to the AppImage has a space in it, the desktop file will have an incorrect value for `TryExec`, making it unable to run.
   - `TryExec` doesn't support quotes, so spaces in the path must be escaped. However, they are escaped with `\\s` rather than `\s`.
     - See https://github.com/AppImage/AppImageKit/issues/948 and https://github.com/electron-userland/electron-builder/issues/3547
