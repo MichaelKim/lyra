@@ -34,7 +34,7 @@ class Top extends React.Component<Props> {
             (currScreen && currScreen.startsWith('yt-') ? '' : 'hidden')
           }
         >
-          <Youtube key={currSong ? currSong.id : null} />
+          <Youtube key={currSong && currSong.id} />
         </div>
 
         <div

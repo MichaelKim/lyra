@@ -127,7 +127,7 @@ class Sidebar extends React.Component<Props, State> {
           <p className='label'>Playlists</p>
           <button className='add-btn' onClick={this._addPlaylist} />
         </div>
-        {this.state.editing ? (
+        {this.state.editing && (
           <input
             autoFocus
             type='text'
@@ -137,7 +137,7 @@ class Sidebar extends React.Component<Props, State> {
             onKeyDown={this._onKeyDown}
             onBlur={this._onBlur}
           />
-        ) : null}
+        )}
         {playlists.map(playlist =>
           this._renderItem(
             playlist.id,

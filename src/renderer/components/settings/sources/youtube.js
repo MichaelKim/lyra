@@ -54,9 +54,9 @@ class Sources extends React.Component<Props, State> {
           onChange={this._onChange}
           disabled={this.state.loading}
         />
-        {this.state.loading ? (
+        {this.state.loading && (
           <progress value={this.state.progress} max={100} />
-        ) : null}
+        )}
       </div>
     );
   }

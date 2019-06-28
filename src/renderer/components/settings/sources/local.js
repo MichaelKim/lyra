@@ -91,7 +91,7 @@ class Sources extends React.Component<Props, State> {
           <button onClick={this._onSelect}>Select Directory</button>
         </div>
 
-        {this.state.selected ? (
+        {this.state.selected && (
           <>
             {this.state.tempDirs.map(dir => (
               <div key={dir} className='scroll-box'>
@@ -118,7 +118,7 @@ class Sources extends React.Component<Props, State> {
               <button onClick={this._onAdd}>Import</button>
             </div>
           </>
-        ) : null}
+        )}
       </div>
     );
   }

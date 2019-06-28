@@ -200,13 +200,13 @@ class SongItem extends React.Component<Props, State> {
         onContextMenu={this._onContextMenu}
       >
         <div className='is-playing'>
-          {isPlaying ? (
+          {isPlaying && (
             <>
               <div />
               <div />
               <div />
             </>
-          ) : null}
+          )}
         </div>
         {this._renderInput('TITLE', title, this._changeTitle)}
         {this._renderInput('ARTIST', artist, this._changeArtist)}
