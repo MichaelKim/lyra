@@ -49,6 +49,10 @@ npm run pack
 
 TODO:
 
+- Keyboard shortcuts
+  - Space to play/pause
+  - Left/right arrow keys to skip 10 seconds
+
 Refactor:
 
 - Screen display
@@ -68,6 +72,9 @@ Minor fixes:
   - Limit files to 200 lines?
 - Deleting playlist
   - Show confirmation modal?
+- Inconsistent action to open context menu
+  - Youtube playing: click options icon
+  - Library: right click
 
 Bugs:
 
@@ -137,7 +144,11 @@ Long term features:
   - Show songs saved online
   - Stream songs
   - Download songs
+    - When listening to a Youtube song, download it in the background as a cache
+    - Future playbacks and actual downloads will fetch from server's cache instead
   - Upload songs
+- Web App
+  - Change storage to localStorage?
 
 Ideas:
 

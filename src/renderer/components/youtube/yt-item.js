@@ -20,7 +20,9 @@ type Props = PassedProps & {|
 |};
 
 class YtItem extends React.Component<Props> {
-  _showOptions = () => {
+  _showOptions = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
     showContextMenu([
       {
         label: 'Add to Library',
@@ -63,7 +65,7 @@ class YtItem extends React.Component<Props> {
 function mapDispatch(dispatch: Dispatch) {
   return {
     addSong: (song: Song) => dispatch({ type: 'ADD_SONGS', songs: [song] }),
-    downloadAdd: (id: SongID) => dispatch({ type: 'DOWNLOAD_ADD', id})
+    downloadAdd: (id: SongID) => dispatch({ type: 'DOWNLOAD_ADD', id })
   };
 }
 
