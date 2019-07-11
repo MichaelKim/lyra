@@ -1,6 +1,6 @@
 // @flow strict
 
-import { save, clear, initialState } from './storage';
+import { initialState } from './storage';
 import { values, getSongList } from '../util';
 
 import type { StoreState, Action, Song } from '../types';

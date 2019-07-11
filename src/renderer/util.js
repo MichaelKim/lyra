@@ -18,7 +18,7 @@ import type {
 } from './types';
 
 export function fileExists(path: string) {
-  return new Promise<boolean>((resolve, reject) => {
+  return new Promise<boolean>(resolve => {
     fs.access(path, fs.constants.F_OK, err => {
       resolve(!err);
     });
@@ -26,7 +26,7 @@ export function fileExists(path: string) {
 }
 
 export function getSongs(dir: string): Promise<LocalSong[]> {
-  return new Promise<LocalSong[]>((resolve, reject) => {
+  return new Promise<LocalSong[]>(resolve => {
     fs.readdir(dir, (err, files) => {
       if (err) {
         resolve([]);
@@ -109,7 +109,7 @@ export function getMetadata(dir: string, name: string): Promise<Metadata> {
       artist: metadata.common.artist || '',
       duration: metadata.format.duration
     }))
-    .catch(err => ({
+    .catch(() => ({
       title: name,
       artist: '',
       duration: ''
@@ -120,7 +120,7 @@ export function setTags(filepath: string, tags: Tags) {
   // Adding a callback makes the method async,
   // avoiding blocking the UI
   return new Promise<void>((resolve, reject) =>
-    id3.update(tags, filepath, (err, buff) => (err ? reject(err) : resolve()))
+    id3.update(tags, filepath, err => (err ? reject(err) : resolve()))
   );
 }
 
@@ -174,7 +174,7 @@ export function readableViews(viewCount: number) {
 }
 
 export function showContextMenu(
-  items: Array<{| +label: string, +click: () => void, |}>
+  items: Array<{| +label: string, +click: () => void |}>
 ) {
   const menu = new remote.Menu();
   for (const item of items) {

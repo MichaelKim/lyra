@@ -2,11 +2,8 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import path from 'path';
-import { remote } from 'electron';
 
 import { fileExists, formatDuration, showContextMenu, values } from '../util';
-import Sidebar from './sidebar';
 import Click from './click';
 import Modal from './modal';
 import Toggle from './toggle';
