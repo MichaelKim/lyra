@@ -7,7 +7,7 @@ import Loading from '../loading';
 import YtItem from './yt-item';
 import { ytSearch } from '../../yt-util';
 
-import type { Song, VideoSong } from '../../types';
+import type { VideoSong } from '../../types';
 
 type Props = {|
   +playVideo: (video: VideoSong) => void,

@@ -12,30 +12,26 @@ type Props = {|
   children: React.Node
 |};
 
-class Modal extends React.Component<Props> {
-  _onOutsideClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+export default function Modal(props: Props) {
+  function onOutsideClick(e: SyntheticMouseEvent<HTMLDivElement>) {
     e.stopPropagation();
-    this.props.onClose();
-  };
-
-  _onInsideClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
-  render() {
-    if (this.props.isOpen && document.body != null) {
-      return ReactDOM.createPortal(
-        <div className='modal' onClick={this._onOutsideClick}>
-          <div className={this.props.className} onClick={this._onInsideClick}>
-            {this.props.children}
-          </div>
-        </div>,
-        document.body
-      );
-    }
-
-    return null;
+    props.onClose();
   }
-}
 
-export default Modal;
+  function onInsideClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
+  if (props.isOpen && document.body != null) {
+    return ReactDOM.createPortal(
+      <div className='modal' onClick={onOutsideClick}>
+        <div className={props.className} onClick={onInsideClick}>
+          {props.children}
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
+  return null;
+}

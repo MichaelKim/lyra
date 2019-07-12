@@ -3,8 +3,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import Search from '../search';
-import Loading from '../loading';
 import YtSearch from './yt-search';
 import YtPlaying from './yt-playing.js';
 import { getRelatedVideos } from '../../yt-util';

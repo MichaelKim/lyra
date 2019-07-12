@@ -4,7 +4,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:flowtype/recommended'
   ],
-
   parser: 'babel-eslint',
   parserOptions: {
     sourceType: 'module'
@@ -16,5 +15,13 @@ module.exports = {
   },
   globals: {
     __static: true
+  },
+  rules: {
+    'flowtype/generic-spacing': 0
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
   }
 };

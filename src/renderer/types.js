@@ -97,5 +97,5 @@ export type Action =
   | {| +type: 'SET_NEXT_SONG', +song: Song |}
   | {| +type: 'DOWNLOAD_ADD', +id: SongID |}
   | {| +type: 'DOWNLOAD_PROGRESS', +progress: number |}
-  | {| +type: 'DOWNLOAD_FINISH', +song: Song |}
+  | {| +type: 'DOWNLOAD_FINISH', +song: ?Song |}
   | {| +type: 'CLEAR_DATA' |};

@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import fs from 'fs';
 import path from 'path';
 import { remote } from 'electron';
 
@@ -10,7 +9,6 @@ import { getSongs } from '../../../util';
 import Toggle from '../../toggle';
 
 import type {
-  StoreState,
   Dispatch,
   LocalSong,
   VideoSong,

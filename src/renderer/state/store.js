@@ -8,7 +8,7 @@ import reducer from './reducer';
 import { logger, saveToStorage } from './middleware';
 import { initialState } from './storage';
 
-import type { StoreState, Store } from '../types';
+import type { Store } from '../types';
 
 const store: Store = createStore(
   reducer,

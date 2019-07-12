@@ -9,31 +9,19 @@ type Props = {|
   +selected: boolean
 |};
 
-type State = {|
-  selected: boolean
-|};
+export default function Toggle(props: Props) {
+  const [selected, setSelected] = React.useState(props.selected);
 
-class Toggle extends React.Component<Props, State> {
-  state = {
-    selected: this.props.selected
-  };
+  function onToggle() {
+    props.onToggle(!selected);
 
-  _onToggle = () => {
-    this.props.onToggle(!this.state.selected);
-
-    this.setState(state => ({
-      selected: !state.selected
-    }));
-  };
-
-  render() {
-    return (
-      <div className='toggle'>
-        <input type='checkbox' checked={this.state.selected} readOnly />
-        <span className='slider' onClick={this._onToggle} />
-      </div>
-    );
+    setSelected(!selected);
   }
-}
 
-export default Toggle;
+  return (
+    <div className='toggle'>
+      <input type='checkbox' checked={selected} readOnly />
+      <span className='slider' onClick={onToggle} />
+    </div>
+  );
+}

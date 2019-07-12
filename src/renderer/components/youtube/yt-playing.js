@@ -21,7 +21,7 @@ class YtPlaying extends React.Component<Props> {
   };
 
   render() {
-    const { currSong, related } = this.props;
+    const { currSong } = this.props;
 
     if (currSong.source !== 'YOUTUBE') {
       return null;

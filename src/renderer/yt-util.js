@@ -20,7 +20,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import { google } from 'googleapis';
 import he from 'he';
 
-import { setTags, parseDuration } from './util';
+import { setTags } from './util';
 
 import type { Song, SongID, VideoSong } from './types';
 
@@ -89,10 +89,15 @@ export function downloadVideo(id: SongID) {
       });
 
       // Sanitize for file name
-      const safeName = info.title.replace(/[\/\\\?%\*:|"<>. ]/g, '_') + '.mp3';
+      const safeName = info.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
       const filepath = path.join(storage.getDataPath(), safeName);
 
       fs.rename(dlPath, filepath, err => {
+        if (err) {
+          emitter.emit('end');
+          return;
+        }
+
         const song: Song = {
           id: createHash('sha256')
             .update(info.video_id)

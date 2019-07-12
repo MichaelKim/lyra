@@ -3,7 +3,7 @@
 import { initialState } from './storage';
 import { values, getSongList } from '../util';
 
-import type { StoreState, Action, Song } from '../types';
+import type { StoreState, Action } from '../types';
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -267,6 +267,14 @@ export default function rootReducer(
     }
 
     case 'DOWNLOAD_FINISH': {
+      if (action.song == null) {
+        return {
+          ...state,
+          dlQueue: state.dlQueue.slice(1),
+          dlProgress: 0
+        };
+      }
+
       return {
         ...state,
         songs: {

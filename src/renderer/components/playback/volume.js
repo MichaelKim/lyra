@@ -1,11 +1,10 @@
 // @flow strict
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 import RangeInput from './range';
 
-import type { StoreState, Dispatch } from '../../types';
+import { useSelector, useDispatch } from '../../hooks';
 
 import '../../../css/volume.scss';
 
@@ -13,80 +12,47 @@ type PassedProps = {|
   +onChange: (volume: number) => void
 |};
 
-type Props = PassedProps & {|
-  +volume: number,
-  +changeVolume: (volume: number) => void
-|};
+export function VolumeBar(props: PassedProps) {
+  const [muted, setMuted] = React.useState(false);
+  const volume = useSelector(state => state.volume);
 
-type State = {|
-  +muted: boolean
-|};
+  const dispatch = useDispatch();
+  const changeVolume = (volume: number) =>
+    dispatch({ type: 'CHANGE_VOLUME', volume });
 
-class VolumeBar extends React.Component<Props, State> {
-  state = {
-    muted: false
-  };
-
-  _onChange = (volume: number) => {
-    this.props.onChange(volume);
-    this.props.changeVolume(volume);
-  };
-
-  _toggleMute = () => {
-    this.setState(prevState => ({
-      muted: !prevState.muted
-    }));
-
-    this.props.onChange(!this.state.muted ? 0 : this.props.volume);
-  };
-
-  componentDidMount() {
-    this.props.onChange(this.props.volume);
+  function onChange(volume: number) {
+    props.onChange(volume);
+    changeVolume(volume);
   }
 
-  render() {
-    const { volume } = this.props;
-    const { muted } = this.state;
+  function toggleMute() {
+    setMuted(!muted);
 
-    const icon =
-      muted || volume === 0
-        ? 'volume-none'
-        : volume <= 50
-        ? 'volume-low'
-        : 'volume-high';
-
-    return (
-      <>
-        <button className={'volume-btn ' + icon} onClick={this._toggleMute} />
-        <div className='volume-bar'>
-          <RangeInput
-            min={0}
-            max={100}
-            value={muted ? 0 : volume}
-            onChange={this._onChange}
-          />
-        </div>
-      </>
-    );
+    props.onChange(!muted ? 0 : volume);
   }
+
+  React.useEffect(() => props.onChange(volume), []);
+
+  const icon =
+    muted || volume === 0
+      ? 'volume-none'
+      : volume <= 50
+      ? 'volume-low'
+      : 'volume-high';
+
+  return (
+    <>
+      <button className={'volume-btn ' + icon} onClick={toggleMute} />
+      <div className='volume-bar'>
+        <RangeInput
+          min={0}
+          max={100}
+          value={muted ? 0 : volume}
+          onChange={onChange}
+        />
+      </div>
+    </>
+  );
 }
 
-function mapState(state: StoreState) {
-  return {
-    volume: state.volume
-  };
-}
-
-function mapDispatch(dispatch: Dispatch) {
-  return {
-    changeVolume: (volume: number) =>
-      dispatch({ type: 'CHANGE_VOLUME', volume })
-  };
-}
-
-const ConnectedComp: React.ComponentType<PassedProps> = connect(
-  mapState,
-  mapDispatch
-)(VolumeBar);
-
-export default ConnectedComp;
+export default VolumeBar;

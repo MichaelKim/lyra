@@ -130,15 +130,15 @@ class PlaybackBar extends React.Component<Props, State> {
       this._onVolumeChange(this._tempVol);
     }
 
-    ipcRenderer.on('play-pause', event => {
+    ipcRenderer.on('play-pause', () => {
       this._onTogglePause();
     });
 
-    ipcRenderer.on('skip-previous', event => {
+    ipcRenderer.on('skip-previous', () => {
       this.props.skipPrevious();
     });
 
-    ipcRenderer.on('skip-next', event => {
+    ipcRenderer.on('skip-next', () => {
       this.props.skipNext();
     });
 

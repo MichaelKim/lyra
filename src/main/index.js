@@ -1,9 +1,7 @@
 // @flow strict
 
 import { app, BrowserWindow } from 'electron';
-import { globalAgent } from 'http';
 import path from 'path';
-import os from 'os';
 
 import checkAccessibility from './accessibility';
 

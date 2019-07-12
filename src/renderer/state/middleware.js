@@ -10,7 +10,7 @@ export const logger: Middleware<
   StoreState,
   Action,
   Dispatch
-> = store => next => action => {
+> = () => next => action => {
   console.log(action);
   return next(action);
 };

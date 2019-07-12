@@ -14,14 +14,12 @@ import '../css/main.scss';
 
 const root = document.getElementById('app');
 
-class App extends React.Component<{||}> {
-  render() {
-    return (
-      <Provider store={store}>
-        <Root />
-      </Provider>
-    );
-  }
+function App() {
+  return (
+    <Provider store={store}>
+      <Root />
+    </Provider>
+  );
 }
 
 if (root) {

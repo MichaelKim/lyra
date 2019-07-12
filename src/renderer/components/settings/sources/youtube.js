@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { downloadVideo } from '../../../yt-util';
 
-import type { StoreState, Dispatch, Song, SongID } from '../../../types';
+import type { Dispatch, Song } from '../../../types';
 
 type Props = {|
   +addSongs: (songs: Song[]) => void

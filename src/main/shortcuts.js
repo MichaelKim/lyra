@@ -1,6 +1,6 @@
 // @flow strict
 
-import { ipcMain, BrowserWindow, globalShortcut } from 'electron';
+import { BrowserWindow, globalShortcut } from 'electron';
 
 const window = BrowserWindow.fromId(global.windowID);
 
@@ -49,7 +49,9 @@ if (process.platform === 'linux') {
 
     registerBindings('gnome', session);
     registerBindings('mate', session);
-  } catch (e) {}
+  } catch (e) {
+    // Silently fail Linus media button shortcuts
+  }
 } else {
   globalShortcut.register('MediaPlayPause', () => {
     sendMessage('play-pause');
