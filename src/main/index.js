@@ -50,8 +50,6 @@ function createWindow() {
     win.loadURL('file://' + __dirname + '/index.html');
   }
 
-  global.windowID = win.id;
-
   checkAccessibility();
   require('./shortcuts');
 

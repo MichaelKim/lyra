@@ -2,10 +2,10 @@
 
 import { BrowserWindow, globalShortcut } from 'electron';
 
-const window = BrowserWindow.fromId(global.windowID);
-
 function sendMessage(event: string) {
-  window.webContents.send(event);
+  BrowserWindow.getAllWindows().forEach(window =>
+    window.webContents.send(event)
+  );
 }
 
 // Taken from https://github.com/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-/commit/85b0eb57447b99d5d4d1cf443e5bba1f86b3912d#diff-8da52d0ccd45fa8db717beb34d249a98
