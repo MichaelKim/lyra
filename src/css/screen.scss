@@ -34,17 +34,22 @@
 
   .sort-icon-up,
   .sort-icon-down {
-    display: inline-block;
     width: 15px;
     height: 15px;
     position: relative;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 15px;
   }
 
   .sort-icon-up {
     top: 1px;
+    background-image: url('../../static/sort-up.svg');
   }
 
   .sort-icon-down {
     top: 4px;
+    background-image: url('../../static/sort-down.svg');
   }
 }

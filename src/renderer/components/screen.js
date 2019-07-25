@@ -5,7 +5,7 @@ import * as React from 'react';
 import SongItem from './songItem';
 import Search from './search';
 
-import { getSongList, getStatic } from '../util';
+import { getSongList } from '../util';
 import { useSelector, useDispatch } from '../hooks';
 
 import type { SortColumn } from '../types';
@@ -44,13 +44,6 @@ export default function Screen() {
     setSearch(value.toUpperCase());
   }
 
-  const arrow = (
-    <img
-      src={getStatic(`sort-${sort.direction ? 'up' : 'down'}.svg`)}
-      className={`sort-icon-${sort.direction ? 'up' : 'down'}`}
-    />
-  );
-
   const columns = [
     { enum: 'TITLE', name: 'Title' },
     { enum: 'ARTIST', name: 'Artist' },
@@ -78,7 +71,11 @@ export default function Screen() {
               onClick={() => onSort(col.enum)}
             >
               {col.name}
-              {sort.column === col.enum && arrow}
+              {sort.column === col.enum && (
+                <div
+                  className={`sort-icon-${sort.direction ? 'up' : 'down'}`}
+                />
+              )}
             </div>
           ))}
         </div>
