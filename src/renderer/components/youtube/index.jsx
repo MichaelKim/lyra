@@ -4,7 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import YtSearch from './yt-search';
-import YtPlaying from './yt-playing.js';
+import YtPlaying from './yt-playing';
 import { getRelatedVideos } from '../../yt-util';
 
 import type {

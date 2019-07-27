@@ -60,6 +60,13 @@ class PlaybackBar extends React.Component<Props, State> {
     this.setState({
       currentTime: e.currentTarget.currentTime
     });
+
+    // if (
+    //   this.props.currSong != null &&
+    //   e.currentTarget.currentTime > this.props.currSong.duration
+    // ) {
+    //   this._onEnded();
+    // }
   };
 
   _onSeek = (seek: number) => {

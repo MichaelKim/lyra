@@ -48,6 +48,11 @@
     "sass-loader": "^7.1.0",
     "webpack": "^4.35.0"
   },
+  "electronWebpack": {
+    "renderer": {
+      "webpackConfig": "webpack.renderer.config.js"
+    }
+  },
   "build": {
     "productName": "Lyra Music Player",
     "appId": "com.music-player",
