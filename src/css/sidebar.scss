@@ -45,11 +45,11 @@
     }
 
     .add-btn {
-      background-image: url('../../static/add.svg');
+      background-image: url('../icons/add.svg');
     }
 
     .del-btn {
-      background-image: url('../../static/clear.svg');
+      background-image: url('../icons/clear.svg');
       filter: invert(1);
       display: none;
 
