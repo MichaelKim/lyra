@@ -1,6 +1,6 @@
 // @flow strict
 
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 import storage from 'electron-json-storage';
 
@@ -10,10 +10,14 @@ import { initialState } from './storage';
 
 import type { Store } from '../types';
 
+const composeEnhancers =
+  (process.env.NODE_ENV !== 'production' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 const store: Store = createStore(
   reducer,
   initialState,
-  applyMiddleware(logger, saveToStorage)
+  composeEnhancers(applyMiddleware(logger, saveToStorage))
 );
 
 storage.has('state', (err, exists) => {
