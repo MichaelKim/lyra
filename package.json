@@ -24,7 +24,7 @@
     "music-metadata": "^3.5.3",
     "node-id3": "^0.1.7",
     "source-map-support": "^0.5.11",
-    "ytdl-core": "^0.29.2"
+    "ytdl-core": "^0.29.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.4",
