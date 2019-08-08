@@ -1,6 +1,8 @@
 # Lyra Music Player
 
-Named after the lyre constellation, Lyra is a music player that can play songs on your computer and on YouTube.
+Lyra is a cross-platform music player app that can play songs on your computer and on YouTube.
+
+Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino) built with [Neutrino](https://github.com/LenKagamine/neutrino)!
 
 ## Features
 
@@ -27,6 +29,13 @@ Named after the lyre constellation, Lyra is a music player that can play songs o
   - Shows related videos
   - Add video to library
   - Download YouTube video as audio
+
+## Screenshots
+
+<div align="center">
+  <img src="./screenshots/library.png" alt="Library" width="49%">
+  <img src="./screenshots/youtube.png" alt="Youtube" width="49%">
+</div>
 
 ## Development
 
