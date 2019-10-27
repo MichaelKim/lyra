@@ -20,7 +20,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import { google } from 'googleapis';
 import he from 'he';
 
-import { setTags } from './util';
+// import { setTags } from './util';
 
 import type { Song, SongID, VideoSong } from './types';
 
@@ -49,71 +49,71 @@ export function downloadVideo(id: SongID) {
     and returns the new song object.
   */
 
-  let info, currDuration;
   const dlPath = path.join(storage.getDataPath(), `download-${id}.mp3`);
 
   const emitter = new events.EventEmitter();
 
-  const stream = ytdl(id, { quality: 'highestaudio' }).on('info', ytinfo => {
-    info = ytinfo;
+  const stream = ytdl(id, { quality: 'highestaudio' });
+
+  stream.on('info', info => {
+    let currDuration = 0;
+
+    ffmpeg(stream)
+      .audioBitrate(128)
+      .outputOptions('-metadata', 'title=' + info.title)
+      .outputOptions('-metadata', 'artist=' + info.author.name)
+      .on('progress', progress => {
+        /*
+          ffmpeg's progress event contains a "percent" property, but
+          it can be really inaccurate at times.
+
+          The info object from ytdl contains a "length_seconds" value,
+          but it's only precise to seconds. The progress event from ffmpeg
+          has a precision of 0.01s, but doesn't contain total duration information.
+
+          The following calculation uses ytdl's info as an approximate duration
+          to calculate percent downloaded. Then, it uses the last duration from
+          ffmpeg's progress to store as song duration metadata.
+        */
+        const [h, m, s] = progress.timemark.split(':').map(Number);
+        currDuration = h * 3600 + m * 60 + s;
+
+        const percent = Math.min(
+          100 * (currDuration / info.length_seconds),
+          100
+        );
+
+        emitter.emit('progress', percent);
+      })
+      .save(dlPath)
+      .on('end', () => {
+        // Sanitize for file name
+        const safeName = info.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
+        const filepath = path.join(storage.getDataPath(), safeName);
+
+        fs.rename(dlPath, filepath, err => {
+          if (err) {
+            emitter.emit('end');
+            return;
+          }
+
+          const song: Song = {
+            id: createHash('sha256')
+              .update(info.video_id)
+              .digest('hex'),
+            filepath,
+            title: info.title,
+            artist: info.author.name,
+            duration: currDuration,
+            playlists: [],
+            date: Date.now(),
+            source: 'LOCAL'
+          };
+
+          emitter.emit('end', song);
+        });
+      });
   });
-
-  /*
-    ffmpeg's progress event contains a "percent" property, but
-    it can be really inaccurate at times.
-    
-    The info object from ytdl contains a "length_seconds" value,
-    but it's only precise to seconds. The progress event from ffmpeg
-    has a precision of 0.01s, but doesn't contain total duration information.
-
-    The following calculation uses ytdl's info as an approximate duration
-    to calculate percent downloaded. Then, it uses the last duration from
-    ffmpeg's progress to store as song duration metadata.
-  */
-
-  ffmpeg(stream)
-    .audioBitrate(128)
-    .on('progress', progress => {
-      const [h, m, s] = progress.timemark.split(':').map(Number);
-      currDuration = h * 3600 + m * 60 + s;
-
-      const percent = Math.min(100 * (currDuration / info.length_seconds), 100);
-
-      emitter.emit('progress', percent);
-    })
-    .save(dlPath)
-    .on('end', async () => {
-      await setTags(dlPath, {
-        title: info.title,
-        artist: info.author.name
-      });
-
-      // Sanitize for file name
-      const safeName = info.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
-      const filepath = path.join(storage.getDataPath(), safeName);
-
-      fs.rename(dlPath, filepath, err => {
-        if (err) {
-          emitter.emit('end');
-          return;
-        }
-
-        const song: Song = {
-          id: createHash('sha256')
-            .update(info.video_id)
-            .digest('hex'),
-          filepath,
-          title: info.title,
-          artist: info.author.name,
-          duration: currDuration,
-          playlists: [],
-          date: Date.now(),
-          source: 'LOCAL'
-        };
-
-        emitter.emit('end', song);
-      });
-    });
 
   return emitter;
 }

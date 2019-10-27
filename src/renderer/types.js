@@ -42,11 +42,6 @@ export type Playlist = {|
   +songs: SongID[]
 |};
 
-export type Tags = {|
-  +title: string,
-  +artist: string
-|};
-
 export type Metadata = {|
   +title: string,
   +artist: string,

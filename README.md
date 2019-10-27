@@ -170,6 +170,8 @@ Ideas:
       - Edit is same
 - Download from Youtube
   - Server download, since it requires converting to mp3
+- Hover over seek bar
+  - Show time over cursor
 
 Note:
 

@@ -3,18 +3,10 @@
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import * as mm from 'music-metadata';
-import id3 from 'node-id3';
 import { remote } from 'electron';
+import ffmpeg from 'fluent-ffmpeg';
 
-import type {
-  Song,
-  LocalSong,
-  Metadata,
-  Tags,
-  SongID,
-  SortType
-} from './types';
+import type { Song, LocalSong, Metadata, SongID, SortType } from './types';
 
 export function fileExists(path: string) {
   return new Promise<boolean>(resolve => {
@@ -100,27 +92,26 @@ function spaceship(a, b) {
 }
 
 export function getMetadata(dir: string, name: string): Promise<Metadata> {
-  const filepath = path.join(dir, name);
-  return mm
-    .parseFile(filepath)
-    .then(metadata => ({
-      title: metadata.common.title || path.basename(name, path.extname(name)),
-      artist: metadata.common.artist || '',
-      duration: metadata.format.duration
-    }))
-    .catch(() => ({
-      title: name,
-      artist: '',
-      duration: ''
-    }));
-}
-
-export function setTags(filepath: string, tags: Tags) {
-  // Adding a callback makes the method async,
-  // avoiding blocking the UI
-  return new Promise<void>((resolve, reject) =>
-    id3.update(tags, filepath, err => (err ? reject(err) : resolve()))
-  );
+  return new Promise(resolve => {
+    const filepath = path.join(dir, name);
+    ffmpeg.ffprobe(filepath, (err, metadata) => {
+      if (err) {
+        resolve({
+          title: path.basename(name, path.extname(name)),
+          artist: '',
+          duration: 0
+        });
+      } else {
+        resolve({
+          title:
+            metadata.format.tags.title ||
+            path.basename(name, path.extname(name)),
+          artist: metadata.format.tags.artist,
+          duration: metadata.format.duration
+        });
+      }
+    });
+  });
 }
 
 export function formatDuration(duration: number) {

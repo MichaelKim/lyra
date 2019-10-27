@@ -21,8 +21,6 @@
     "electron-json-storage": "^4.1.6",
     "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^40.0.0",
-    "music-metadata": "^3.5.3",
-    "node-id3": "^0.1.7",
     "source-map-support": "^0.5.11",
     "ytdl-core": "^0.29.7"
   },

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import path from 'path';
 import { ipcRenderer } from 'electron';
+// import fs from 'fs';
 // import ReactPlayer from 'react-player';
 
 import VolumeBar from './volume';
