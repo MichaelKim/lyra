@@ -9,18 +9,16 @@
   code, and avoid duplication across the codebase.
 */
 
-import { createHash } from 'crypto';
-import fs from 'fs';
-import path from 'path';
 import events from 'events';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegPath from '@ffmpeg-installer/ffmpeg';
+import fs from 'fs';
+import he from 'he';
+import path from 'path';
 import storage from 'electron-json-storage';
 import ytdl from 'ytdl-core';
-import ffmpegPath from '@ffmpeg-installer/ffmpeg';
-import ffmpeg from 'fluent-ffmpeg';
+import { createHash } from 'crypto';
 import { google } from 'googleapis';
-import he from 'he';
-
-// import { setTags } from './util';
 
 import type { Song, SongID, VideoSong } from './types';
 
@@ -53,12 +51,10 @@ export function downloadVideo(id: SongID) {
 
   const emitter = new events.EventEmitter();
 
-  const stream = ytdl(id, { quality: 'highestaudio' });
-
-  stream.on('info', info => {
+  ytdl.getInfo(id, { quality: 'highestaudio' }).then(info => {
     let currDuration = 0;
 
-    ffmpeg(stream)
+    ffmpeg(ytdl.downloadFromInfo(info))
       .audioBitrate(128)
       .outputOptions('-metadata', 'title=' + info.title)
       .outputOptions('-metadata', 'artist=' + info.author.name)

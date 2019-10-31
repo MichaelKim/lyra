@@ -1,5 +1,6 @@
 // @flow strict
 
+import React from 'react';
 import {
   useSelector as _useSelector,
   useDispatch as _useDispatch
@@ -16,4 +17,10 @@ export function useSelector<Selected>(
 
 export function useDispatch() {
   return _useDispatch<Dispatch>();
+}
+
+export function useToggle(defaultValue: boolean) {
+  const [value, setValue] = React.useState(defaultValue);
+
+  return [value, () => setValue(!value)];
 }

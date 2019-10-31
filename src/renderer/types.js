@@ -1,7 +1,5 @@
 // @flow strict
 
-import type { Store as ReduxStore } from 'redux';
-
 export type SongID = string;
 export type PlaylistID = string;
 
@@ -56,14 +54,16 @@ export type SortType = {|
 |};
 
 // Redux types
-export type Store = ReduxStore<StoreState, Action, Dispatch>;
-
 export type StoreState = {|
   +loaded: boolean,
   +currSong?: Song,
   +currScreen?: ?string,
-  +songs: {| [id: SongID]: Song |},
-  +playlists: {| [id: PlaylistID]: Playlist |},
+  +songs: {|
+    +[id: SongID]: Song
+  |},
+  +playlists: {|
+    +[id: PlaylistID]: Playlist
+  |},
   +volume: number,
   +sort: SortType,
   +shuffle: boolean,

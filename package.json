@@ -2,7 +2,7 @@
   "name": "lyra",
   "version": "1.0.0",
   "description": "A music player app",
-  "main": "src/main/index.js",
+  "main": "src/main/index.jsx",
   "scripts": {
     "dev": "electron-webpack dev",
     "build": "electron-webpack",

@@ -1,10 +1,10 @@
 // @flow strict
 
+import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import { remote } from 'electron';
-import ffmpeg from 'fluent-ffmpeg';
 
 import type { Song, LocalSong, Metadata, SongID, SortType } from './types';
 
@@ -47,19 +47,27 @@ export function getSongs(dir: string): Promise<LocalSong[]> {
 }
 
 // Flow doesn't like Object.values(), so this is an alternative with Object.keys()
-export function values<K, V, T: { [key: K]: V }>(obj: T): V[] {
+export function values<
+  K,
+  V,
+  T: {|
+    +[key: K]: V
+  |}
+>(obj: T): V[] {
   return Object.keys(obj).map<V>((key: K) => obj[key]);
 }
 
 export function getSongList(
-  songs: { [id: SongID]: Song },
+  songs: {|
+    +[id: SongID]: Song
+  |},
   playlist: ?string,
   sort?: SortType
 ): Song[] {
   const songlist = values(songs);
   const filtered =
     playlist != null
-      ? songlist.filter(song => song.playlists.includes(playlist))
+      ? songlist.filter((song: Song) => song.playlists.includes(playlist))
       : songlist;
 
   if (sort == null) {
@@ -157,7 +165,10 @@ export function readableViews(viewCount: number) {
 }
 
 export function showContextMenu(
-  items: Array<{| +label: string, +click: () => void |}>
+  items: Array<{|
+    +label: string,
+    +click: () => void
+  |}>
 ) {
   const menu = new remote.Menu();
   for (const item of items) {

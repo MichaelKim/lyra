@@ -61,9 +61,24 @@ TODO:
 - Keyboard shortcuts
   - Space to play/pause
   - Left/right arrow keys to skip 10 seconds
+- Editing metadata input fields should wrap
 
 Refactor:
 
+- Replace reduce spread with reduce mutate
+- Unify lyra and lyra-native
+  - Use css-in-js similar to react native's stylesheets (?)
+    - move variables.scss to constants.js
+  - standardize file names
+    - rangeinput -> slider
+    - songItem -> song-item
+  - standardize common utils
+    - useToggle hook
+  - ytdl, ytsr
+    - fork and write version without built-in node modules
+- currsong
+  - replace with just song id
+  - add hook useCurrSong for getting song object from id
 - Screen display
   - currently, it's hacked together with playlists
   - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)
@@ -72,6 +87,25 @@ Refactor:
   - new screen management:
     - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
     - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
+- Next song / Queue
+  - remove "next_s
+  - add "queue" to state
+  - when selecting a song to play, select a next song to play
+    - context: youtube, playlist, all songs, shuffle
+    - if playing from all songs:
+      - queue is built from all songs (in order if not shuffle, random if shuffle)
+    - if playing from playlist:
+      - queue is built from playlist (yes/no shuffle)
+    - if playing from youtube:
+      - queue is built from youtube related (shuffle doesn't do anything)
+  - skipping to next advances forward in queue
+  - skipping to previous goes backwards in queue (except for 1st song)
+  - queue has three parts:
+    - previous songs
+    - current song
+    - manually queued songs
+    - automatically added next song, if still exists
+  - if a new song is selected, the queue is reset
 
 Minor fixes:
 
