@@ -8,7 +8,9 @@ import type { StoreState } from '../types';
 
 export const initialState: StoreState = {
   loaded: false,
+  currSongID: null,
   songs: {},
+  songCache: {},
   playlists: {},
   volume: 100,
   sort: {

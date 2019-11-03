@@ -1,12 +1,12 @@
 // @flow strict
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 import path from 'path';
+import { connect } from 'react-redux';
 import { remote } from 'electron';
 
-import { getSongs } from '../../../util';
 import Toggle from '../../toggle';
+import { getSongs } from '../../../util';
 
 import type {
   Dispatch,

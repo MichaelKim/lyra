@@ -3,10 +3,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { fileExists, formatDuration, showContextMenu, values } from '../util';
 import Click from './click';
 import Modal from './modal';
 import Toggle from './toggle';
+import { fileExists, formatDuration, showContextMenu, values } from '../util';
 
 import type {
   StoreState,
@@ -22,7 +22,7 @@ type PassedProps = {|
 |};
 
 type Props = PassedProps & {|
-  +currSong: ?Song,
+  +currSongID: ?SongID,
   +playlists: Playlist[],
   +selectSong: (song: Song) => void,
   +updateTags: (id: SongID, title: string, artist: string) => void,
@@ -150,7 +150,9 @@ class SongItem extends React.Component<Props, State> {
             autoFocus={editStart === name}
             type='text'
             value={value}
-            onClick={e => e.stopPropagation()}
+            onClick={(e: SyntheticMouseEvent<HTMLInputElement>) =>
+              e.stopPropagation()
+            }
             onChange={onChange}
             onKeyDown={this._onKeyDown}
           />
@@ -184,9 +186,7 @@ class SongItem extends React.Component<Props, State> {
   render() {
     const { status, title, artist } = this.state;
 
-    const isPlaying =
-      this.props.currSong != null &&
-      this.props.currSong.id === this.props.song.id;
+    const isPlaying = this.props.currSongID === this.props.song.id;
 
     return (
       <div
@@ -233,7 +233,7 @@ class SongItem extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSong: state.currSong,
+    currSongID: state.currSongID,
     playlists: values(state.playlists)
   };
 }

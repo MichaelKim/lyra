@@ -102,8 +102,13 @@ class Youtube extends React.Component<Props, State> {
 }
 
 function mapState(state: StoreState) {
+  const { currSongID } = state;
+
   return {
-    currSong: state.currSong,
+    currSong:
+      currSongID != null
+        ? state.songs[currSongID] ?? state.songCache[currSongID]
+        : null,
     currScreen: state.currScreen
   };
 }

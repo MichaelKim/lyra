@@ -10,7 +10,7 @@ import Settings from './settings';
 import { useSelector } from '../hooks';
 
 export default function Top() {
-  const currSong = useSelector(state => state.currSong);
+  const currSongID = useSelector(state => state.currSongID);
   const currScreen = useSelector(state => state.currScreen);
 
   return (
@@ -26,7 +26,7 @@ export default function Top() {
           (currScreen && currScreen.startsWith('yt-') ? '' : 'hidden')
         }
       >
-        <Youtube key={currSong && currSong.id} />
+        <Youtube key={currSongID} />
       </div>
 
       <div

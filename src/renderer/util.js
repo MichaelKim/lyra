@@ -47,13 +47,7 @@ export function getSongs(dir: string): Promise<LocalSong[]> {
 }
 
 // Flow doesn't like Object.values(), so this is an alternative with Object.keys()
-export function values<
-  K,
-  V,
-  T: {|
-    +[key: K]: V
-  |}
->(obj: T): V[] {
+export function values<K, V>(obj: {| +[key: K]: V |}): V[] {
   return Object.keys(obj).map<V>((key: K) => obj[key]);
 }
 

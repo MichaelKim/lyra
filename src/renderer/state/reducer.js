@@ -3,7 +3,7 @@
 import { initialState } from './storage';
 import { values, getSongList } from '../util';
 
-import type { StoreState, Action } from '../types';
+import type { StoreState, Action, Song, SongID } from '../types';
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -16,11 +16,26 @@ export default function rootReducer(
         loaded: true
       };
 
-    case 'SELECT_SONG':
+    case 'SELECT_SONG': {
+      if (
+        state.songs[action.song.id] != null ||
+        state.songCache[action.song.id] != null
+      ) {
+        return {
+          ...state,
+          currSongID: action.song.id
+        };
+      }
+
       return {
         ...state,
-        currSong: action.song
+        currSongID: action.song.id,
+        songCache: {
+          ...state.songCache,
+          [action.song.id]: action.song
+        }
       };
+    }
 
     case 'SELECT_PLAYLIST':
       return {
@@ -46,19 +61,23 @@ export default function rootReducer(
         return state;
       }
 
-      delete songs[action.id];
-
-      if (state.currSong != null && state.currSong.id === action.id) {
+      if (state.currSongID === action.id) {
         return {
           ...state,
-          songs,
-          currSong: undefined
+          songs: {
+            ...state.songs,
+            [action.id]: null
+          },
+          currSongID: null
         };
       }
 
       return {
         ...state,
-        songs
+        songs: {
+          ...state.songs,
+          [action.id]: null
+        }
       };
     }
 
@@ -77,19 +96,20 @@ export default function rootReducer(
         return state;
       }
 
-      const playlists = state.playlists;
       const songs = state.songs;
 
       playlist.songs.forEach(id => {
         const index = songs[id].playlists.indexOf(action.id);
         if (index !== -1) songs[id].playlists.splice(index, 1);
       });
-      delete playlists[action.id];
 
       if (state.currScreen === action.id) {
         return {
           ...state,
-          playlists,
+          playlists: {
+            ...state.playlists,
+            [action.id]: null
+          },
           songs,
           currScreen: null
         };
@@ -97,7 +117,10 @@ export default function rootReducer(
 
       return {
         ...state,
-        playlists,
+        playlists: {
+          ...state.playlists,
+          [action.id]: null
+        },
         songs
       };
     }
@@ -139,9 +162,15 @@ export default function rootReducer(
 
     case 'SKIP_PREVIOUS':
     case 'SKIP_NEXT': {
-      const { currSong } = state;
-      if (currSong == null) {
+      const { currSongID } = state;
+      if (currSongID == null) {
         // Nothing is playing right now
+        return state;
+      }
+
+      const currSong = state.songs[currSongID] ?? state.songCache[currSongID];
+      if (currSong == null) {
+        // TODO: will be refactored with song queue
         return state;
       }
 
@@ -149,9 +178,21 @@ export default function rootReducer(
       if (state.shuffle && currSong.source === 'YOUTUBE') {
         if (!state.nextSong) return state;
 
+        if (state.songs[state.nextSong.id] == null) {
+          return {
+            ...state,
+            currSongID: state.nextSong.id,
+            nextSong: null,
+            songCache: {
+              ...state.songCache,
+              [state.nextSong.id]: state.nextSong
+            }
+          };
+        }
+
         return {
           ...state,
-          currSong: state.nextSong,
+          currSongID: state.nextSong.id,
           nextSong: null
         };
       }
@@ -162,7 +203,7 @@ export default function rootReducer(
         );
         return {
           ...state,
-          currSong: songs[0 | (Math.random() * songs.length)]
+          currSongID: songs[0 | (Math.random() * songs.length)].id
         };
       }
 
@@ -174,41 +215,33 @@ export default function rootReducer(
         }
         return {
           ...state,
-          currSong: songs[index - 1]
+          currSongID: songs[index - 1].id
         };
       }
 
+      // SKIP_NEXT
       if (index < 0 || index >= songs.length - 1) {
         return state;
       }
       return {
         ...state,
-        currSong: songs[index + 1]
+        currSongID: songs[index + 1].id
       };
     }
 
     case 'UPDATE_TAGS': {
-      const song = values(state.songs).find(song => song.id === action.id);
+      const song = values<SongID, Song>(state.songs).find(
+        song => song.id === action.id
+      );
       if (song == null) {
         return state;
       }
 
-      // Using ...spread doesn't work with Flow
-      const updated = Object.assign(song, {
+      const updated = {
+        ...song,
         title: action.title,
         artist: action.artist
-      });
-
-      if (state.currSong != null && state.currSong.id === action.id) {
-        return {
-          ...state,
-          songs: {
-            ...state.songs,
-            [song.id]: updated
-          },
-          currSong: updated
-        };
-      }
+      };
 
       return {
         ...state,

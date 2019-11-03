@@ -1,14 +1,14 @@
 // @flow strict
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 import path from 'path';
+import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 // import fs from 'fs';
 // import ReactPlayer from 'react-player';
 
-import VolumeBar from './volume';
 import RangeInput from './range';
+import VolumeBar from './volume';
 import { formatDuration } from '../../util';
 import { getStreamURL } from '../../yt-util';
 
@@ -115,7 +115,7 @@ class PlaybackBar extends React.Component<Props, State> {
   _loadSong = () => {
     const { currSong } = this.props;
 
-    if (!currSong) {
+    if (currSong == null) {
       return;
     }
 
@@ -258,8 +258,12 @@ class PlaybackBar extends React.Component<Props, State> {
 }
 
 function mapState(state: StoreState) {
+  const { currSongID } = state;
   return {
-    currSong: state.currSong,
+    currSong:
+      currSongID != null
+        ? state.songs[currSongID] ?? state.songCache[currSongID]
+        : null,
     shuffle: state.shuffle,
     dlQueue: state.dlQueue,
     dlProgress: state.dlProgress

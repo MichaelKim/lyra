@@ -56,9 +56,12 @@ export type SortType = {|
 // Redux types
 export type StoreState = {|
   +loaded: boolean,
-  +currSong?: Song,
+  +currSongID: ?SongID,
   +currScreen?: ?string,
   +songs: {|
+    +[id: SongID]: Song
+  |},
+  +songCache: {|
     +[id: SongID]: Song
   |},
   +playlists: {|
