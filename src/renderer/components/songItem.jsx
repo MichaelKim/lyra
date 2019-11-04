@@ -233,7 +233,7 @@ class SongItem extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSongID: state.currSongID,
+    currSongID: state.queue.curr,
     playlists: values(state.playlists)
   };
 }

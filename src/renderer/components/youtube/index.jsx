@@ -22,7 +22,7 @@ type Props = {|
   +currScreen: ?string,
   +selectSong: (song: Song) => void,
   +selectPlaylist: (id: string) => void,
-  +setNextSong: (song: Song) => void
+  +queueSong: (song: Song) => void
 |};
 
 type State = {|
@@ -41,7 +41,7 @@ class Youtube extends React.Component<Props, State> {
     getRelatedVideos(id).then(related => {
       if (this.mounted) {
         this.setState({ related });
-        this.props.setNextSong(related[0]);
+        this.props.queueSong(related[0]);
       }
     });
   };
@@ -102,13 +102,11 @@ class Youtube extends React.Component<Props, State> {
 }
 
 function mapState(state: StoreState) {
-  const { currSongID } = state;
+  const { queue } = state;
+  const { curr } = queue;
 
   return {
-    currSong:
-      currSongID != null
-        ? state.songs[currSongID] ?? state.songCache[currSongID]
-        : null,
+    currSong: curr != null ? state.songs[curr] ?? queue.cache[curr] : null,
     currScreen: state.currScreen
   };
 }
@@ -117,7 +115,7 @@ function mapDispatch(dispatch: Dispatch) {
   return {
     selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
     selectPlaylist: (id: string) => dispatch({ type: 'SELECT_PLAYLIST', id }),
-    setNextSong: (song: Song) => dispatch({ type: 'SET_NEXT_SONG', song })
+    queueSong: (song: Song) => dispatch({ type: 'QUEUE_SONG', song })
   };
 }
 

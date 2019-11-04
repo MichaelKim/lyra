@@ -1,7 +1,7 @@
 // @flow strict
 
 import { initialState } from './storage';
-import { values, getSongList } from '../util';
+import { values } from '../util';
 
 import type { StoreState, Action, Song, SongID } from '../types';
 
@@ -17,22 +17,30 @@ export default function rootReducer(
       };
 
     case 'SELECT_SONG': {
-      if (
-        state.songs[action.song.id] != null ||
-        state.songCache[action.song.id] != null
-      ) {
+      const { id } = action.song;
+      const { queue } = state;
+
+      if (state.songs[id] != null || queue.cache[id] != null) {
         return {
           ...state,
-          currSongID: action.song.id
+          queue: {
+            ...queue,
+            prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+            curr: id
+          }
         };
       }
 
       return {
         ...state,
-        currSongID: action.song.id,
-        songCache: {
-          ...state.songCache,
-          [action.song.id]: action.song
+        queue: {
+          ...queue,
+          prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+          curr: id,
+          cache: {
+            ...queue.cache,
+            [id]: action.song
+          }
         }
       };
     }
@@ -61,22 +69,17 @@ export default function rootReducer(
         return state;
       }
 
-      if (state.currSongID === action.id) {
-        return {
-          ...state,
-          songs: {
-            ...state.songs,
-            [action.id]: null
-          },
-          currSongID: null
-        };
-      }
-
       return {
         ...state,
         songs: {
           ...state.songs,
           [action.id]: null
+        },
+        queue: {
+          ...state.queue,
+          prev: state.queue.prev.filter(p => p !== action.id),
+          curr: state.queue.curr === action.id ? null : action.id,
+          next: state.queue.next.filter(p => p !== action.id)
         }
       };
     }
@@ -160,72 +163,42 @@ export default function rootReducer(
       };
     }
 
-    case 'SKIP_PREVIOUS':
-    case 'SKIP_NEXT': {
-      const { currSongID } = state;
-      if (currSongID == null) {
-        // Nothing is playing right now
+    case 'SKIP_PREVIOUS': {
+      const { queue } = state;
+      const { prev, curr, next } = queue;
+      if (curr == null) {
+        // Nothing playing right now
         return state;
       }
 
-      const currSong = state.songs[currSongID] ?? state.songCache[currSongID];
-      if (currSong == null) {
-        // TODO: will be refactored with song queue
-        return state;
-      }
-
-      // Enable autoplay for youtube if shuffle is on
-      if (state.shuffle && currSong.source === 'YOUTUBE') {
-        if (!state.nextSong) return state;
-
-        if (state.songs[state.nextSong.id] == null) {
-          return {
-            ...state,
-            currSongID: state.nextSong.id,
-            nextSong: null,
-            songCache: {
-              ...state.songCache,
-              [state.nextSong.id]: state.nextSong
-            }
-          };
-        }
-
-        return {
-          ...state,
-          currSongID: state.nextSong.id,
-          nextSong: null
-        };
-      }
-
-      if (state.shuffle) {
-        const songs = getSongList(state.songs, state.currScreen).filter(
-          song => song.id !== currSong.id
-        );
-        return {
-          ...state,
-          currSongID: songs[0 | (Math.random() * songs.length)].id
-        };
-      }
-
-      const songs = getSongList(state.songs, state.currScreen, state.sort);
-      const index = songs.findIndex(song => song.id === currSong.id);
-      if (action.type === 'SKIP_PREVIOUS') {
-        if (index <= 0) {
-          return state;
-        }
-        return {
-          ...state,
-          currSongID: songs[index - 1].id
-        };
-      }
-
-      // SKIP_NEXT
-      if (index < 0 || index >= songs.length - 1) {
-        return state;
-      }
       return {
         ...state,
-        currSongID: songs[index + 1].id
+        queue: {
+          ...queue,
+          prev: prev.slice(0, -1),
+          curr: prev[prev.length - 1],
+          next: [curr, ...next]
+        }
+      };
+    }
+
+    case 'SKIP_NEXT': {
+      const { queue } = state;
+      const { prev, curr, next } = queue;
+      if (curr == null) {
+        // Nothing playing right now
+        return state;
+      }
+
+      // Middleware: queues song if next is empty
+      return {
+        ...state,
+        queue: {
+          ...queue,
+          prev: [...prev, curr],
+          curr: next[0],
+          next: next.slice(1)
+        }
       };
     }
 
@@ -269,19 +242,29 @@ export default function rootReducer(
       };
     }
 
-    case 'SET_NEXT_SONG': {
+    case 'QUEUE_SONG': {
       const { song } = action;
 
-      if (state.songs[song.id] != null) {
+      if (state.songs[song.id] != null || state.queue.cache[song.id] != null) {
         return {
           ...state,
-          nextSong: state.songs[song.id]
+          queue: {
+            ...state.queue,
+            next: [...state.queue.next, song.id]
+          }
         };
       }
 
       return {
         ...state,
-        nextSong: song
+        queue: {
+          ...state.queue,
+          next: [...state.queue.next, song.id],
+          cache: {
+            ...state.queue.cache,
+            [song.id]: song
+          }
+        }
       };
     }
 

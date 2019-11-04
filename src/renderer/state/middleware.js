@@ -1,25 +1,67 @@
 // @flow strict
 
 import { save, clear } from './storage';
+import { getSongList } from '../util';
 import { downloadVideo } from '../yt-util';
 
-import type { Middleware } from 'redux';
-import type { StoreState, Action, Dispatch } from '../types';
+import type { Middleware, Song } from '../types';
 
-export const logger: Middleware<
-  StoreState,
-  Action,
-  Dispatch
-> = () => next => action => {
+export const logger: Middleware = () => next => action => {
   console.log(action);
   return next(action);
 };
 
-export const saveToStorage: Middleware<
-  StoreState,
-  Action,
-  Dispatch
-> = store => next => action => {
+export const queueSong: Middleware = store => next => action => {
+  const result = next(action);
+  const newState = store.getState();
+
+  if (action.type !== 'SKIP_NEXT') {
+    return result;
+  }
+
+  const { queue } = newState;
+  const { curr } = queue;
+  if (curr == null) {
+    return result;
+  }
+
+  const currSong = newState.songs[curr] ?? queue.cache[curr];
+  if (currSong == null) {
+    // Error state
+    console.log('invalid queue.curr');
+    return result;
+  }
+
+  // Enable autoplay for youtube if shuffle is on
+  if (newState.shuffle && currSong.source === 'YOUTUBE') {
+    // This is done by Youtube component
+    // getRelatedVideos(currSong.id).then(related => {
+    //   store.dispatch({ type: 'QUEUE_SONG', song: related[0] });
+    // });
+    return result;
+  }
+
+  if (newState.shuffle) {
+    const songs = getSongList(newState.songs, newState.currScreen).filter(
+      song => song.id !== currSong.id
+    );
+    const nextSong = songs[0 | (Math.random() * songs.length)];
+
+    store.dispatch({ type: 'QUEUE_SONG', song: nextSong });
+    return result;
+  }
+
+  // Add next song in list
+  const songs = getSongList(newState.songs, newState.currScreen, newState.sort);
+  const index = songs.findIndex(song => song.id === currSong.id);
+  if (index >= 0 && index < songs.length - 1) {
+    store.dispatch({ type: 'QUEUE_SONG', song: songs[index + 1] });
+  }
+
+  return result;
+};
+
+export const saveToStorage: Middleware = store => next => action => {
   const result = next(action);
   const newState = store.getState();
 
@@ -52,10 +94,10 @@ export const saveToStorage: Middleware<
 
       const id = newState.dlQueue[0];
       downloadVideo(id)
-        .on('progress', progress =>
+        .on('progress', (progress: number) =>
           store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
         )
-        .on('end', song => {
+        .on('end', (song: Song) => {
           store.dispatch({ type: 'DOWNLOAD_FINISH', song });
         });
       break;

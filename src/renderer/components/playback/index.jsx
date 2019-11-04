@@ -258,12 +258,11 @@ class PlaybackBar extends React.Component<Props, State> {
 }
 
 function mapState(state: StoreState) {
-  const { currSongID } = state;
+  const { queue } = state;
+  const { curr } = queue;
+
   return {
-    currSong:
-      currSongID != null
-        ? state.songs[currSongID] ?? state.songCache[currSongID]
-        : null,
+    currSong: curr != null ? state.songs[curr] ?? queue.cache[curr] : null,
     shuffle: state.shuffle,
     dlQueue: state.dlQueue,
     dlProgress: state.dlProgress

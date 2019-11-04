@@ -1,5 +1,7 @@
 // @flow strict
 
+import type { Middleware as _Middleware } from 'redux';
+
 export type SongID = string;
 export type PlaylistID = string;
 
@@ -56,12 +58,8 @@ export type SortType = {|
 // Redux types
 export type StoreState = {|
   +loaded: boolean,
-  +currSongID: ?SongID,
   +currScreen?: ?string,
   +songs: {|
-    +[id: SongID]: Song
-  |},
-  +songCache: {|
     +[id: SongID]: Song
   |},
   +playlists: {|
@@ -70,12 +68,21 @@ export type StoreState = {|
   +volume: number,
   +sort: SortType,
   +shuffle: boolean,
-  +nextSong: ?Song, // Only for YouTube
+  +queue: {|
+    +prev: SongID[],
+    +curr: ?SongID,
+    +next: SongID[],
+    +cache: {|
+      +[id: SongID]: Song
+    |}
+  |},
   +dlQueue: SongID[], // Queue of downloading videos
   +dlProgress: number
 |};
 
 export type Dispatch = (action: Action) => void;
+
+export type Middleware = _Middleware<StoreState, Action, Dispatch>;
 
 export type Action =
   | {| +type: 'LOAD_STORAGE', +state: StoreState |}
@@ -92,7 +99,7 @@ export type Action =
   | {| +type: 'UPDATE_TAGS', +id: SongID, +title: string, +artist: string |}
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
-  | {| +type: 'SET_NEXT_SONG', +song: Song |}
+  | {| +type: 'QUEUE_SONG', +song: Song |}
   | {| +type: 'DOWNLOAD_ADD', +id: SongID |}
   | {| +type: 'DOWNLOAD_PROGRESS', +progress: number |}
   | {| +type: 'DOWNLOAD_FINISH', +song: ?Song |}

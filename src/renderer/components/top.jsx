@@ -10,7 +10,7 @@ import Settings from './settings';
 import { useSelector } from '../hooks';
 
 export default function Top() {
-  const currSongID = useSelector(state => state.currSongID);
+  const currSongID = useSelector(state => state.queue.curr);
   const currScreen = useSelector(state => state.currScreen);
 
   return (

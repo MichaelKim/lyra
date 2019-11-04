@@ -9,7 +9,8 @@
   code, and avoid duplication across the codebase.
 */
 
-import events from 'events';
+// eslint-disable-next-line no-unused-vars
+import EventEmitter from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from '@ffmpeg-installer/ffmpeg';
 import fs from 'fs';
@@ -23,6 +24,12 @@ import { google } from 'googleapis';
 import type { Song, SongID, VideoSong } from './types';
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
+
+declare class DownloadEventEmitter extends EventEmitter {
+  on('progress', (percent: number) => void): this;
+  on('end', (song: Song) => void): this;
+  on(string, (e: mixed) => void): this;
+}
 
 const youtube = google.youtube({
   version: 'v3',
@@ -39,7 +46,7 @@ export async function getStreamURL(id: SongID): Promise<string> {
   return format.url;
 }
 
-export function downloadVideo(id: SongID) {
+export function downloadVideo(id: SongID): DownloadEventEmitter {
   /*
     This method fetches the audio of a YouTube video, and downloads it
     to download.mp3, while converting to a mp3 file. Once it finishes,
@@ -49,7 +56,7 @@ export function downloadVideo(id: SongID) {
 
   const dlPath = path.join(storage.getDataPath(), `download-${id}.mp3`);
 
-  const emitter = new events.EventEmitter();
+  const emitter = new DownloadEventEmitter();
 
   ytdl.getInfo(id, { quality: 'highestaudio' }).then(info => {
     let currDuration = 0;

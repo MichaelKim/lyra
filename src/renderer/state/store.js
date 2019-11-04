@@ -5,7 +5,7 @@ import { applyMiddleware, createStore, compose } from 'redux';
 
 import reducer from './reducer';
 import { initialState } from './storage';
-import { logger, saveToStorage } from './middleware';
+import { logger, saveToStorage, queueSong } from './middleware';
 
 import type { StoreState, Action, Dispatch } from '../types';
 
@@ -17,7 +17,7 @@ const composeEnhancers =
 const store = createStore<StoreState, Action, Dispatch>(
   reducer,
   initialState,
-  composeEnhancers(applyMiddleware(logger, saveToStorage))
+  composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
 storage.has('state', (err, exists) => {
