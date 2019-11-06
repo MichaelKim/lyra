@@ -14,6 +14,7 @@ module.file_ext=.json
 module.file_ext=.jsx
 module.file_ext=.css
 module.file_ext=.scss
+esproposal.optional_chaining=enable
 # Issue with v0.110.0
 experimental.disable_live_non_parse_errors=true
 

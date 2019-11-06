@@ -106,9 +106,9 @@ export function getMetadata(dir: string, name: string): Promise<Metadata> {
       } else {
         resolve({
           title:
-            metadata.format.tags.title ||
+            metadata.format.tags?.title ||
             path.basename(name, path.extname(name)),
-          artist: metadata.format.tags.artist,
+          artist: metadata.format.tags?.artist || '',
           duration: metadata.format.duration
         });
       }
