@@ -76,9 +76,6 @@ Refactor:
     - useToggle hook
   - ytdl, ytsr
     - fork and write version without built-in node modules
-- currsong
-  - replace with just song id
-  - add hook useCurrSong for getting song object from id
 - Screen display
   - currently, it's hacked together with playlists
   - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)
@@ -88,7 +85,6 @@ Refactor:
     - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
     - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
 - Next song / Queue
-  - remove "next_s
   - add "queue" to state
   - when selecting a song to play, select a next song to play
     - context: youtube, playlist, all songs, shuffle

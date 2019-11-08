@@ -1,9 +1,10 @@
 // @flow strict
 
+import u from 'updeep';
 import { initialState } from './storage';
 import { values } from '../util';
 
-import type { StoreState, Action, Song, SongID } from '../types';
+import type { StoreState, Action, Song, SongID, SortType } from '../types';
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -11,87 +12,94 @@ export default function rootReducer(
 ): StoreState {
   switch (action.type) {
     case 'LOAD_STORAGE':
-      return {
-        ...action.state,
-        loaded: true
-      };
+      return u({ loaded: true }, state);
 
     case 'SELECT_SONG': {
       const { id } = action.song;
       const { queue } = state;
 
       if (state.songs[id] != null || queue.cache[id] != null) {
-        return {
-          ...state,
-          queue: {
-            ...queue,
-            prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
-            curr: id
-          }
-        };
+        return u(
+          {
+            queue: {
+              prev:
+                queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+              curr: id
+            }
+          },
+          state
+        );
       }
 
-      return {
-        ...state,
-        queue: {
-          ...queue,
-          prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
-          curr: id,
-          cache: {
-            ...queue.cache,
-            [id]: action.song
+      return u(
+        {
+          queue: {
+            prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+            curr: id,
+            cache: {
+              [id]: action.song
+            }
           }
-        }
-      };
+        },
+        state
+      );
     }
 
     case 'SELECT_PLAYLIST':
-      return {
-        ...state,
-        currScreen: action.id
-      };
-
-    case 'ADD_SONGS':
-      return action.songs.reduce(
-        (acc, song) => ({
-          ...acc,
-          songs: {
-            ...acc.songs,
-            [song.id]: song
-          }
-        }),
+      return u(
+        {
+          currScreen: action.id
+        },
         state
       );
 
+    case 'ADD_SONGS': {
+      const newSongs: $Shape<typeof state.songs> = action.songs.reduce(
+        (acc, song) => {
+          acc[song.id] = song;
+          return acc;
+        },
+        {}
+      );
+
+      return u(
+        {
+          songs: newSongs
+        },
+        state
+      );
+    }
+
     case 'REMOVE_SONG': {
-      const { songs } = state;
+      const { queue, songs } = state;
       if (songs[action.id] == null) {
         return state;
       }
 
-      return {
-        ...state,
-        songs: {
-          ...state.songs,
-          [action.id]: null
+      return u(
+        {
+          songs: {
+            [action.id]: null
+          },
+          queue: {
+            prev: queue.prev.filter(p => p !== action.id),
+            curr: queue.curr === action.id ? null : action.id,
+            next: queue.next.filter(p => p !== action.id)
+          }
         },
-        queue: {
-          ...state.queue,
-          prev: state.queue.prev.filter(p => p !== action.id),
-          curr: state.queue.curr === action.id ? null : action.id,
-          next: state.queue.next.filter(p => p !== action.id)
-        }
-      };
+        state
+      );
     }
 
     case 'CREATE_PLAYLIST':
-      return {
-        ...state,
-        playlists: {
-          ...state.playlists,
-          [action.playlist.id]: action.playlist
-        }
-      };
+      return u(
+        {
+          playlists: {
+            [action.playlist.id]: action.playlist
+          }
+        },
+        state
+      );
 
     case 'DELETE_PLAYLIST': {
       const playlist = state.playlists[action.id];
@@ -107,25 +115,27 @@ export default function rootReducer(
       });
 
       if (state.currScreen === action.id) {
-        return {
-          ...state,
-          playlists: {
-            ...state.playlists,
-            [action.id]: null
+        return u(
+          {
+            playlists: {
+              [action.id]: null
+            },
+            songs,
+            currScreen: null
           },
-          songs,
-          currScreen: null
-        };
+          state
+        );
       }
 
-      return {
-        ...state,
-        playlists: {
-          ...state.playlists,
-          [action.id]: null
+      return u(
+        {
+          playlists: {
+            [action.id]: null
+          },
+          songs
         },
-        songs
-      };
+        state
+      );
     }
 
     case 'SET_PLAYLISTS': {
@@ -144,23 +154,25 @@ export default function rootReducer(
         }
       }
 
-      return {
-        ...state,
-        songs: {
-          ...state.songs,
-          [sid]: {
-            ...state.songs[sid],
-            playlists: pids
+      return u(
+        {
+          songs: {
+            [sid]: {
+              playlists: pids
+            }
           }
-        }
-      };
+        },
+        state
+      );
     }
 
     case 'CHANGE_VOLUME': {
-      return {
-        ...state,
-        volume: Math.max(Math.min(action.volume, 100), 0)
-      };
+      return u(
+        {
+          volume: Math.max(Math.min(action.volume, 100), 0)
+        },
+        state
+      );
     }
 
     case 'SKIP_PREVIOUS': {
@@ -171,15 +183,16 @@ export default function rootReducer(
         return state;
       }
 
-      return {
-        ...state,
-        queue: {
-          ...queue,
-          prev: prev.slice(0, -1),
-          curr: prev[prev.length - 1],
-          next: [curr, ...next]
-        }
-      };
+      return u(
+        {
+          queue: {
+            prev: prev.slice(0, -1),
+            curr: prev[prev.length - 1],
+            next: [curr, ...next]
+          }
+        },
+        state
+      );
     }
 
     case 'SKIP_NEXT': {
@@ -191,15 +204,16 @@ export default function rootReducer(
       }
 
       // Middleware: queues song if next is empty
-      return {
-        ...state,
-        queue: {
-          ...queue,
-          prev: [...prev, curr],
-          curr: next[0],
-          next: next.slice(1)
-        }
-      };
+      return u(
+        {
+          queue: {
+            prev: [...prev, curr],
+            curr: next[0],
+            next: next.slice(1)
+          }
+        },
+        state
+      );
     }
 
     case 'UPDATE_TAGS': {
@@ -210,103 +224,116 @@ export default function rootReducer(
         return state;
       }
 
-      const updated = {
-        ...song,
-        title: action.title,
-        artist: action.artist
-      };
-
-      return {
-        ...state,
-        songs: {
-          ...state.songs,
-          [song.id]: updated
-        }
-      };
+      return u(
+        {
+          songs: {
+            [song.id]: {
+              title: action.title,
+              artist: action.artist
+            }
+          }
+        },
+        state
+      );
     }
 
     case 'SET_SORT': {
-      return {
-        ...state,
-        sort: {
-          column: action.column,
-          direction: action.direction
-        }
+      const sort: SortType = {
+        column: action.column,
+        direction: action.direction
       };
+      return u(
+        {
+          sort
+        },
+        state
+      );
     }
 
     case 'SET_SHUFFLE': {
-      return {
-        ...state,
-        shuffle: action.shuffle
-      };
+      return u(
+        {
+          shuffle: action.shuffle
+        },
+        state
+      );
     }
 
     case 'QUEUE_SONG': {
       const { song } = action;
 
       if (state.songs[song.id] != null || state.queue.cache[song.id] != null) {
-        return {
-          ...state,
-          queue: {
-            ...state.queue,
-            next: [...state.queue.next, song.id]
-          }
-        };
+        return u(
+          {
+            queue: {
+              next: [...state.queue.next, song.id]
+            }
+          },
+          state
+        );
       }
 
-      return {
-        ...state,
-        queue: {
-          ...state.queue,
-          next: [...state.queue.next, song.id],
-          cache: {
-            ...state.queue.cache,
-            [song.id]: song
+      return u(
+        {
+          queue: {
+            next: [...state.queue.next, song.id],
+            cache: {
+              [song.id]: song
+            }
           }
-        }
-      };
+        },
+        state
+      );
     }
 
     case 'DOWNLOAD_ADD': {
-      return {
-        ...state,
-        dlQueue: [...state.dlQueue, action.id]
-      };
+      return u(
+        {
+          dlQueue: [...state.dlQueue, action.id]
+        },
+        state
+      );
     }
 
     case 'DOWNLOAD_PROGRESS': {
-      return {
-        ...state,
-        dlProgress: action.progress
-      };
+      return u(
+        {
+          dlProgress: action.progress
+        },
+        state
+      );
     }
 
     case 'DOWNLOAD_FINISH': {
       if (action.song == null) {
-        return {
-          ...state,
-          dlQueue: state.dlQueue.slice(1),
-          dlProgress: 0
-        };
+        return u(
+          {
+            dlQueue: state.dlQueue.slice(1),
+            dlProgress: 0
+          },
+          state
+        );
       }
 
-      return {
-        ...state,
-        songs: {
-          ...state.songs,
-          [action.song.id]: action.song
+      return u(
+        {
+          songs: {
+            [action.song.id]: action.song
+          },
+          dlQueue: state.dlQueue.slice(1),
+          dlProgress: 0
         },
-        dlQueue: state.dlQueue.slice(1),
-        dlProgress: 0
-      };
+        state
+      );
     }
 
     case 'CLEAR_DATA':
-      return {
-        ...initialState,
-        loaded: true
-      };
+      return u(
+        {
+          loaded: true
+        },
+        state
+      );
 
     default:
       return state;
