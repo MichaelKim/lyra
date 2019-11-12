@@ -18,8 +18,9 @@ import he from 'he';
 import path from 'path';
 import storage from 'electron-json-storage';
 import ytdl from 'ytdl-core';
+import ytsr from 'ytsr';
 import { createHash } from 'crypto';
-import { google } from 'googleapis';
+// import { google } from "googleapis";
 
 import type { Song, SongID, VideoSong } from './types';
 
@@ -31,10 +32,10 @@ declare class DownloadEventEmitter extends EventEmitter {
   on(string, (e: mixed) => void): this;
 }
 
-const youtube = google.youtube({
-  version: 'v3',
-  auth: process.env.ELECTRON_WEBPACK_APP_YT_API
-});
+// const youtube = google.youtube({
+//   version: "v3",
+//   auth: process.env.ELECTRON_WEBPACK_APP_YT_API
+// });
 
 export async function getStreamURL(id: SongID): Promise<string> {
   const info = await ytdl.getInfo(id);
@@ -59,7 +60,7 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
   const emitter = new DownloadEventEmitter();
 
   ytdl.getInfo(id, { quality: 'highestaudio' }).then(info => {
-    let currDuration = 0;
+    let currDuration: number = 0;
 
     ffmpeg(ytdl.downloadFromInfo(info))
       .audioBitrate(128)
@@ -121,51 +122,102 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
   return emitter;
 }
 
-async function ytQuery(options): Promise<VideoSong[]> {
-  const res = await youtube.search.list({
-    part: 'snippet',
-    fields: 'items(id,snippet(title,channelTitle,thumbnails/default))',
-    maxResults: 25,
-    type: 'video',
-    ...options
-  });
+// async function ytQuery(options): Promise<VideoSong[]> {
+//   const res = await youtube.search.list({
+//     part: "snippet",
+//     fields: "items(id,snippet(title,channelTitle,thumbnails/default))",
+//     maxResults: 25,
+//     type: "video",
+//     ...options
+//   });
 
-  const videos = res.data.items.map(item => ({
-    id: item.id.videoId,
-    title: he.decode(item.snippet.title),
-    artist: item.snippet.channelTitle,
-    thumbnail: item.snippet.thumbnails.default
-  }));
+//   const videos = res.data.items.map(item => ({
+//     id: item.id.videoId,
+//     title: he.decode(item.snippet.title),
+//     artist: item.snippet.channelTitle,
+//     thumbnail: item.snippet.thumbnails.default
+//   }));
 
-  // const res2 = await youtube.videos.list({
-  //   part: 'contentDetails,statistics',
-  //   fields: 'items(contentDetails/duration, statistics/viewCount)',
-  //   id: videos.map(v => v.id).join(',')
+//   // const res2 = await youtube.videos.list({
+//   //   part: 'contentDetails,statistics',
+//   //   fields: 'items(contentDetails/duration, statistics/viewCount)',
+//   //   id: videos.map(v => v.id).join(',')
+//   // });
+
+//   // return videos.map((v, i) => ({
+//   //   ...v,
+//   //   duration: parseDuration(res2.data.items[i].contentDetails.duration),
+//   //   views: res2.data.items[i].statistics.viewCount
+//   // }));
+
+//   // This doesn't always work, but avoids making an API call
+//   const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
+//   return videos.map((v, i) => ({
+//     ...v,
+//     playlists: [],
+//     date: Date.now(),
+//     source: "YOUTUBE",
+//     url: v.id,
+//     duration: infos[i].length_seconds,
+//     views: infos[i].player_response.videoDetails.viewCount
+//   }));
+// }
+
+export async function ytSearch(keyword: string): Promise<VideoSong[]> {
+  // return ytQuery({
+  //   q: keyword
   // });
 
-  // return videos.map((v, i) => ({
-  //   ...v,
-  //   duration: parseDuration(res2.data.items[i].contentDetails.duration),
-  //   views: res2.data.items[i].statistics.viewCount
-  // }));
+  // Alternative using ytsr
+  const filters = await ytsr.getFilters(keyword);
+  const typeFilters = filters.get('Type');
+  if (typeFilters == null) {
+    return [];
+  }
 
-  // This doesn't always work, but avoids making an API call
-  const infos = await Promise.all(videos.map(v => ytdl.getInfo(v.id)));
-  return videos.map((v, i) => ({
-    ...v,
+  const filter = typeFilters.find(f => f.name === 'Video');
+  if (filter == null) {
+    return [];
+  }
+
+  const search = await ytsr(keyword, {
+    limit: 25,
+    nextpageRef: filter.ref
+  });
+
+  // Videos can appear more than once
+  // The object reduce removes duplicates based on video id
+  const videos = search.items.reduce((acc, item) => {
+    const id = item.link.substr(item.link.lastIndexOf('=') + 1);
+    const video: $Shape<VideoSong> = {
+      id,
+      title: he.decode(item.title),
+      artist: item.author.name,
+      thumbnail: {
+        url: item.thumbnail,
+        width: 120,
+        height: 90
+      }
+    };
+    acc[id] = video;
+    return acc;
+  }, ({}: { [id: string]: $Shape<VideoSong> }));
+
+  const ids: Array<string> = Object.keys(videos);
+
+  const infos = await Promise.all(ids.map(id => ytdl.getInfo(id)));
+
+  const videosongs = infos.map(info => ({
+    ...videos[info.video_id],
     playlists: [],
     date: Date.now(),
     source: 'YOUTUBE',
-    url: v.id,
-    duration: infos[i].length_seconds,
-    views: infos[i].player_response.videoDetails.viewCount
+    url: info.video_id,
+    duration: info.length_seconds,
+    views: info.player_response.videoDetails.viewCount
   }));
-}
 
-export async function ytSearch(keyword: string): Promise<VideoSong[]> {
-  return ytQuery({
-    q: keyword
-  });
+  return videosongs;
 }
 
 export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
