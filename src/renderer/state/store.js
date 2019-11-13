@@ -32,7 +32,7 @@ storage.has('state', (err, exists) => {
     return;
   }
 
-  storage.get('state', (err, state) => {
+  storage.get<StoreState>('state', (err, state) => {
     if (err) return;
 
     store.dispatch({

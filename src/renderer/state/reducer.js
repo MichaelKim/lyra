@@ -4,7 +4,7 @@ import u from 'updeep';
 import { initialState } from './storage';
 import { values } from '../util';
 
-import type { StoreState, Action, Song, SongID, SortType } from '../types';
+import type { StoreState, Action, SortType } from '../types';
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -12,7 +12,7 @@ export default function rootReducer(
 ): StoreState {
   switch (action.type) {
     case 'LOAD_STORAGE':
-      return u({ loaded: true }, state);
+      return u({ loaded: true }, action.state);
 
     case 'SELECT_SONG': {
       const { id } = action.song;
@@ -217,9 +217,7 @@ export default function rootReducer(
     }
 
     case 'UPDATE_TAGS': {
-      const song = values<SongID, Song>(state.songs).find(
-        song => song.id === action.id
-      );
+      const song = values(state.songs).find(song => song.id === action.id);
       if (song == null) {
         return state;
       }

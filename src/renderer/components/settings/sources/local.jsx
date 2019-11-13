@@ -28,7 +28,7 @@ type State = {|
 |};
 
 class Sources extends React.Component<Props, State> {
-  state = {
+  state: State = {
     selected: false,
     tempDirs: [],
     tempSongs: [],
@@ -61,9 +61,11 @@ class Sources extends React.Component<Props, State> {
 
     // $FlowFixMe: Array.flat() not in Flow
     const songs: Song[] = values.flat();
-    const ids = songs.map(song => song.id);
-    // Change reduce-spread?
-    const toggle = ids.reduce((acc, val) => ({ ...acc, [val]: true }), {});
+    const ids: SongID[] = songs.map(song => song.id);
+    const toggle = ids.reduce((acc, val) => {
+      acc[val] = true;
+      return acc;
+    }, ({}: $PropertyType<State, 'toggle'>));
     this.setState({
       selected: true,
       tempDirs: dirs,
@@ -96,9 +98,7 @@ class Sources extends React.Component<Props, State> {
                 <h5>{dir}</h5>
                 <div className='scroll'>
                   {this.state.tempSongs
-                    .filter(
-                      (song: LocalSong) => path.dirname(song.filepath) === dir
-                    )
+                    .filter(song => path.dirname(song.filepath) === dir)
                     .map(song => (
                       <div className='sources-song-item' key={song.id}>
                         <span className='sources-song-name'>{song.title}</span>
