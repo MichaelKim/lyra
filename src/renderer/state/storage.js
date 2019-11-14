@@ -10,7 +10,10 @@ export const initialState: StoreState = {
   loaded: false,
   songs: {},
   playlists: {},
-  volume: 100,
+  volume: {
+    amount: 1,
+    muted: false
+  },
   sort: {
     column: 'TITLE',
     direction: false

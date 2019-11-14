@@ -2,287 +2,187 @@
 
 import * as React from 'react';
 import path from 'path';
-import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 // import fs from 'fs';
 // import ReactPlayer from 'react-player';
 
+import AudioControl from './audio';
 import RangeInput from './range';
 import VolumeBar from './volume';
+
+import { useSelector, useDispatch } from '../../hooks';
 import { formatDuration } from '../../util';
 import { getStreamURL } from '../../yt-util';
 
-import type { StoreState, Song, SongID, Dispatch } from '../../types';
-
 import '../../../css/playback.scss';
 
-type Props = {|
-  +currSong: ?Song,
-  +shuffle: boolean,
-  +skipPrevious: () => void,
-  +skipNext: () => void,
-  +setShuffle: (shuffle: boolean) => void,
-  +dlQueue: SongID[],
-  +dlProgress: number
-|};
+const PlaybackBar = () => {
+  const [src, setSrc] = React.useState('');
+  const [playing, setPlaying] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
+  const [showDlQueue, setShowDlQueue] = React.useState(false);
 
-type State = {|
-  src: string,
-  currentTime: number,
-  showDlQueue: boolean
-|};
+  const currSong = useSelector(state => {
+    const { queue } = state;
+    const { curr } = queue;
 
-class PlaybackBar extends React.Component<Props, State> {
-  state = {
-    src: '',
-    currentTime: 0,
-    showDlQueue: false
-  };
-  _tempVol = null;
-  _audio = React.createRef();
+    return curr != null ? state.songs[curr] ?? queue.cache[curr] : null;
+  });
 
-  _onVolumeChange = (volume: number) => {
-    /*
-      This converts the linear slider to a logarithmic scale in order
-       to match our perception of loudnes. The magic number is 100^(1/100),
-       which forms a nice log scale from (0,1) to (100,99.999999991).
-       In order to mute at 0, the volume is dropped to 0, ignoring the log.
-       The 1% dropoff is small enough to be unnoticable.
-    */
-    const adjusted = volume === 0 ? 0 : Math.pow(1.04712854805, volume);
-    if (this._audio.current) {
-      this._audio.current.volume = adjusted / 100;
-    } else {
-      this._tempVol = adjusted;
-    }
-  };
+  const shuffle = useSelector(state => state.shuffle);
+  const dlQueue = useSelector(state => state.dlQueue);
+  const dlProgress = useSelector(state => (0 | (state.dlProgress * 100)) / 100);
 
-  _onTimeUpdate = (e: SyntheticEvent<HTMLAudioElement>) => {
-    this.setState({
-      currentTime: e.currentTarget.currentTime
-    });
+  const dispatch = useDispatch();
+  const skipPrevious = React.useCallback(
+    () => dispatch({ type: 'SKIP_PREVIOUS' }),
+    [dispatch]
+  );
+  const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
+    dispatch
+  ]);
+  const setShuffle = (shuffle: boolean) =>
+    dispatch({ type: 'SET_SHUFFLE', shuffle });
 
+  const onProgress = (time: number) => {
+    setProgress(time);
     // if (
-    //   this.props.currSong != null &&
-    //   e.currentTarget.currentTime > this.props.currSong.duration
+    //   this.currSong != null &&
+    //   e.currentTarget.currentTime > this.currSong.duration
     // ) {
     //   this._onEnded();
     // }
   };
 
-  _onSeek = (seek: number) => {
-    if (this._audio.current) {
-      this._audio.current.currentTime = seek;
-    }
+  const onSeek = (seek: number) => {
+    setProgress(seek);
   };
 
-  _onReplay = () => {
+  const onReplay = () => {
     // Don't need to max 0
-    this._onSeek(this.state.currentTime - 10);
+    onSeek(progress - 10);
   };
 
-  _onForward = () => {
+  const onForward = () => {
     // Don't need to min duration
-    this._onSeek(this.state.currentTime + 10);
+    onSeek(progress + 10);
   };
 
-  _onTogglePause = () => {
-    if (this._audio.current) {
-      if (this._audio.current.paused) {
-        this._audio.current.play();
-      } else {
-        this._audio.current.pause();
-      }
-    }
+  const onTogglePause = React.useCallback(() => {
+    setPlaying(!playing);
+  }, [playing]);
+
+  const onEnded = () => {
+    setPlaying(false);
+
+    skipNext();
   };
 
-  _onEnded = () => {
-    this._audio.current && this._audio.current.pause();
-
-    this.props.skipNext();
+  const onShuffle = () => {
+    setShuffle(!shuffle);
   };
 
-  _onShuffle = () => {
-    this.props.setShuffle(!this.props.shuffle);
+  const onShowDlQueue = () => {
+    setShowDlQueue(!showDlQueue);
   };
 
-  _onShowDlQueue = () => {
-    this.setState(prevState => ({
-      showDlQueue: !prevState.showDlQueue
-    }));
-  };
+  // Media control shortcuts
+  React.useEffect(() => {
+    ipcRenderer.on('play-pause', () => {
+      onTogglePause();
+    });
 
-  _loadSong = () => {
-    const { currSong } = this.props;
+    ipcRenderer.on('skip-previous', () => {
+      skipPrevious();
+    });
 
+    ipcRenderer.on('skip-next', () => {
+      skipNext();
+    });
+  }, [onTogglePause, skipPrevious, skipNext]);
+
+  React.useEffect(() => {
     if (currSong == null) {
       return;
     }
 
     // Load song data
     if (currSong.source === 'YOUTUBE') {
-      getStreamURL(currSong.id).then(url =>
-        this.setState({
-          src: url
-        })
-      );
+      getStreamURL(currSong.id).then(setSrc);
     } else {
-      this.setState({
-        src: path.join('file://', currSong.filepath)
-      });
+      setSrc(path.join('file://', currSong.filepath));
     }
-  };
+  }, [currSong?.id]);
 
-  componentDidMount() {
-    if (this._tempVol != null) {
-      this._onVolumeChange(this._tempVol);
-    }
+  const max = currSong?.duration ?? 0;
 
-    ipcRenderer.on('play-pause', () => {
-      this._onTogglePause();
-    });
+  const currTime = formatDuration(progress);
+  const maxTime = formatDuration(max);
 
-    ipcRenderer.on('skip-previous', () => {
-      this.props.skipPrevious();
-    });
-
-    ipcRenderer.on('skip-next', () => {
-      this.props.skipNext();
-    });
-
-    this._loadSong();
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    const { currSong } = this.props;
-
-    if (
-      (this.state.src || !currSong) &&
-      (!currSong ||
-        (prevProps.currSong && currSong.id === prevProps.currSong.id))
-    ) {
-      return;
-    }
-
-    this._loadSong();
-  }
-
-  render() {
-    const { currSong } = this.props;
-    const max =
-      this._audio.current && this._audio.current.duration
-        ? this._audio.current.duration
-        : 0;
-
-    const currTime = formatDuration(this.state.currentTime);
-    const maxTime = formatDuration(max);
-
-    const dlProgress = (0 | (this.props.dlProgress * 100)) / 100;
-
-    return (
-      <div className='playback-box'>
-        <audio
-          ref={this._audio}
-          src={this.state.src}
-          autoPlay
-          onTimeUpdate={this._onTimeUpdate}
-          onEnded={this._onEnded}
-        />
-        <div className='playback-bar'>
-          <p>{currTime}</p>
-          {currSong != null ? (
-            <RangeInput
-              value={this.state.currentTime}
-              max={max}
-              onChange={this._onSeek}
-            />
-          ) : (
-            <RangeInput value={0} max={0} />
-          )}
-          <p>{maxTime}</p>
-        </div>
-        {currSong != null && (
-          <div className='playback-left'>
-            <h3>{currSong.title}</h3>
-            <br />
-            <h5>{currSong.artist}</h5>
-          </div>
+  return (
+    <div className='playback-box'>
+      <AudioControl
+        src={src}
+        playing={playing}
+        progress={progress}
+        onProgress={onProgress}
+        onEnd={onEnded}
+      />
+      <div className='playback-bar'>
+        <p>{currTime}</p>
+        {currSong != null ? (
+          <RangeInput value={progress} max={max} onChange={onSeek} />
+        ) : (
+          <RangeInput value={0} max={0} />
         )}
-        <div className='playback-controls'>
-          <button className='skip-previous' onClick={this.props.skipPrevious} />
-          <button className='replay-btn' onClick={this._onReplay} />
-          <button
-            className={
-              'play-pause ' +
-              (this._audio.current == null || this._audio.current.paused
-                ? 'play'
-                : 'pause')
-            }
-            onClick={this._onTogglePause}
-            disabled={currSong == null}
-          />
-          <button className='forward-btn' onClick={this._onForward} />
-          <button className='skip-next' onClick={this.props.skipNext} />
-        </div>
-        <div className='playback-right'>
-          <div className='dl-box'>
-            {this.props.dlQueue.length > 0 && (
-              <>
-                <button
-                  className='download-btn'
-                  onClick={this._onShowDlQueue}
-                />
-                {this.state.showDlQueue && (
-                  <div className='dl-popover'>
-                    <h3>Download Queue</h3>
-                    <div>{dlProgress}%</div>
-                    {this.props.dlQueue.map(id => (
-                      <div key={id}>{id}</div>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-          <button
-            className={
-              'shuffle-btn ' + (this.props.shuffle ? '' : 'shuffle-off')
-            }
-            onClick={this._onShuffle}
-          />
-          <VolumeBar onChange={this._onVolumeChange} />
-        </div>
+        <p>{maxTime}</p>
       </div>
-    );
-  }
-}
+      {currSong != null && (
+        <div className='playback-left'>
+          <h3>{currSong.title}</h3>
+          <br />
+          <h5>{currSong.artist}</h5>
+        </div>
+      )}
+      <div className='playback-controls'>
+        <button className='skip-previous' onClick={skipPrevious} />
+        <button className='replay-btn' onClick={onReplay} />
+        <button
+          className={'play-pause ' + (playing ? 'pause' : 'play')}
+          onClick={onTogglePause}
+          disabled={currSong == null}
+        />
+        <button className='forward-btn' onClick={onForward} />
+        <button className='skip-next' onClick={skipNext} />
+      </div>
+      <div className='playback-right'>
+        <div className='dl-box'>
+          {dlQueue.length > 0 && (
+            <>
+              <button className='download-btn' onClick={onShowDlQueue} />
+              {showDlQueue && (
+                <div className='dl-popover'>
+                  <h3>Download Queue</h3>
+                  <div>{dlProgress}%</div>
+                  {dlQueue.map(id => (
+                    <div key={id}>{id}</div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        <button
+          className={'shuffle-btn ' + (shuffle ? '' : 'shuffle-off')}
+          onClick={onShuffle}
+        />
+        <VolumeBar />
+      </div>
+    </div>
+  );
+};
 
-function mapState(state: StoreState) {
-  const { queue } = state;
-  const { curr } = queue;
-
-  return {
-    currSong: curr != null ? state.songs[curr] ?? queue.cache[curr] : null,
-    shuffle: state.shuffle,
-    dlQueue: state.dlQueue,
-    dlProgress: state.dlProgress
-  };
-}
-
-function mapDispatch(dispatch: Dispatch) {
-  return {
-    skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    skipNext: () => dispatch({ type: 'SKIP_NEXT' }),
-    setShuffle: (shuffle: boolean) => dispatch({ type: 'SET_SHUFFLE', shuffle })
-  };
-}
-
-const ConnectedComp: React.ComponentType<{||}> = connect(
-  mapState,
-  mapDispatch
-)(PlaybackBar);
-
-export default ConnectedComp;
+export default PlaybackBar;
 
 //   <ReactPlayer
 //     // url={'file:///C:/Users/Michael/Music/' + this.state.playing}

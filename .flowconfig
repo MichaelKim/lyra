@@ -19,7 +19,9 @@ esproposal.optional_chaining=enable
 experimental.disable_live_non_parse_errors=true
 
 [strict]
+deprecated-type
 nonstrict-import
+; sketchy-null
 unclear-type
 unsafe-getters-setters
 untyped-type-import

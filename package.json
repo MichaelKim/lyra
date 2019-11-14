@@ -40,6 +40,7 @@
     "electron-webpack-eslint": "^5.0.1",
     "eslint-plugin-flowtype": "^3.11.1",
     "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "flow-bin": "^0.111.1",
     "he": "^1.2.0",
     "node-sass": "^4.12.0",

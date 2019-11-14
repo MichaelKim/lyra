@@ -169,7 +169,20 @@ export default function rootReducer(
     case 'CHANGE_VOLUME': {
       return u(
         {
-          volume: Math.max(Math.min(action.volume, 100), 0)
+          volume: {
+            amount: Math.max(Math.min(action.volume, 1), 0)
+          }
+        },
+        state
+      );
+    }
+
+    case 'MUTE': {
+      return u(
+        {
+          volume: {
+            muted: action.muted
+          }
         },
         state
       );

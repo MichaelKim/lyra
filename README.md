@@ -62,6 +62,19 @@ TODO:
   - Space to play/pause
   - Left/right arrow keys to skip 10 seconds
 - Editing metadata input fields should wrap
+- Setup browser build target
+  - Extract all platform specific code into separate file
+    - Browser, desktop
+  - Browser
+    - Settings only has "Clear data"
+    - Storage: localStorage?
+    - How to get the webpack config? electron-webpack
+- Show queue
+- Queue management
+  - Cap previous queue list to 50? songs
+  - Cache should only contain songs that are in queue
+    - Resetting queue will delete cache fully
+    - Song getting pushed off of prev queue will be removed from cache if it's in it
 
 Refactor:
 
@@ -74,8 +87,6 @@ Refactor:
     - songItem -> song-item
   - standardize common utils
     - useToggle hook
-  - ytdl, ytsr
-    - fork and write version without built-in node modules
 - Screen display
   - currently, it's hacked together with playlists
   - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)

@@ -65,7 +65,10 @@ export type StoreState = {|
   +playlists: {|
     +[id: PlaylistID]: Playlist
   |},
-  +volume: number,
+  +volume: {|
+    +amount: number,
+    +muted: boolean
+  |},
   +sort: SortType,
   +shuffle: boolean,
   +queue: {|
@@ -94,6 +97,7 @@ export type Action =
   | {| +type: 'DELETE_PLAYLIST', +id: PlaylistID |}
   | {| +type: 'SET_PLAYLISTS', +sid: SongID, +pids: PlaylistID[] |}
   | {| +type: 'CHANGE_VOLUME', +volume: number |}
+  | {| +type: 'MUTE', +muted: boolean |}
   | {| +type: 'SKIP_PREVIOUS' |}
   | {| +type: 'SKIP_NEXT' |}
   | {| +type: 'UPDATE_TAGS', +id: SongID, +title: string, +artist: string |}
