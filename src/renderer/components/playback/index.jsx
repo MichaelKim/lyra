@@ -7,6 +7,7 @@ import { ipcRenderer } from 'electron';
 // import ReactPlayer from 'react-player';
 
 import AudioControl from './audio';
+import DownloadQueue from './download';
 import RangeInput from './range';
 import VolumeBar from './volume';
 
@@ -20,7 +21,6 @@ const PlaybackBar = () => {
   const [src, setSrc] = React.useState('');
   const [playing, setPlaying] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
-  const [showDlQueue, setShowDlQueue] = React.useState(false);
 
   const currSong = useSelector(state => {
     const { queue } = state;
@@ -30,8 +30,6 @@ const PlaybackBar = () => {
   });
 
   const shuffle = useSelector(state => state.shuffle);
-  const dlQueue = useSelector(state => state.dlQueue);
-  const dlProgress = useSelector(state => (0 | (state.dlProgress * 100)) / 100);
 
   const dispatch = useDispatch();
   const skipPrevious = React.useCallback(
@@ -80,10 +78,6 @@ const PlaybackBar = () => {
 
   const onShuffle = () => {
     setShuffle(!shuffle);
-  };
-
-  const onShowDlQueue = () => {
-    setShowDlQueue(!showDlQueue);
   };
 
   // Media control shortcuts
@@ -156,22 +150,7 @@ const PlaybackBar = () => {
         <button className='skip-next' onClick={skipNext} />
       </div>
       <div className='playback-right'>
-        <div className='dl-box'>
-          {dlQueue.length > 0 && (
-            <>
-              <button className='download-btn' onClick={onShowDlQueue} />
-              {showDlQueue && (
-                <div className='dl-popover'>
-                  <h3>Download Queue</h3>
-                  <div>{dlProgress}%</div>
-                  {dlQueue.map(id => (
-                    <div key={id}>{id}</div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        <DownloadQueue />
         <button
           className={'shuffle-btn ' + (shuffle ? '' : 'shuffle-off')}
           onClick={onShuffle}
