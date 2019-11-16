@@ -9,6 +9,7 @@ import { ipcRenderer } from 'electron';
 import AudioControl from './audio';
 import DownloadQueue from './download';
 import RangeInput from './range';
+import Shuffle from './shuffle';
 import VolumeBar from './volume';
 
 import { useSelector, useDispatch } from '../../hooks';
@@ -29,8 +30,6 @@ const PlaybackBar = () => {
     return curr != null ? state.songs[curr] ?? queue.cache[curr] : null;
   });
 
-  const shuffle = useSelector(state => state.shuffle);
-
   const dispatch = useDispatch();
   const skipPrevious = React.useCallback(
     () => dispatch({ type: 'SKIP_PREVIOUS' }),
@@ -39,8 +38,6 @@ const PlaybackBar = () => {
   const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
     dispatch
   ]);
-  const setShuffle = (shuffle: boolean) =>
-    dispatch({ type: 'SET_SHUFFLE', shuffle });
 
   const onProgress = (time: number) => {
     setProgress(time);
@@ -74,10 +71,6 @@ const PlaybackBar = () => {
     setPlaying(false);
 
     skipNext();
-  };
-
-  const onShuffle = () => {
-    setShuffle(!shuffle);
   };
 
   // Media control shortcuts
@@ -151,10 +144,7 @@ const PlaybackBar = () => {
       </div>
       <div className='playback-right'>
         <DownloadQueue />
-        <button
-          className={'shuffle-btn ' + (shuffle ? '' : 'shuffle-off')}
-          onClick={onShuffle}
-        />
+        <Shuffle />
         <VolumeBar />
       </div>
     </div>
