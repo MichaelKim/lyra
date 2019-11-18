@@ -19,6 +19,13 @@ export function useDispatch() {
   return _useDispatch<Dispatch>();
 }
 
+// export function useDispatchCallback<S, T: Array<S>>(
+//   callback: Dispatch => T => void
+// ) {
+//   const dispatch = useDispatch();
+//   return React.useCallback(callback(useDispatch()), [dispatch]);
+// }
+
 export function useToggle(defaultValue: boolean) {
   const [value, setValue] = React.useState(defaultValue);
 

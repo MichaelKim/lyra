@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { useSelector, useDispatch } from '../../hooks';
+import { useDispatch, useSelector } from '../../hooks';
 
 const Shuffle = () => {
   const shuffle = useSelector(state => state.shuffle);

@@ -2,17 +2,15 @@
 
 import * as React from 'react';
 import path from 'path';
-import { ipcRenderer } from 'electron';
-// import fs from 'fs';
-// import ReactPlayer from 'react-player';
 
 import AudioControl from './audio';
+import Controls from './controls';
 import DownloadQueue from './download';
 import RangeInput from './range';
 import Shuffle from './shuffle';
 import VolumeBar from './volume';
 
-import { useSelector, useDispatch } from '../../hooks';
+import { useDispatch, useSelector } from '../../hooks';
 import { formatDuration } from '../../util';
 import { getStreamURL } from '../../yt-util';
 
@@ -31,13 +29,7 @@ const PlaybackBar = () => {
   });
 
   const dispatch = useDispatch();
-  const skipPrevious = React.useCallback(
-    () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    [dispatch]
-  );
-  const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
-    dispatch
-  ]);
+  const skipNext = () => dispatch({ type: 'SKIP_NEXT' });
 
   const onProgress = (time: number) => {
     setProgress(time);
@@ -49,44 +41,16 @@ const PlaybackBar = () => {
     // }
   };
 
-  const onSeek = (seek: number) => {
-    setProgress(seek);
-  };
-
-  const onReplay = () => {
-    // Don't need to max 0
-    onSeek(progress - 10);
-  };
-
-  const onForward = () => {
-    // Don't need to min duration
-    onSeek(progress + 10);
-  };
+  const onSeek = (seek: number) => setProgress(progress => progress + seek);
 
   const onTogglePause = React.useCallback(() => {
-    setPlaying(!playing);
-  }, [playing]);
+    setPlaying(playing => !playing);
+  }, []);
 
   const onEnded = () => {
     setPlaying(false);
-
     skipNext();
   };
-
-  // Media control shortcuts
-  React.useEffect(() => {
-    ipcRenderer.on('play-pause', () => {
-      onTogglePause();
-    });
-
-    ipcRenderer.on('skip-previous', () => {
-      skipPrevious();
-    });
-
-    ipcRenderer.on('skip-next', () => {
-      skipNext();
-    });
-  }, [onTogglePause, skipPrevious, skipNext]);
 
   React.useEffect(() => {
     if (currSong == null) {
@@ -99,6 +63,7 @@ const PlaybackBar = () => {
     } else {
       setSrc(path.join('file://', currSong.filepath));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currSong?.id]);
 
   const max = currSong?.duration ?? 0;
@@ -118,7 +83,7 @@ const PlaybackBar = () => {
       <div className='playback-bar'>
         <p>{currTime}</p>
         {currSong != null ? (
-          <RangeInput value={progress} max={max} onChange={onSeek} />
+          <RangeInput value={progress} max={max} onChange={setProgress} />
         ) : (
           <RangeInput value={0} max={0} />
         )}
@@ -131,17 +96,12 @@ const PlaybackBar = () => {
           <h5>{currSong.artist}</h5>
         </div>
       )}
-      <div className='playback-controls'>
-        <button className='skip-previous' onClick={skipPrevious} />
-        <button className='replay-btn' onClick={onReplay} />
-        <button
-          className={'play-pause ' + (playing ? 'pause' : 'play')}
-          onClick={onTogglePause}
-          disabled={currSong == null}
-        />
-        <button className='forward-btn' onClick={onForward} />
-        <button className='skip-next' onClick={skipNext} />
-      </div>
+      <Controls
+        disabled={currSong == null}
+        playing={playing}
+        onTogglePause={onTogglePause}
+        onSeek={onSeek}
+      />
       <div className='playback-right'>
         <DownloadQueue />
         <Shuffle />
@@ -152,29 +112,3 @@ const PlaybackBar = () => {
 };
 
 export default PlaybackBar;
-
-//   <ReactPlayer
-//     // url={'file:///C:/Users/Michael/Music/' + this.state.playing}
-//     url={'https://www.youtube.com/watch?v=ikU7C8TMiiw'}
-//     // url={
-//     //   'file:///C:/Users/Michael/Documents/Github/music-player/video.mp4'
-//     // }
-//     controls
-//     playing
-//   />
-// ) : null}
-// {/* <iframe
-//   type="text/html"
-//   width="640"
-//   height="360"
-//   src="https://www.youtube.com/embed/ikU7C8TMiiw?autoplay=1&origin=localhost"
-//   frameBorder="0"
-// /> */}
-// {/* <audio
-//   controls
-//   src={'file:///C:/Users/Michael/Music/' + this.state.music[0]}
-// /> */}
-// {/* <video
-//   src="file:///C:/Users/Michael/Documents/Github/music-player/video.mp4"
-//   controls
-// /> */}

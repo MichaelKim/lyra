@@ -42,7 +42,7 @@ export default function YtSearch(props: Props) {
     if (props.initialKeyword) {
       onSearch(props.initialKeyword);
     }
-  }, []);
+  }, [props.initialKeyword]);
 
   return (
     <>

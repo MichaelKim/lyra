@@ -2,23 +2,19 @@
 
 import * as React from 'react';
 
-import { useSelector } from '../../hooks';
+import { useSelector, useToggle } from '../../hooks';
 
 const DownloadQueue = () => {
   const dlQueue = useSelector(state => state.dlQueue);
   const dlProgress = useSelector(state => (0 | (state.dlProgress * 100)) / 100);
-  const [showDlQueue, setShowDlQueue] = React.useState(false);
-
-  const onShowDlQueue = () => {
-    setShowDlQueue(!showDlQueue);
-  };
+  const [showQueue, toggleQueue] = useToggle(false);
 
   return (
     <div className='dl-box'>
       {dlQueue.length > 0 && (
         <>
-          <button className='download-btn' onClick={onShowDlQueue} />
-          {showDlQueue && (
+          <button className='download-btn' onClick={toggleQueue} />
+          {showQueue && (
             <div className='dl-popover'>
               <h3>Download Queue</h3>
               <div>{dlProgress}%</div>
