@@ -118,8 +118,6 @@ Minor fixes:
 
 - Scroll bar
   - Sidebar scroll bar should only scroll playlists?
-- Split up `components/playback/index.js` (big file)
-  - Limit files to 200 lines?
 - Deleting playlist
   - Show confirmation modal?
 - Inconsistent action to open context menu
@@ -128,8 +126,6 @@ Minor fixes:
 
 Bugs:
 
-- Uncontrolled to controlled component warning
-  - On song item edit, switching focus for the first time
 - Sorting by name should ignore punctuation (like brackets)
 - If the song skips before related songs are loaded, it won't autoplay the next song
 - Linux:

@@ -4,14 +4,13 @@ import * as React from 'react';
 import path from 'path';
 
 import AudioControl from './audio';
+import Bar from './bar';
 import Controls from './controls';
 import DownloadQueue from './download';
-import RangeInput from './range';
 import Shuffle from './shuffle';
 import VolumeBar from './volume';
 
 import { useDispatch, useSelector } from '../../hooks';
-import { formatDuration } from '../../util';
 import { getStreamURL } from '../../yt-util';
 
 import '../../../css/playback.scss';
@@ -66,11 +65,6 @@ const PlaybackBar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currSong?.id]);
 
-  const max = currSong?.duration ?? 0;
-
-  const currTime = formatDuration(progress);
-  const maxTime = formatDuration(max);
-
   return (
     <div className='playback-box'>
       <AudioControl
@@ -80,15 +74,7 @@ const PlaybackBar = () => {
         onProgress={onProgress}
         onEnd={onEnded}
       />
-      <div className='playback-bar'>
-        <p>{currTime}</p>
-        {currSong != null ? (
-          <RangeInput value={progress} max={max} onChange={setProgress} />
-        ) : (
-          <RangeInput value={0} max={0} />
-        )}
-        <p>{maxTime}</p>
-      </div>
+      <Bar currSong={currSong} progress={progress} onChange={onProgress} />
       {currSong != null && (
         <div className='playback-left'>
           <h3>{currSong.title}</h3>
