@@ -103,11 +103,16 @@ class SongItem extends React.Component<Props, State> {
       status: 'READY'
     });
 
-    this.props.updateTags(
-      this.props.song.id,
-      this.state.title,
-      this.state.artist
-    );
+    if (
+      this.props.song.title !== this.state.title ||
+      this.props.song.artist !== this.state.artist
+    ) {
+      this.props.updateTags(
+        this.props.song.id,
+        this.state.title,
+        this.state.artist
+      );
+    }
   };
 
   _changeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
