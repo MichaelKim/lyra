@@ -45,7 +45,7 @@ const AudioControl = (props: Props) => {
   React.useEffect(() => {
     if (
       audio.current != null &&
-      Math.abs(progress - audio.current.currentTime) > 0.1
+      Math.abs(progress - audio.current.currentTime) > 0.2
     ) {
       audio.current.currentTime = progress;
     }

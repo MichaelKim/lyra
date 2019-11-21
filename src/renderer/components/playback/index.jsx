@@ -28,7 +28,16 @@ const PlaybackBar = () => {
   });
 
   const dispatch = useDispatch();
-  const skipNext = () => dispatch({ type: 'SKIP_NEXT' });
+  const skipPrevious = React.useCallback(() => {
+    if (progress < 3) {
+      dispatch({ type: 'SKIP_PREVIOUS' });
+    } else {
+      setProgress(0);
+    }
+  }, [dispatch, progress]);
+  const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
+    dispatch
+  ]);
 
   const onProgress = (time: number) => {
     setProgress(time);
@@ -85,6 +94,8 @@ const PlaybackBar = () => {
       <Controls
         disabled={currSong == null}
         playing={playing}
+        skipPrevious={skipPrevious}
+        skipNext={skipNext}
         onTogglePause={onTogglePause}
         onSeek={onSeek}
       />

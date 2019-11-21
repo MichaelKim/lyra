@@ -3,27 +3,23 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
-import { useDispatch } from '../../hooks';
-
 type Props = {|
   +disabled: boolean,
   +playing: boolean,
+  +skipPrevious: () => mixed,
+  +skipNext: () => mixed,
   +onTogglePause: () => mixed,
   +onSeek: (amount: number) => mixed
 |};
 
-const Controls = (props: Props) => {
-  const { disabled, playing, onTogglePause, onSeek } = props;
-
-  const dispatch = useDispatch();
-  const skipPrevious = React.useCallback(
-    () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    [dispatch]
-  );
-  const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
-    dispatch
-  ]);
-
+const Controls = ({
+  disabled,
+  playing,
+  onTogglePause,
+  skipPrevious,
+  skipNext,
+  onSeek
+}: Props) => {
   const onForward = () => onSeek(10);
   const onReplay = () => onSeek(-10);
 

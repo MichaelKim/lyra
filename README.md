@@ -78,7 +78,6 @@ TODO:
 
 Refactor:
 
-- Replace reduce spread with reduce mutate
 - Unify lyra and lyra-native
   - Use css-in-js similar to react native's stylesheets (?)
     - move variables.scss to constants.js
@@ -171,10 +170,6 @@ Song types:
 
 Long term features:
 
-- History
-  - Pressing back should go back to start of current song
-  - Pressing back again within ~2 sec of song starting should go back to previously played song
-    - Need to store history of played songs
 - Music metadata
   - Edit metadata on song add
 - Drag and drop
