@@ -72,9 +72,7 @@ TODO:
 - Show queue
 - Queue management
   - Cap previous queue list to 50? songs
-  - Cache should only contain songs that are in queue
-    - Resetting queue will delete cache fully
-    - Song getting pushed off of prev queue will be removed from cache if it's in it
+  - Song getting pushed off of prev queue will be removed from cache if it's in it
 
 Refactor:
 
@@ -94,24 +92,6 @@ Refactor:
   - new screen management:
     - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
     - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
-- Next song / Queue
-  - add "queue" to state
-  - when selecting a song to play, select a next song to play
-    - context: youtube, playlist, all songs, shuffle
-    - if playing from all songs:
-      - queue is built from all songs (in order if not shuffle, random if shuffle)
-    - if playing from playlist:
-      - queue is built from playlist (yes/no shuffle)
-    - if playing from youtube:
-      - queue is built from youtube related (shuffle doesn't do anything)
-  - skipping to next advances forward in queue
-  - skipping to previous goes backwards in queue (except for 1st song)
-  - queue has three parts:
-    - previous songs
-    - current song
-    - manually queued songs
-    - automatically added next song, if still exists
-  - if a new song is selected, the queue is reset
 
 Minor fixes:
 

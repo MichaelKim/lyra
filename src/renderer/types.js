@@ -56,6 +56,18 @@ export type SortType = {|
 |};
 
 // Redux types
+export type QueueType = {|
+  +prev: SongID[],
+  +curr: ?SongID,
+  +next: SongID[],
+  +cache: {|
+    +[id: SongID]: {|
+      +song: Song,
+      +count: number
+    |}
+  |}
+|};
+
 export type StoreState = {|
   +loaded: boolean,
   +currScreen?: ?string,
@@ -71,14 +83,7 @@ export type StoreState = {|
   |},
   +sort: SortType,
   +shuffle: boolean,
-  +queue: {|
-    +prev: SongID[],
-    +curr: ?SongID,
-    +next: SongID[],
-    +cache: {|
-      +[id: SongID]: Song
-    |}
-  |},
+  +queue: QueueType,
   +dlQueue: SongID[], // Queue of downloading videos
   +dlProgress: number
 |};

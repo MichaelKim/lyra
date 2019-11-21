@@ -4,7 +4,7 @@ import u from 'updeep';
 import { initialState } from './storage';
 import { values } from '../util';
 
-import type { StoreState, Action, SortType } from '../types';
+import type { StoreState, Action, SortType, QueueType } from '../types';
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -18,14 +18,29 @@ export default function rootReducer(
       const { id } = action.song;
       const { queue } = state;
 
+      // Update cache
+      const cache = queue.next.reduce((cache, id) => {
+        if (cache[id] == null) return cache;
+        if (cache[id].count === 1) {
+          // $FlowFixMe: ignore mutating
+          delete cache[id];
+          return cache;
+        }
+        cache[id].count -= 1;
+        return cache;
+      }, queue.cache);
+
+      const newQueue: QueueType = {
+        prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+        curr: id,
+        next: [],
+        cache
+      };
+
       if (state.songs[id] != null || queue.cache[id] != null) {
         return u(
           {
-            queue: {
-              prev:
-                queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
-              curr: id
-            }
+            queue: newQueue
           },
           state
         );
@@ -33,13 +48,15 @@ export default function rootReducer(
 
       return u(
         {
-          queue: {
-            prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
-            curr: id,
-            cache: {
-              [id]: action.song
-            }
-          }
+          queue: u(
+            {
+              [id]: {
+                song: action.song,
+                count: 1
+              }
+            },
+            newQueue
+          )
         },
         state
       );
@@ -196,6 +213,10 @@ export default function rootReducer(
         return state;
       }
 
+      if (prev.length === 0) {
+        return state;
+      }
+
       return u(
         {
           queue: {
@@ -217,6 +238,10 @@ export default function rootReducer(
       }
 
       // Middleware: queues song if next is empty
+      if (next.length === 0) {
+        return state;
+      }
+
       return u(
         {
           queue: {
@@ -272,24 +297,47 @@ export default function rootReducer(
 
     case 'QUEUE_SONG': {
       const { song } = action;
+      const next = [...state.queue.next, song.id];
 
-      if (state.songs[song.id] != null || state.queue.cache[song.id] != null) {
+      // Song in library
+      if (state.songs[song.id] != null) {
         return u(
           {
             queue: {
-              next: [...state.queue.next, song.id]
+              next
             }
           },
           state
         );
       }
 
+      // Song in cache
+      if (state.queue.cache[song.id] != null) {
+        return u(
+          {
+            queue: {
+              next,
+              cache: {
+                [song.id]: {
+                  count: state.queue.cache[song.id].count + 1
+                }
+              }
+            }
+          },
+          state
+        );
+      }
+
+      // Add to cache
       return u(
         {
           queue: {
-            next: [...state.queue.next, song.id],
+            next,
             cache: {
-              [song.id]: song
+              [song.id]: {
+                song,
+                count: 1
+              }
             }
           }
         },

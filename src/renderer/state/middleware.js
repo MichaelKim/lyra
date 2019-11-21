@@ -2,7 +2,7 @@
 
 import { save, clear } from './storage';
 import { getSongList } from '../util';
-import { downloadVideo } from '../yt-util';
+import { downloadVideo, getRelatedVideos } from '../yt-util';
 
 import type { Middleware, Song } from '../types';
 
@@ -32,12 +32,16 @@ export const queueSong: Middleware = store => next => action => {
     return result;
   }
 
+  if (queue.next.length > 0) {
+    // Songs already in queue
+    return result;
+  }
+
   // Enable autoplay for youtube if shuffle is on
   if (newState.shuffle && currSong.source === 'YOUTUBE') {
-    // This is done by Youtube component
-    // getRelatedVideos(currSong.id).then(related => {
-    //   store.dispatch({ type: 'QUEUE_SONG', song: related[0] });
-    // });
+    getRelatedVideos(currSong.id).then(related => {
+      store.dispatch({ type: 'QUEUE_SONG', song: related[0] });
+    });
     return result;
   }
 
