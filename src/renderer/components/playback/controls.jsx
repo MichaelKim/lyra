@@ -41,7 +41,7 @@ const Controls = ({
       <button className='skip-previous' onClick={skipPrevious} />
       <button className='replay-btn' onClick={onReplay} />
       <button
-        className={'play-pause ' + (playing ? 'pause' : 'play')}
+        className={'play-pause ' + (disabled || !playing ? 'play' : 'pause')}
         onClick={onTogglePause}
         disabled={disabled}
       />

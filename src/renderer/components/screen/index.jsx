@@ -2,16 +2,16 @@
 
 import * as React from 'react';
 
-import SongItem from './songItem';
-import Search from './search';
+import SongItem from './song-item';
+import Search from '../search';
 
-import { getSongList } from '../util';
-import { useSelector, useDispatch } from '../hooks';
+import { getSongList } from '../../util';
+import { useSelector, useDispatch } from '../../hooks';
 
-import type { SortColumn } from '../types';
+import type { SortColumn } from '../../types';
 
-import '../../css/screen.scss';
-import '../../css/song-row.scss';
+import '../../../css/screen.scss';
+import '../../../css/song-row.scss';
 
 export default function Screen() {
   const songs = useSelector(state =>

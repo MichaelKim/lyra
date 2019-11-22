@@ -7,7 +7,9 @@ import { downloadVideo, getRelatedVideos } from '../yt-util';
 import type { Middleware, Song } from '../types';
 
 export const logger: Middleware = () => next => action => {
-  console.log(action);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(action);
+  }
   return next(action);
 };
 

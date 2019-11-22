@@ -3,19 +3,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import Click from './click';
-import Modal from './modal';
-import Toggle from './toggle';
-import { fileExists, formatDuration, showContextMenu, values } from '../util';
+import AddModal from './add-modal';
+import Click from '../click';
+// import MetadataInput from './input';
+
+import { fileExists, formatDuration, showContextMenu } from '../../util';
 
 import type {
   StoreState,
   Dispatch,
   Song,
   SongID,
-  Playlist,
   PlaylistID
-} from '../types';
+} from '../../types';
 
 type PassedProps = {|
   +song: Song
@@ -23,7 +23,6 @@ type PassedProps = {|
 
 type Props = PassedProps & {|
   +currSongID: ?SongID,
-  +playlists: Playlist[],
   +selectSong: (song: Song) => void,
   +updateTags: (id: SongID, title: string, artist: string) => void,
   +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void,
@@ -35,8 +34,7 @@ type State = {|
   title: string,
   artist: string,
   editStart: 'TITLE' | 'ARTIST',
-  showModal: boolean,
-  toggle: Set<PlaylistID>
+  showModal: boolean
 |};
 
 class SongItem extends React.Component<Props, State> {
@@ -45,12 +43,7 @@ class SongItem extends React.Component<Props, State> {
     title: this.props.song.title,
     artist: this.props.song.artist,
     editStart: 'TITLE',
-    showModal: false,
-    toggle: new Set(
-      this.props.playlists
-        .filter(p => this.props.song.playlists.includes(p.id))
-        .map(p => p.id)
-    )
+    showModal: false
   };
   // Focus switching
   _focusTimer: ?TimeoutID = null;
@@ -168,23 +161,8 @@ class SongItem extends React.Component<Props, State> {
     );
   };
 
-  _onToggle = (pid: PlaylistID) => {
-    this.setState(prevState => {
-      const { toggle } = prevState;
-      if (toggle.has(pid)) {
-        toggle.delete(pid);
-      } else {
-        toggle.add(pid);
-      }
-
-      return {
-        toggle
-      };
-    });
-  };
-
-  _onModalClose = () => {
-    this.props.setPlaylists(this.props.song.id, [...this.state.toggle]);
+  _onModalClose = (playlists: PlaylistID[]) => {
+    this.props.setPlaylists(this.props.song.id, playlists);
     this.setState({ showModal: false });
   };
 
@@ -192,6 +170,7 @@ class SongItem extends React.Component<Props, State> {
     const { status, title, artist } = this.state;
 
     const isPlaying = this.props.currSongID === this.props.song.id;
+    const date = new Date(this.props.song.date).toLocaleDateString();
 
     return (
       <div
@@ -213,24 +192,11 @@ class SongItem extends React.Component<Props, State> {
         {this._renderInput('TITLE', title, this._changeTitle)}
         {this._renderInput('ARTIST', artist, this._changeArtist)}
         <div>{formatDuration(this.props.song.duration)}</div>
-        <div>{new Date(this.props.song.date).toLocaleDateString()}</div>
+        <div>{date}</div>
 
-        <Modal
-          isOpen={this.state.showModal}
-          onClose={this._onModalClose}
-          className='modal-content'
-        >
-          <h3>Select Playlists</h3>
-          {this.props.playlists.map(p => (
-            <div key={p.id}>
-              <p>{p.name}</p>
-              <Toggle
-                onToggle={() => this._onToggle(p.id)}
-                selected={this.state.toggle.has(p.id)}
-              />
-            </div>
-          ))}
-        </Modal>
+        {this.state.showModal && (
+          <AddModal song={this.props.song} onClose={this._onModalClose} />
+        )}
       </div>
     );
   }
@@ -238,8 +204,7 @@ class SongItem extends React.Component<Props, State> {
 
 function mapState(state: StoreState) {
   return {
-    currSongID: state.queue.curr,
-    playlists: values(state.playlists)
+    currSongID: state.queue.curr
   };
 }
 

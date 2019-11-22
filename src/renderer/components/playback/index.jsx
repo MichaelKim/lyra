@@ -10,13 +10,20 @@ import DownloadQueue from './download';
 import Shuffle from './shuffle';
 import VolumeBar from './volume';
 
-import { useDispatch, useSelector } from '../../hooks';
+import { useDispatchMap, useSelector } from '../../hooks';
 import { getStreamURL } from '../../yt-util';
 
 import '../../../css/playback.scss';
 
+const mapDispatch = dispatch => {
+  return {
+    skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
+    skipNext: () => dispatch({ type: 'SKIP_NEXT' })
+  };
+};
+
 const PlaybackBar = () => {
-  const [src, setSrc] = React.useState('');
+  const [src, setSrc] = React.useState<?string>(null);
   const [playing, setPlaying] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
 
@@ -27,17 +34,14 @@ const PlaybackBar = () => {
     return curr != null ? state.songs[curr] ?? queue.cache[curr] : null;
   });
 
-  const dispatch = useDispatch();
-  const skipPrevious = React.useCallback(() => {
+  const { skipPrevious, skipNext } = useDispatchMap(mapDispatch);
+  const previousOrStart = React.useCallback(() => {
     if (progress < 3) {
-      dispatch({ type: 'SKIP_PREVIOUS' });
+      skipPrevious();
     } else {
       setProgress(0);
     }
-  }, [dispatch, progress]);
-  const skipNext = React.useCallback(() => dispatch({ type: 'SKIP_NEXT' }), [
-    dispatch
-  ]);
+  }, [skipPrevious, progress]);
 
   const onProgress = (time: number) => {
     setProgress(time);
@@ -94,7 +98,7 @@ const PlaybackBar = () => {
       <Controls
         disabled={currSong == null}
         playing={playing}
-        skipPrevious={skipPrevious}
+        skipPrevious={previousOrStart}
         skipNext={skipNext}
         onTogglePause={onTogglePause}
         onSeek={onSeek}
