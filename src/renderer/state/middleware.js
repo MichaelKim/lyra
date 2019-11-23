@@ -27,7 +27,7 @@ export const queueSong: Middleware = store => next => action => {
     return result;
   }
 
-  const currSong = newState.songs[curr] ?? queue.cache[curr];
+  const currSong = newState.songs[curr] ?? queue.cache[curr]?.song;
   if (currSong == null) {
     // Error state
     console.log('invalid queue.curr');

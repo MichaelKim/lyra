@@ -24,14 +24,14 @@ const mapDispatch = dispatch => {
 
 const PlaybackBar = () => {
   const [src, setSrc] = React.useState<?string>(null);
-  const [playing, setPlaying] = React.useState(true);
+  const [playing, setPlaying] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
 
   const currSong = useSelector(state => {
     const { queue } = state;
     const { curr } = queue;
 
-    return curr != null ? state.songs[curr] ?? queue.cache[curr] : null;
+    return curr != null ? state.songs[curr] ?? queue.cache[curr]?.song : null;
   });
 
   const { skipPrevious, skipNext } = useDispatchMap(mapDispatch);
@@ -75,6 +75,9 @@ const PlaybackBar = () => {
     } else {
       setSrc(path.join('file://', currSong.filepath));
     }
+
+    // Only load if the song ID is different
+    // The song object can change (e.g. title, artist) while representing the same song
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currSong?.id]);
 

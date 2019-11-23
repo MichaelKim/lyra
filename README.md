@@ -73,6 +73,7 @@ TODO:
 - Queue management
   - Cap previous queue list to 50? songs
   - Song getting pushed off of prev queue will be removed from cache if it's in it
+  - If song in cache is added, it should be removed from cache
 
 Refactor:
 

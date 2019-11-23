@@ -104,7 +104,8 @@ function mapState(state: StoreState) {
   const { curr } = queue;
 
   return {
-    currSong: curr != null ? state.songs[curr] ?? queue.cache[curr] : null,
+    currSong:
+      curr != null ? state.songs[curr] ?? queue.cache[curr]?.song : null,
     currScreen: state.currScreen
   };
 }

@@ -13,11 +13,59 @@ type Props = {|
 |};
 
 const AudioControl = (props: Props) => {
-  const audio = React.useRef<?HTMLAudioElement>(null);
   const { src, playing, progress, onProgress, onEnd } = props;
+
   const volume = useSelector(state =>
     state.volume.muted ? 0 : state.volume.amount
   );
+
+  const audio = React.useRef<?HTMLAudioElement>(null);
+
+  const checkVolume = React.useCallback(() => {
+    if (audio.current) {
+      audio.current.volume = volume;
+    }
+  }, [volume]);
+
+  const checkPlaying = React.useCallback(() => {
+    if (!audio.current) {
+      return;
+    }
+    if (playing) {
+      audio.current.play();
+    } else {
+      audio.current.pause();
+    }
+  }, [playing]);
+
+  const checkPosition = React.useCallback(() => {
+    if (audio.current && Math.abs(progress - audio.current.currentTime) > 0.2) {
+      audio.current.currentTime = progress;
+    }
+  }, [progress]);
+
+  const ref = React.useCallback(node => {
+    audio.current = node;
+
+    checkVolume();
+    checkPlaying();
+    checkPosition();
+
+    // This callback is only for when the ref is initally set
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    checkVolume();
+  }, [checkVolume]);
+
+  React.useEffect(() => {
+    checkPlaying();
+  }, [checkPlaying]);
+
+  React.useEffect(() => {
+    checkPosition();
+  }, [checkPosition]);
 
   const _onProgress = (e: SyntheticEvent<HTMLAudioElement>) => {
     onProgress && onProgress(e.currentTarget.currentTime);
@@ -27,42 +75,8 @@ const AudioControl = (props: Props) => {
     onEnd && onEnd();
   };
 
-  React.useEffect(() => {
-    if (playing) {
-      audio.current && audio.current.play();
-    } else {
-      audio.current && audio.current.pause();
-    }
-  }, [playing]);
-
-  React.useEffect(() => {
-    // _tempVol?
-    if (audio.current != null) {
-      audio.current.volume = volume;
-    }
-  }, [volume]);
-
-  React.useEffect(() => {
-    if (
-      audio.current != null &&
-      Math.abs(progress - audio.current.currentTime) > 0.2
-    ) {
-      audio.current.currentTime = progress;
-    }
-  }, [progress]);
-
-  if (src == null) {
-    return null;
-  }
-
   return (
-    <audio
-      ref={audio}
-      src={src}
-      autoPlay
-      onTimeUpdate={_onProgress}
-      onEnded={_onEnd}
-    />
+    <audio ref={ref} src={src} onTimeUpdate={_onProgress} onEnded={_onEnd} />
   );
 };
 

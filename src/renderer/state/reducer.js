@@ -37,10 +37,28 @@ export default function rootReducer(
         cache
       };
 
-      if (state.songs[id] != null || queue.cache[id] != null) {
+      if (state.songs[id] != null) {
         return u(
           {
             queue: newQueue
+          },
+          state
+        );
+      }
+
+      if (queue.cache[id] != null) {
+        return u(
+          {
+            queue: u(
+              {
+                cache: {
+                  [id]: {
+                    count: state.queue.cache[id].count + 1
+                  }
+                }
+              },
+              newQueue
+            )
           },
           state
         );
@@ -50,9 +68,11 @@ export default function rootReducer(
         {
           queue: u(
             {
-              [id]: {
-                song: action.song,
-                count: 1
+              cache: {
+                [id]: {
+                  song: action.song,
+                  count: 1
+                }
               }
             },
             newQueue
@@ -391,7 +411,7 @@ export default function rootReducer(
         {
           loaded: true
         },
-        state
+        initialState
       );
 
     default:

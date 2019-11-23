@@ -185,39 +185,41 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
     nextpageRef: filter.ref
   });
 
-  // Videos can appear more than once
-  // The object reduce removes duplicates based on video id
-  const videos = search.items.reduce((acc, item) => {
+  const ids = new Set<SongID>();
+  const promises: Array<Promise<?VideoSong>> = search.items.map(async item => {
     const id = item.link.substr(item.link.lastIndexOf('=') + 1);
-    const video: $Shape<VideoSong> = {
-      id,
-      title: he.decode(item.title),
-      artist: item.author.name,
-      thumbnail: {
-        url: item.thumbnail,
-        width: 120,
-        height: 90
-      }
-    };
-    acc[id] = video;
-    return acc;
-  }, ({}: { [id: string]: $Shape<VideoSong> }));
 
-  const ids: Array<string> = Object.keys(videos);
+    // Videos can appear more than once, remove duplicates based on video id
+    if (ids.has(id)) return;
+    ids.add(id);
 
-  const infos = await Promise.all(ids.map(id => ytdl.getInfo(id)));
+    // Sometimes getInfo() will throw
+    try {
+      const info = await ytdl.getInfo(id);
 
-  const videosongs = infos.map(info => ({
-    ...videos[info.video_id],
-    playlists: [],
-    date: Date.now(),
-    source: 'YOUTUBE',
-    url: info.video_id,
-    duration: info.length_seconds,
-    views: info.player_response.videoDetails.viewCount
-  }));
+      return {
+        id,
+        title: he.decode(item.title),
+        artist: item.author.name,
+        thumbnail: {
+          url: item.thumbnail,
+          width: 120,
+          height: 90
+        },
+        playlists: [],
+        date: Date.now(),
+        source: 'YOUTUBE',
+        url: info.video_id,
+        duration: info.length_seconds,
+        views: info.player_response.videoDetails.viewCount
+      };
+    } catch {
+      return;
+    }
+  });
 
-  return videosongs;
+  const videosongs = await Promise.all(promises);
+  return videosongs.filter(Boolean);
 }
 
 export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
