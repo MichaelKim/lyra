@@ -69,7 +69,6 @@ TODO:
     - Settings only has "Clear data"
     - Storage: localStorage?
     - How to get the webpack config? electron-webpack
-- Show queue
 - Queue management
   - Cap previous queue list to 50? songs
   - Song getting pushed off of prev queue will be removed from cache if it's in it

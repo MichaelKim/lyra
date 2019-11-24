@@ -83,6 +83,7 @@ export default function Sidebar() {
 
   const items = [
     { name: 'All Songs', enum: null },
+    { name: 'Queue', enum: 'queue' },
     { name: 'Settings', enum: 'settings' }
   ];
 

@@ -24,7 +24,7 @@ const mapDispatch = dispatch => {
 
 const PlaybackBar = () => {
   const [src, setSrc] = React.useState<?string>(null);
-  const [playing, setPlaying] = React.useState(false);
+  const [playing, setPlaying] = React.useState(true);
   const [progress, setProgress] = React.useState(0);
 
   const currSong = useSelector(state => {
@@ -71,9 +71,14 @@ const PlaybackBar = () => {
 
     // Load song data
     if (currSong.source === 'YOUTUBE') {
-      getStreamURL(currSong.id).then(setSrc);
+      setPlaying(false);
+      getStreamURL(currSong.id).then(src => {
+        setSrc(src);
+        setPlaying(true);
+      });
     } else {
       setSrc(path.join('file://', currSong.filepath));
+      setPlaying(true);
     }
 
     // Only load if the song ID is different

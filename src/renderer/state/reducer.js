@@ -22,12 +22,21 @@ export default function rootReducer(
       const cache = queue.next.reduce((cache, id) => {
         if (cache[id] == null) return cache;
         if (cache[id].count === 1) {
-          // $FlowFixMe: ignore mutating
-          delete cache[id];
-          return cache;
+          return u(
+            {
+              [id]: undefined
+            },
+            cache
+          );
         }
-        cache[id].count -= 1;
-        return cache;
+        return u(
+          {
+            [id]: {
+              count: cache[id].count - 1
+            }
+          },
+          cache
+        );
       }, queue.cache);
 
       const newQueue: QueueType = {

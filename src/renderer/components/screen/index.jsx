@@ -19,6 +19,7 @@ export default function Screen() {
   );
   const title = useSelector(state =>
     state.currScreen == null ||
+    state.currScreen === 'queue' ||
     state.currScreen === 'settings' ||
     state.currScreen.startsWith('yt-')
       ? 'All Songs'

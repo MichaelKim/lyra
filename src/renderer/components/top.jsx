@@ -6,6 +6,7 @@ import Sidebar from './sidebar';
 import Screen from './screen';
 import Youtube from './youtube';
 import Settings from './settings';
+import Queue from './queue';
 
 import { useSelector } from '../hooks';
 
@@ -29,10 +30,16 @@ export default function Top() {
         <Youtube key={currSongID} />
       </div>
 
+      <div className={'screen ' + (currScreen === 'queue' ? '' : 'hidden')}>
+        <Queue />
+      </div>
+
       <div
         className={
           'screen ' +
-          (currScreen === 'settings' || (currScreen || '').startsWith('yt-')
+          (currScreen === 'queue' ||
+          currScreen === 'settings' ||
+          (currScreen || '').startsWith('yt-')
             ? 'hidden'
             : '')
         }

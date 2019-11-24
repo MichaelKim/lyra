@@ -72,6 +72,7 @@ declare module 'ytdl-core' {
   };
 
   declare module.exports: {
+    getBasicInfo: (url: string, options: ?Options) => Promise<Info>, // Less data than getInfo, but doesn't seem to throw
     getInfo: (url: string, options: ?Options) => Promise<Info>,
     chooseFormat: (formats: Array<Format>, options: Options) => Format,
     downloadFromInfo: (info: Info) => ReadableStream

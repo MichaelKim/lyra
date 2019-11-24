@@ -193,29 +193,24 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
     if (ids.has(id)) return;
     ids.add(id);
 
-    // Sometimes getInfo() will throw
-    try {
-      const info = await ytdl.getInfo(id);
+    const info = await ytdl.getBasicInfo(id);
 
-      return {
-        id,
-        title: he.decode(item.title),
-        artist: item.author.name,
-        thumbnail: {
-          url: item.thumbnail,
-          width: 120,
-          height: 90
-        },
-        playlists: [],
-        date: Date.now(),
-        source: 'YOUTUBE',
-        url: info.video_id,
-        duration: info.length_seconds,
-        views: info.player_response.videoDetails.viewCount
-      };
-    } catch {
-      return;
-    }
+    return {
+      id,
+      title: he.decode(item.title),
+      artist: item.author.name,
+      thumbnail: {
+        url: item.thumbnail,
+        width: 120,
+        height: 90
+      },
+      playlists: [],
+      date: Date.now(),
+      source: 'YOUTUBE',
+      url: info.video_id,
+      duration: info.length_seconds,
+      views: info.player_response.videoDetails.viewCount
+    };
   });
 
   const videosongs = await Promise.all(promises);
@@ -228,9 +223,9 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
   // });
 
   // Alternative using ytdl
-  const { related_videos } = await ytdl.getInfo(id);
+  const { related_videos } = await ytdl.getBasicInfo(id);
   const infos = await Promise.all(
-    related_videos.filter(v => v.id).map(v => ytdl.getInfo(v.id))
+    related_videos.filter(v => v.id).map(v => ytdl.getBasicInfo(v.id))
   );
   return infos.map(v => ({
     id: v.video_id,
