@@ -1,5 +1,11 @@
 @import './variables.scss';
 
+.youtube-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .youtube-item-list {
   flex: 1;
   overflow: hidden auto;

@@ -6,19 +6,48 @@ import Search from '../search';
 import Loading from '../loading';
 import YtItem from './yt-item';
 
-import type { Song, VideoSong } from '../../types';
+import { getRelatedVideos } from '../../yt-util';
+
+import type { Song, SongID, VideoSong } from '../../types';
 
 type Props = {|
   +currSong: Song,
-  +related: VideoSong[],
   +playVideo: (video: VideoSong) => void,
   +onSearch: (value: string) => void
 |};
 
-class YtPlaying extends React.Component<Props> {
+type State = {|
+  related: VideoSong[]
+|};
+
+class YtPlaying extends React.Component<Props, State> {
+  mounted = false;
+  state = {
+    related: []
+  };
+
   _playVideo = (video: VideoSong) => {
     this.props.playVideo(video);
   };
+
+  _loadRelated = (id: SongID) => {
+    getRelatedVideos(id).then(related => {
+      if (this.mounted) {
+        this.setState({ related });
+      }
+    });
+  };
+
+  componentDidMount() {
+    this.mounted = true;
+    if (this.props.currSong && this.props.currSong.source === 'YOUTUBE') {
+      this._loadRelated(this.props.currSong.id);
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
 
   render() {
     const { currSong } = this.props;
@@ -53,11 +82,11 @@ class YtPlaying extends React.Component<Props> {
           <YtItem video={video} />
         </div>
         <h3 className='yt-playing-heading'>Related Videos:</h3>
-        {this.props.related.length === 0 ? (
+        {this.state.related.length === 0 ? (
           <Loading />
         ) : (
           <ul className='youtube-item-list'>
-            {this.props.related.map(v => (
+            {this.state.related.map(v => (
               <li key={v.id}>
                 <YtItem video={v} onClick={() => this._playVideo(v)} />
               </li>

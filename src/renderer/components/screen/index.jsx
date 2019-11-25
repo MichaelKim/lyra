@@ -18,10 +18,7 @@ export default function Screen() {
     getSongList(state.songs, state.currScreen, state.sort)
   );
   const title = useSelector(state =>
-    state.currScreen == null ||
-    state.currScreen === 'queue' ||
-    state.currScreen === 'settings' ||
-    state.currScreen.startsWith('yt-')
+    state.currScreen == null || state.playlists[state.currScreen] == null
       ? 'All Songs'
       : state.playlists[state.currScreen].name
   );

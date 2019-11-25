@@ -5,15 +5,8 @@ import { connect } from 'react-redux';
 
 import YtSearch from './yt-search';
 import YtPlaying from './yt-playing';
-import { getRelatedVideos } from '../../yt-util';
 
-import type {
-  StoreState,
-  Dispatch,
-  Song,
-  SongID,
-  VideoSong
-} from '../../types';
+import type { StoreState, Dispatch, Song, VideoSong } from '../../types';
 
 import '../../../css/youtube.scss';
 
@@ -25,28 +18,17 @@ type Props = {|
 |};
 
 type State = {|
-  keyword: string,
-  related: VideoSong[]
+  keyword: string
 |};
 
 class Youtube extends React.Component<Props, State> {
   mounted = false;
   state = {
-    keyword: '',
-    related: []
-  };
-
-  _loadRelated = (id: SongID) => {
-    getRelatedVideos(id).then(related => {
-      if (this.mounted) {
-        this.setState({ related });
-      }
-    });
+    keyword: ''
   };
 
   _playVideo = (video: VideoSong) => {
     this.props.selectSong(video);
-    this._loadRelated(video.id);
   };
 
   _onSearch = (value: string) => {
@@ -56,45 +38,36 @@ class Youtube extends React.Component<Props, State> {
     });
   };
 
-  componentDidMount() {
-    this.mounted = true;
-    if (this.props.currSong && this.props.currSong.source === 'YOUTUBE') {
-      this._loadRelated(this.props.currSong.id);
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
   render() {
     const { currSong, currScreen } = this.props;
 
-    if (currScreen !== 'yt-search' && currScreen !== 'yt-playing') {
-      return null;
-    }
-
-    if (currScreen === 'yt-search') {
-      return (
-        <YtSearch
-          playVideo={this._playVideo}
-          initialKeyword={this.state.keyword}
-        />
-      );
-    }
-
-    if (currSong == null) {
-      return null;
-    }
-
     return (
-      <YtPlaying
-        key={currSong.id}
-        currSong={currSong}
-        related={this.state.related}
-        playVideo={this._playVideo}
-        onSearch={this._onSearch}
-      />
+      <>
+        <div
+          className={
+            'youtube-screen ' + (currScreen === 'yt-search' ? '' : 'hidden')
+          }
+        >
+          <YtSearch
+            playVideo={this._playVideo}
+            initialKeyword={this.state.keyword}
+          />
+        </div>
+        <div
+          className={
+            'youtube-screen ' + (currScreen === 'yt-playing' ? '' : 'hidden')
+          }
+        >
+          {currSong && (
+            <YtPlaying
+              key={currSong.id}
+              currSong={currSong}
+              playVideo={this._playVideo}
+              onSearch={this._onSearch}
+            />
+          )}
+        </div>
+      </>
     );
   }
 }

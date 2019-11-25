@@ -11,39 +11,46 @@ import Queue from './queue';
 import { useSelector } from '../hooks';
 
 export default function Top() {
-  const currSongID = useSelector(state => state.queue.curr);
   const currScreen = useSelector(state => state.currScreen);
+
+  // Top-level screen components that should retain state when not being displayed
+
+  const tops = [
+    {
+      Component: Settings,
+      enum: 'settings',
+      visible: currScreen === 'settings'
+    },
+    {
+      Component: Youtube,
+      enum: 'yt',
+      visible: currScreen != null && currScreen.startsWith('yt-')
+    },
+    {
+      Component: Queue,
+      enum: 'queue',
+      visible: currScreen === 'queue'
+    }
+  ];
+
+  let screen = true;
 
   return (
     <div className='top'>
       <Sidebar />
-      <div className={'screen ' + (currScreen === 'settings' ? '' : 'hidden')}>
-        <Settings />
-      </div>
 
-      <div
-        className={
-          'screen ' +
-          (currScreen && currScreen.startsWith('yt-') ? '' : 'hidden')
+      {tops.map(t => {
+        if (t.visible) {
+          screen = false;
         }
-      >
-        <Youtube key={currSongID} />
-      </div>
+        return (
+          <div key={t.enum} className={'screen ' + (t.visible ? '' : 'hidden')}>
+            <t.Component />
+          </div>
+        );
+      })}
 
-      <div className={'screen ' + (currScreen === 'queue' ? '' : 'hidden')}>
-        <Queue />
-      </div>
-
-      <div
-        className={
-          'screen ' +
-          (currScreen === 'queue' ||
-          currScreen === 'settings' ||
-          (currScreen || '').startsWith('yt-')
-            ? 'hidden'
-            : '')
-        }
-      >
+      <div className={'screen ' + (screen ? '' : 'hidden')}>
         <Screen />
       </div>
     </div>

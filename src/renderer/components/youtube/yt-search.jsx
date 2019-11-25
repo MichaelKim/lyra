@@ -47,7 +47,11 @@ export default function YtSearch(props: Props) {
   return (
     <>
       <h1>YouTube</h1>
-      <Search onEnter={onSearch} initialValue={props.initialKeyword || ''} />
+      <Search
+        key={props.initialKeyword}
+        onEnter={onSearch}
+        initialValue={props.initialKeyword || ''}
+      />
       {searching ? (
         <Loading />
       ) : (
