@@ -1,87 +1,64 @@
 // @flow strict
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 import YtSearch from './yt-search';
 import YtPlaying from './yt-playing';
 
-import type { StoreState, Dispatch, Song, VideoSong } from '../../types';
+import { useSelector, useDispatchMap } from '../../hooks';
+
+import type { Dispatch, Song, VideoSong } from '../../types';
 
 import '../../../css/youtube.scss';
 
-type Props = {|
-  +currSong: ?Song,
-  +currScreen: ?string,
-  +selectSong: (song: Song) => void,
-  +selectPlaylist: (id: string) => void
-|};
+const Youtube = () => {
+  const [keyword, setKeyword] = React.useState('');
 
-type State = {|
-  keyword: string
-|};
+  const currSong = useSelector(state => {
+    const { queue } = state;
+    const { curr } = queue;
 
-class Youtube extends React.Component<Props, State> {
-  mounted = false;
-  state = {
-    keyword: ''
+    return curr != null ? state.songs[curr] ?? queue.cache[curr]?.song : null;
+  });
+  const currScreen = useSelector(state => state.currScreen);
+
+  const { selectSong, selectPlaylist } = useDispatchMap(mapDispatch);
+
+  const playVideo = (video: VideoSong) => {
+    selectSong(video);
   };
 
-  _playVideo = (video: VideoSong) => {
-    this.props.selectSong(video);
+  const onSearch = (value: string) => {
+    selectPlaylist('yt-search');
+    setKeyword(value);
   };
 
-  _onSearch = (value: string) => {
-    this.props.selectPlaylist('yt-search');
-    this.setState({
-      keyword: value
-    });
-  };
-
-  render() {
-    const { currSong, currScreen } = this.props;
-
-    return (
-      <>
-        <div
-          className={
-            'youtube-screen ' + (currScreen === 'yt-search' ? '' : 'hidden')
-          }
-        >
-          <YtSearch
-            playVideo={this._playVideo}
-            initialKeyword={this.state.keyword}
+  return (
+    <>
+      <div
+        className={
+          'youtube-screen ' + (currScreen === 'yt-search' ? '' : 'hidden')
+        }
+      >
+        <YtSearch playVideo={playVideo} initialKeyword={keyword} />
+      </div>
+      <div
+        className={
+          'youtube-screen ' + (currScreen === 'yt-playing' ? '' : 'hidden')
+        }
+      >
+        {currSong && (
+          <YtPlaying
+            key={currSong.id}
+            currSong={currSong}
+            playVideo={playVideo}
+            onSearch={onSearch}
           />
-        </div>
-        <div
-          className={
-            'youtube-screen ' + (currScreen === 'yt-playing' ? '' : 'hidden')
-          }
-        >
-          {currSong && (
-            <YtPlaying
-              key={currSong.id}
-              currSong={currSong}
-              playVideo={this._playVideo}
-              onSearch={this._onSearch}
-            />
-          )}
-        </div>
-      </>
-    );
-  }
-}
-
-function mapState(state: StoreState) {
-  const { queue } = state;
-  const { curr } = queue;
-
-  return {
-    currSong:
-      curr != null ? state.songs[curr] ?? queue.cache[curr]?.song : null,
-    currScreen: state.currScreen
-  };
-}
+        )}
+      </div>
+    </>
+  );
+};
 
 function mapDispatch(dispatch: Dispatch) {
   return {
@@ -90,9 +67,4 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-const ConnectedComp: React.ComponentType<{||}> = connect(
-  mapState,
-  mapDispatch
-)(Youtube);
-
-export default ConnectedComp;
+export default Youtube;
