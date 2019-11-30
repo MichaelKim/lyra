@@ -51,7 +51,7 @@ declare module 'ytdl-core' {
     +length_seconds: number,
     +player_response: {|
       +videoDetails: {|
-        +viewCount: number,
+        +viewCount: string, // Number stored as a string
         +thumbnail: {|
           +thumbnails: Array<{|
             +width: number,
@@ -62,7 +62,12 @@ declare module 'ytdl-core' {
       |}
     |},
     +related_videos: Array<{|
-      +id: string
+      +author: string,
+      +id: string,
+      +length_seconds: number,
+      +title: string,
+      +video_thumbnail: string,
+      +view_count: string // Bug where only the first comma is removed
     |}>,
     +formats: Array<Format>
   |};

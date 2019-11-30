@@ -56,19 +56,6 @@ class YtPlaying extends React.Component<Props, State> {
       return null;
     }
 
-    const video: VideoSong = {
-      id: currSong.id,
-      title: currSong.title,
-      artist: currSong.artist,
-      duration: currSong.duration,
-      playlists: [],
-      date: Date.now(),
-      source: 'YOUTUBE',
-      url: currSong.id,
-      views: currSong.views,
-      thumbnail: currSong.thumbnail
-    };
-
     return (
       <>
         <div className='yt-playing-header'>
@@ -79,7 +66,7 @@ class YtPlaying extends React.Component<Props, State> {
         </div>
         <div className='yt-playing-current'>
           <h3 className='yt-playing-heading'>Currently Playing:</h3>
-          <YtItem video={video} />
+          <YtItem video={currSong} />
         </div>
         <h3 className='yt-playing-heading'>Related Videos:</h3>
         {this.state.related.length === 0 ? (

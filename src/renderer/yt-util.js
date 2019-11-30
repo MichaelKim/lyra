@@ -22,6 +22,8 @@ import ytsr from 'ytsr';
 import { createHash } from 'crypto';
 // import { google } from "googleapis";
 
+import { readableViews } from './util';
+
 import type { Song, SongID, VideoSong } from './types';
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
@@ -195,6 +197,11 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
 
     const info = await ytdl.getBasicInfo(id);
 
+    // This should be guaranteed to work
+    const views = readableViews(
+      Number(info.player_response.videoDetails.viewCount) || 0
+    );
+
     return {
       id,
       title: he.decode(item.title),
@@ -209,7 +216,7 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
       source: 'YOUTUBE',
       url: info.video_id,
       duration: info.length_seconds,
-      views: info.player_response.videoDetails.viewCount
+      views
     };
   });
 
@@ -224,19 +231,38 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
 
   // Alternative using ytdl
   const { related_videos } = await ytdl.getBasicInfo(id);
-  const infos = await Promise.all(
-    related_videos.filter(v => v.id).map(v => ytdl.getBasicInfo(v.id))
-  );
-  return infos.map(v => ({
-    id: v.video_id,
-    title: v.title,
-    artist: v.author.name,
-    duration: v.length_seconds,
-    playlists: [],
-    date: Date.now(),
-    source: 'YOUTUBE',
-    url: v.video_id,
-    views: v.player_response.videoDetails.viewCount,
-    thumbnail: v.player_response.videoDetails.thumbnail.thumbnails[0]
-  }));
+
+  // related_videos has nearly almost enough information to fill out a VideoSong
+  // There are two missing parts:
+  // - The thumbnail only has the url, but we don't need the dimensions to display it properly
+  // - The viewcount sometimes will be formed like "12M" or "53K"
+  // This is faster than having to do another getBasicInfo() to get the proper view count
+
+  return related_videos.map(v => {
+    let views = Number(v.view_count.replace(/,/g, ''));
+    if (!views) {
+      const size = v.view_count[v.view_count.length - 1];
+      views = parseFloat(v.view_count) || 0; // parseInt will parse as much of the string unlike Number
+      if (size === 'B') views *= 1e9;
+      else if (size === 'M') views *= 1e6;
+      else if (size === 'K') views *= 1e3;
+    }
+
+    return {
+      id: v.id,
+      title: v.title,
+      artist: v.author,
+      duration: v.length_seconds,
+      playlists: [],
+      date: Date.now(),
+      source: 'YOUTUBE',
+      url: v.id,
+      views: views ? readableViews(views) : '',
+      thumbnail: {
+        url: v.video_thumbnail,
+        width: 120,
+        height: 90
+      }
+    };
+  });
 }

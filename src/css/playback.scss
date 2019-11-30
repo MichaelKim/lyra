@@ -4,8 +4,6 @@
 .playback-box {
   height: 75px;
   background-color: $playback-color;
-  text-align: center;
-  position: relative;
 
   .playback-bar {
     display: flex;
@@ -31,8 +29,14 @@
   .playback-controls {
     display: flex;
     flex-direction: row;
+  }
+
+  .playback-center {
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding-bottom: 4px;
 
     .play-pause {
       width: 40px;
@@ -45,15 +49,12 @@
   }
 
   .playback-left {
-    position: absolute;
     color: $text-color;
-    top: 17px;
-    text-align: left;
+    flex: 1;
     justify-content: center;
     margin-left: 5px;
     padding: 5px 10px;
     border-radius: 10px;
-    width: 40%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -71,10 +72,12 @@
   }
 
   .playback-right {
-    top: 27px;
-    right: 50px;
-    position: absolute;
     display: flex;
+    flex: 1;
+    margin-right: 50px;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 4px;
   }
 
   .play {

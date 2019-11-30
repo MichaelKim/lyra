@@ -96,7 +96,31 @@ const PlaybackBar = () => {
         onEnd={onEnded}
       />
       <Bar currSong={currSong} progress={progress} onChange={onProgress} />
-      {currSong != null && (
+      <div className='playback-controls'>
+        <div className='playback-left'>
+          {currSong != null && (
+            <>
+              <h3>{currSong.title}</h3>
+              <br />
+              <h5>{currSong.artist}</h5>
+            </>
+          )}
+        </div>
+        <Controls
+          disabled={currSong == null}
+          playing={playing}
+          skipPrevious={previousOrStart}
+          skipNext={skipNext}
+          onTogglePause={onTogglePause}
+          onSeek={onSeek}
+        />
+        <div className='playback-right'>
+          <DownloadQueue />
+          <Shuffle />
+          <VolumeBar />
+        </div>
+      </div>
+      {/* {currSong != null && (
         <div className='playback-left'>
           <h3>{currSong.title}</h3>
           <br />
@@ -115,7 +139,7 @@ const PlaybackBar = () => {
         <DownloadQueue />
         <Shuffle />
         <VolumeBar />
-      </div>
+      </div> */}
     </div>
   );
 };

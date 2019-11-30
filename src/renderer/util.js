@@ -139,10 +139,10 @@ export function parseDuration(iso: string) {
 
 // As of 2019, the most viewed YouTube video has ~6B views.
 // This method works up to billions, and should be enough.
-export function readableViews(viewCount: number) {
+export function readableViews(viewCount: number): string {
   const length = 0 | Math.log10(viewCount);
 
-  if (length < 3) return viewCount;
+  if (length < 3) return '' + viewCount;
   if (length < 6)
     return (
       (0 | (viewCount / Math.pow(10, length - 2))) / Math.pow(10, 5 - length) +

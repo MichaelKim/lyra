@@ -24,7 +24,7 @@ export type VideoSong = {|
   ...SongShared,
   +source: 'YOUTUBE',
   +url: SongID,
-  +views: number,
+  +views: string, // Readable view count
   +thumbnail: Thumbnail
 |};
 

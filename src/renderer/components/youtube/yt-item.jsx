@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { formatDuration, readableViews, showContextMenu } from '../../util';
+import { formatDuration, showContextMenu } from '../../util';
 import { useDispatchMap } from '../../hooks';
 
 import type { Song, SongID, VideoSong, Dispatch } from '../../types';
@@ -46,8 +46,8 @@ const YtItem = (props: Props) => {
       <div className='youtube-item-text' onClick={onClick}>
         <h3>{video.title}</h3>
         <h5>
-          {video.artist} • {formatDuration(video.duration)} •{' '}
-          {readableViews(video.views)} views
+          {video.artist} • {formatDuration(video.duration)}
+          {video.views && ` • ${video.views} views`}
         </h5>
       </div>
       <div>

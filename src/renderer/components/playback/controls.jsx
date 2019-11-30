@@ -37,7 +37,7 @@ const Controls = ({
   }, [onTogglePause, skipPrevious, skipNext]);
 
   return (
-    <div className='playback-controls'>
+    <div className='playback-center'>
       <button className='skip-previous' onClick={skipPrevious} />
       <button className='replay-btn' onClick={onReplay} />
       <button
