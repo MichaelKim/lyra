@@ -15,6 +15,8 @@ Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino
   - Skip forward / back 10 seconds
   - Skip to previous / next song
   - Media button shortcuts (Play, Pause, Skip)
+- Queue
+  - Add to queue
 - Song metadata
   - Parses title and artist metadata
   - Edit metadata within the player
@@ -24,7 +26,7 @@ Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino
   - Play songs in a playlist
 - YouTube
   - Search for YouTube videos
-  - YouTube video playback
+  - YouTube video playback (audio only)
   - Autoplay
   - Shows related videos
   - Add video to library

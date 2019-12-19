@@ -23,7 +23,7 @@
     "googleapis": "^40.0.0",
     "source-map-support": "^0.5.11",
     "updeep": "^1.2.0",
-    "ytdl-core": "^1.0.1",
+    "ytdl-core": "^1.0.3",
     "ytsr": "^0.1.9"
   },
   "devDependencies": {
