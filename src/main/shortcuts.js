@@ -40,7 +40,7 @@ function registerBindings(desktopEnv, session) {
   );
 }
 
-if (process.platform === 'linux') {
+if (process.env.LINUX) {
   try {
     // $FlowFixMe: dbus is only required for linux
     const DBus = require('dbus');

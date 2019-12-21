@@ -52,6 +52,9 @@
     "webpack": "^4.35.0"
   },
   "electronWebpack": {
+    "main": {
+      "webpackConfig": "webpack.main.config.js"
+    },
     "renderer": {
       "webpackConfig": "webpack.renderer.config.js"
     }
