@@ -17,6 +17,7 @@ Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino
   - Media button shortcuts (Play, Pause, Skip)
 - Queue
   - Add to queue
+  - Generates queue
 - Song metadata
   - Parses title and artist metadata
   - Edit metadata within the player
@@ -75,6 +76,8 @@ TODO:
   - Cap previous queue list to 50? songs
   - Song getting pushed off of prev queue will be removed from cache if it's in it
   - If song in cache is added, it should be removed from cache
+- Search history
+  - Show youtube search history on blank yt search screen
 
 Refactor:
 

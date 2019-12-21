@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import AddModal from './add-modal';
 import Click from '../click';
-// import MetadataInput from './input';
 
 import { fileExists, formatDuration, showContextMenu } from '../../util';
 
@@ -26,6 +25,7 @@ type Props = PassedProps & {|
   +selectSong: (song: Song) => void,
   +updateTags: (id: SongID, title: string, artist: string) => void,
   +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void,
+  +queueSong: (song: Song) => void,
   +removeSong: (id: SongID) => void
 |};
 
@@ -57,6 +57,10 @@ class SongItem extends React.Component<Props, State> {
       {
         label: 'Add to Playlist',
         click: () => this.setState({ showModal: true })
+      },
+      {
+        label: 'Add to Queue',
+        click: () => this.props.queueSong(this.props.song)
       },
       {
         label: 'Remove Song',
@@ -215,6 +219,7 @@ function mapDispatch(dispatch: Dispatch) {
       dispatch({ type: 'UPDATE_TAGS', id, title, artist }),
     setPlaylists: (sid: SongID, pids: PlaylistID[]) =>
       dispatch({ type: 'SET_PLAYLISTS', sid, pids }),
+    queueSong: (song: Song) => dispatch({ type: 'QUEUE_SONG', song }),
     removeSong: (id: SongID) => dispatch({ type: 'REMOVE_SONG', id })
   };
 }
