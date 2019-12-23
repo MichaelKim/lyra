@@ -28,12 +28,6 @@ import type { Song, SongID, VideoSong } from './types';
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 
-declare class DownloadEventEmitter extends EventEmitter {
-  on('progress', (percent: number) => void): this;
-  on('end', (song: Song) => void): this;
-  on(string, (e: mixed) => void): this;
-}
-
 // const youtube = google.youtube({
 //   version: "v3",
 //   auth: process.env.ELECTRON_WEBPACK_APP_YT_API
@@ -59,7 +53,8 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
 
   const dlPath = path.join(storage.getDataPath(), `download-${id}.mp3`);
 
-  const emitter = new DownloadEventEmitter();
+  // $FlowFixMe: EventEmitter with typed events
+  const emitter: DownloadEventEmitter = new EventEmitter();
 
   ytdl.getInfo(id, { quality: 'highestaudio' }).then(info => {
     let currDuration: number = 0;
