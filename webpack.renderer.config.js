@@ -1,3 +1,5 @@
+const os = require('os');
+
 module.exports = config => {
   // Enable .jsx extensions
   config.resolve.extensions.push('.jsx');
@@ -5,6 +7,11 @@ module.exports = config => {
     r => r.use.loader === 'babel-loader'
   );
   config.module.rules[idx].test = /\.jsx?$/;
+
+  // Only bundle matching ffmpeg executable
+  config.externals.push(
+    new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
+  );
 
   return config;
 };

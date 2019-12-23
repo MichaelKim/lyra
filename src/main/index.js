@@ -1,10 +1,6 @@
 // @flow strict
 
 import { app, BrowserWindow } from 'electron';
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS
-} from 'electron-devtools-installer';
 import path from 'path';
 
 import checkAccessibility from './accessibility';
@@ -12,6 +8,18 @@ import checkAccessibility from './accessibility';
 let win = null;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+function installExtensions() {
+  const installExtension = require('electron-devtools-installer');
+
+  installExtension
+    .default([
+      installExtension.REACT_DEVELOPER_TOOLS,
+      installExtension.REDUX_DEVTOOLS
+    ])
+    .then(name => console.log(`Added Extension:  ${name}`))
+    .catch(err => console.log('An error occurred: ', err));
+}
 
 function createWindow() {
   const options = {
@@ -27,7 +35,7 @@ function createWindow() {
     }
   };
 
-  if (process.platform === 'linux') {
+  if (process.env.LINUX) {
     // $FlowFixMe
     options.icon = path.join(__static, 'icon.png');
   }
@@ -43,9 +51,7 @@ function createWindow() {
 
     win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
 
-    installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS])
-      .then(name => console.log(`Added Extension:  ${name}`))
-      .catch(err => console.log('An error occurred: ', err));
+    installExtensions();
 
     win.webContents.openDevTools();
   } else {
