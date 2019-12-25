@@ -17,13 +17,24 @@ export const queueSong: Middleware = store => next => action => {
   const result = next(action);
   const newState = store.getState();
 
-  if (action.type !== 'SKIP_NEXT') {
+  if (
+    action.type !== 'SKIP_NEXT' &&
+    action.type !== 'SELECT_SONG' &&
+    action.type !== 'SET_SHUFFLE'
+  ) {
+    // Ignore middleware
+    return result;
+  }
+
+  if (action.type === 'SET_SHUFFLE' && !action.shuffle) {
+    // Turned shuffle off
     return result;
   }
 
   const { queue } = newState;
   const { curr } = queue;
   if (curr == null) {
+    // Nothing playing
     return result;
   }
 
@@ -47,6 +58,7 @@ export const queueSong: Middleware = store => next => action => {
     return result;
   }
 
+  // Shuffle from library
   if (newState.shuffle) {
     const songs = getSongList(newState.songs, newState.currScreen).filter(
       song => song.id !== currSong.id
@@ -57,7 +69,7 @@ export const queueSong: Middleware = store => next => action => {
     return result;
   }
 
-  // Add next song in list
+  // Add next song in library
   const songs = getSongList(newState.songs, newState.currScreen, newState.sort);
   const index = songs.findIndex(song => song.id === currSong.id);
   if (index >= 0 && index < songs.length - 1) {
