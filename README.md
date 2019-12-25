@@ -174,6 +174,8 @@ Long term features:
   - Upload songs
 - Web App
   - Change storage to localStorage?
+- Rooms!
+  - Several users listening to the same stream
 
 Ideas:
 

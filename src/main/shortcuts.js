@@ -40,6 +40,7 @@ function registerBindings(desktopEnv, session) {
   );
 }
 
+// Defined using webpack
 if (process.env.LINUX) {
   try {
     // $FlowFixMe: dbus is only required for linux

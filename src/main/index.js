@@ -45,11 +45,7 @@ function createWindow() {
   win.setMenu(null);
 
   if (isDevelopment) {
-    if (process.env.ELECTRON_WEBPACK_WDS_PORT == null) {
-      throw 'Missing electron-webpack port';
-    }
-
-    win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    win.loadURL(`http://localhost:9080`);
 
     installExtensions();
 

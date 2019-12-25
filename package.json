@@ -2,12 +2,14 @@
   "name": "lyra",
   "version": "1.0.0",
   "description": "A music player app",
-  "main": "src/main/index.jsx",
+  "main": "main.js",
   "scripts": {
-    "dev": "electron-webpack dev",
-    "build": "electron-webpack",
-    "dist": "electron-webpack && electron-builder --dir",
-    "pack": "electron-webpack && electron-builder",
+    "main": "webpack --progress --watch --config ./webpack.main.config.js",
+    "renderer": "webpack-dev-server --config ./webpack.renderer.config.js",
+    "electron": "electron ./dist/main/main.js",
+    "dev": "npm-run-all -p main renderer electron",
+    "dist": "webpack --progress -p && electron-builder --dir",
+    "pack": "webpack --progress -p && electron-builder",
     "postinstall": "node install-app-deps"
   },
   "repository": {
@@ -27,39 +29,80 @@
     "ytsr": "^0.1.9"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+    "@babel/preset-env": "^7.7.7",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.0",
     "dotenv": "^8.0.0",
     "electron": "^5.0.6",
     "electron-builder": "^20.44.4",
     "electron-devtools-installer": "^2.2.4",
-    "electron-webpack": "^2.7.4",
-    "electron-webpack-eslint": "^5.0.1",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^3.0.3",
     "eslint-plugin-flowtype": "^3.11.1",
     "eslint-plugin-react": "^7.14.2",
     "eslint-plugin-react-hooks": "^2.3.0",
+    "file-loader": "^5.0.2",
     "flow-bin": "^0.111.1",
     "he": "^1.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "redux": "^4.0.1",
-    "sass-loader": "^7.1.0",
-    "webpack": "^4.41.4"
+    "sass-loader": "^7.3.1",
+    "style-loader": "^1.1.1",
+    "terser-webpack-plugin": "^2.3.1",
+    "url-loader": "^3.0.0",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
   },
-  "electronWebpack": {
-    "main": {
-      "webpackConfig": "webpack.main.config.js"
-    },
-    "renderer": {
-      "webpackConfig": "webpack.renderer.config.js"
-    }
+  "optionalDependencies": {
+    "dbus": "^1.0.5"
   },
   "build": {
+    "directories": {
+      "buildResources": "build"
+    },
+    "files": [
+      {
+        "from": ".",
+        "filter": [
+          "package.json",
+          "!node_modules/@ffmpeg-installer"
+        ]
+      },
+      {
+        "from": "node_modules/@ffmpeg-installer",
+        "to": "node_modules/@ffmpeg-installer",
+        "filter": [
+          "ffmpeg",
+          "${platform}-${arch}"
+        ]
+      },
+      {
+        "from": "dist/main"
+      },
+      {
+        "from": "dist/renderer"
+      }
+    ],
+    "extraResources": [
+      {
+        "from": "static",
+        "to": "static"
+      }
+    ],
     "productName": "Lyra Music Player",
     "appId": "com.music-player",
     "win": {
@@ -72,21 +115,7 @@
     "appImage": {
       "systemIntegration": "doNotAsk"
     },
-    "npmRebuild": false,
-    "files": [
-      "!node_modules/@ffmpeg-installer",
-      {
-        "from": "node_modules/@ffmpeg-installer",
-        "to": "node_modules/@ffmpeg-installer",
-        "filter": [
-          "ffmpeg",
-          "${platform}-${arch}"
-        ]
-      }
-    ]
-  },
-  "optionalDependencies": {
-    "dbus": "^1.0.5"
+    "npmRebuild": false
   },
   "resolutions": {
     "js-yaml": "^3.13.1"
