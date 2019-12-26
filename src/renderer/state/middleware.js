@@ -2,14 +2,12 @@
 
 import { save, clear } from './storage';
 import { getSongList } from '../util';
-import { downloadVideo, getRelatedVideos } from '../yt-util';
+import { getRelatedVideos } from '../yt-util';
 
-import type { Middleware, Song } from '../types';
+import type { Middleware } from '../types';
 
 export const logger: Middleware = () => next => action => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(action);
-  }
+  console.log(action);
   return next(action);
 };
 
@@ -100,24 +98,7 @@ export const saveToStorage: Middleware = store => next => action => {
 
     case 'DOWNLOAD_ADD':
     case 'DOWNLOAD_FINISH': {
-      // There's already a song being downloaded
-      if (action.type === 'DOWNLOAD_ADD' && newState.dlQueue.length > 1) {
-        break;
-      }
-
-      // There are no more songs to download
-      if (action.type === 'DOWNLOAD_FINISH' && newState.dlQueue.length === 0) {
-        break;
-      }
-
-      const id = newState.dlQueue[0];
-      downloadVideo(id)
-        .on('progress', (progress: number) =>
-          store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
-        )
-        .on('end', (song: Song) => {
-          store.dispatch({ type: 'DOWNLOAD_FINISH', song });
-        });
+      console.log('Download only supported on Electron');
       break;
     }
 

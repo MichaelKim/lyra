@@ -1,16 +1,17 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const config = {
-  entry: './src/main/index.js',
+  entry: './src/renderer/index.jsx',
   output: {
-    filename: 'main.js',
-    chunkFilename: 'main.bundle.js',
-    path: path.join(__dirname, 'dist/main'),
-    libraryTarget: 'commonjs2'
+    filename: 'renderer.js',
+    chunkFilename: 'renderer.bundle.js',
+    path: path.join(__dirname, 'dist/browser')
   },
-  target: 'electron-main',
+  target: 'web',
   module: {
     rules: [
       {
@@ -44,29 +45,50 @@ const config = {
         }
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      { test: /\.css$/, use: [MiniCssExtractPlugin.loader, 'css-loader'] },
+
+      {
+        test: /\.svg$/,
         use: [
           {
-            loader: 'url-loader',
-            options: { limit: 10 * 1024 * 1024 }
+            loader: 'url-loader'
+          }
+        ]
+      },
+      {
+        test: /\.ttf$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]'
+            }
           }
         ]
       }
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.LINUX': process.platform === 'linux'
+    new HtmlWebpackPlugin({
+      title: 'Lyra Music Player',
+      template: './src/index.html',
+      chunks: ['renderer']
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
     }),
     new webpack.DefinePlugin({
-      __static: path.resolve(__dirname, 'static')
-    }),
-    new webpack.HotModuleReplacementPlugin({})
+      __static: path.join(__dirname, 'static')
+    })
   ],
   devServer: {
     contentBase: [path.join(__dirname, 'dist/browser')],
     host: 'localhost',
-    port: '9080',
+    port: '9081',
     hot: true,
     overlay: true
   },
@@ -80,31 +102,18 @@ const config = {
   },
   optimization: {
     noEmitOnErrors: true
-  },
-  externals: [
-    '@ffmpeg-installer/ffmpeg',
-    'electron-json-storage',
-    'fluent-ffmpeg',
-    'googleapis',
-    'source-map-support',
-    'updeep',
-    'ytdl-core',
-    'ytsr'
-  ]
+  }
 };
 
 module.exports = (env, argv) => {
   config.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.PRODUCTION': process.env.NODE_ENV !== 'production'
+      'process.env.PRODUCTION': argv.mode === 'production'
     })
   );
 
   if (argv.mode === 'production') {
     config.mode = 'production';
-    config.node = {
-      __dirname: false
-    };
     config.optimization = {
       minimizer: [
         new TerserPlugin({
@@ -120,9 +129,7 @@ module.exports = (env, argv) => {
   } else {
     config.mode = 'development';
     config.devtool = 'eval-source-map';
-    config.node = {
-      __dirname: true
-    };
+    config.plugins.push(new webpack.HotModuleReplacementPlugin({}));
   }
 
   return config;

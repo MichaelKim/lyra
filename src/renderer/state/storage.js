@@ -1,9 +1,5 @@
 // @flow strict
 
-import fs from 'fs';
-import path from 'path';
-import storage from 'electron-json-storage';
-
 import type { StoreState } from '../types';
 
 export const initialState: StoreState = {
@@ -30,27 +26,25 @@ export const initialState: StoreState = {
 };
 
 export function save(state: StoreState) {
-  storage.set('state', state, err => {
-    if (err) console.log(err);
-    else console.log('Stored state:', state);
-  });
+  void state;
+  // storage.set('state', state, err => {
+  //   if (err) console.log(err);
+  //   else console.log('Stored state:', state);
+  // });
 }
 
 export function clear() {
-  const storagePath = storage.getDataPath();
-  fs.readdir(storagePath, (err, files) => {
-    if (err) {
-      throw err;
-    }
-
-    files.forEach(file => {
-      fs.unlink(path.join(storagePath, file), err => {
-        if (err) {
-          throw err;
-        }
-      });
-    });
-  });
+  // const storagePath = storage.getDataPath();
+  // fs.readdir(storagePath, (err, files) => {
+  //   if (err) {
+  //     throw err;
+  //   }
+  //   files.forEach(file => {
+  //     fs.unlink(path.join(storagePath, file), err => {
+  //       if (err) {
+  //         throw err;
+  //       }
+  //     });
+  //   });
+  // });
 }
-
-console.log(storage.getDataPath());

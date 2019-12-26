@@ -1,12 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
-import path from 'path';
 import { connect } from 'react-redux';
-import { remote } from 'electron';
-
-import Toggle from '../../toggle';
-import { getSongs } from '../../../util';
 
 import type {
   Dispatch,
@@ -49,29 +44,7 @@ class Sources extends React.Component<Props, State> {
   };
 
   _onSelect = async () => {
-    const dirs: ?(string[]) = remote.dialog.showOpenDialog({
-      properties: ['openDirectory', 'multiSelections']
-    });
-
-    if (dirs == null) {
-      return;
-    }
-
-    const values = await Promise.all(dirs.map(dir => getSongs(dir)));
-
-    // $FlowFixMe: Array.flat() not in Flow
-    const songs: Song[] = values.flat();
-    const ids: SongID[] = songs.map(song => song.id);
-    const toggle = ids.reduce((acc, val) => {
-      acc[val] = true;
-      return acc;
-    }, ({}: $PropertyType<State, 'toggle'>));
-    this.setState({
-      selected: true,
-      tempDirs: dirs,
-      tempSongs: songs,
-      toggle
-    });
+    // TODO
   };
 
   _onToggle = (songID: SongID) => {
@@ -96,19 +69,7 @@ class Sources extends React.Component<Props, State> {
             {this.state.tempDirs.map(dir => (
               <div key={dir} className='scroll-box'>
                 <h5>{dir}</h5>
-                <div className='scroll'>
-                  {this.state.tempSongs
-                    .filter(song => path.dirname(song.filepath) === dir)
-                    .map(song => (
-                      <div className='sources-song-item' key={song.id}>
-                        <span className='sources-song-name'>{song.title}</span>
-                        <Toggle
-                          onToggle={() => this._onToggle(song.id)}
-                          selected={this.state.toggle[song.id]}
-                        />
-                      </div>
-                    ))}
-                </div>
+                <div className='scroll'></div>
               </div>
             ))}
 

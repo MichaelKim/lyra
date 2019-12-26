@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import AddModal from './add-modal';
 import Click from '../click';
 
-import { fileExists, formatDuration, showContextMenu } from '../../util';
+import { formatDuration, showContextMenu } from '../../util';
 
 import type {
   StoreState,
@@ -127,7 +127,7 @@ class SongItem extends React.Component<Props, State> {
   async componentDidMount() {
     const { song } = this.props;
     // Youtube sources don't require a file check
-    if (song.source === 'YOUTUBE' || (await fileExists(song.filepath))) {
+    if (song.source === 'YOUTUBE') {
       this.setState({
         status: 'READY'
       });

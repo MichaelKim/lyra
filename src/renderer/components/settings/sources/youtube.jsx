@@ -3,8 +3,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { downloadVideo } from '../../../yt-util';
-
 import type { Dispatch, Song } from '../../../types';
 
 type Props = {|
@@ -30,18 +28,7 @@ class Sources extends React.Component<Props, State> {
     });
   };
 
-  _onAdd = () => {
-    this.setState({
-      loading: true
-    });
-
-    downloadVideo(this.state.link)
-      .on('progress', (progress: number) => this.setState({ progress }))
-      .on('end', (song: Song) => {
-        this.props.addSongs([song]);
-        this.setState({ loading: false });
-      });
-  };
+  _onAdd = () => {};
 
   render() {
     return (

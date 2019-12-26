@@ -6,6 +6,7 @@
   "scripts": {
     "main": "webpack --progress --watch --config ./webpack.main.config.js",
     "renderer": "webpack-dev-server --config ./webpack.renderer.config.js",
+    "browser": "webpack-dev-server --progress --watch --config ./webpack.browser.config.js",
     "electron": "electron ./dist/main/main.js",
     "dev": "npm-run-all -p main renderer electron",
     "dist": "webpack --progress -p && electron-builder --dir",

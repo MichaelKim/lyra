@@ -1,6 +1,5 @@
 // @flow strict
 
-import storage from 'electron-json-storage';
 import { applyMiddleware, createStore, compose } from 'redux';
 
 import reducer from './reducer';
@@ -9,10 +8,9 @@ import { logger, saveToStorage, queueSong } from './middleware';
 
 import type { StoreState, Action, Dispatch } from '../types';
 
-const composeEnhancers =
-  process.env.NODE_ENV !== 'production'
-    ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose)
-    : compose;
+const composeEnhancers = process.env.PRODUCTION
+  ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose)
+  : compose;
 
 const store = createStore<StoreState, Action, Dispatch>(
   reducer,
@@ -20,26 +18,10 @@ const store = createStore<StoreState, Action, Dispatch>(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-storage.has('state', (err, exists) => {
-  if (err) return;
-
-  if (!exists) {
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state: initialState
-    });
-
-    return;
-  }
-
-  storage.get<StoreState>('state', (err, state) => {
-    if (err) return;
-
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state
-    });
-  });
+// TODO: browser storage
+store.dispatch({
+  type: 'LOAD_STORAGE',
+  state: initialState
 });
 
 export default store;

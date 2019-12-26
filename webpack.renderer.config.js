@@ -74,6 +74,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: 'Lyra Music Player',
       template: './src/index.html',
       chunks: ['renderer']
     }),

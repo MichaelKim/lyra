@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 
 type Props = {|
   +disabled: boolean,
@@ -25,14 +24,15 @@ const Controls = ({
 
   // Media control shortcuts
   React.useEffect(() => {
-    ipcRenderer.on('play-pause', onTogglePause);
-    ipcRenderer.on('skip-previous', skipPrevious);
-    ipcRenderer.on('skip-next', skipNext);
+    // TODO: keyboard shortcuts
+    // ipcRenderer.on('play-pause', onTogglePause);
+    // ipcRenderer.on('skip-previous', skipPrevious);
+    // ipcRenderer.on('skip-next', skipNext);
 
     return () => {
-      ipcRenderer.removeListener('play-pause', onTogglePause);
-      ipcRenderer.removeListener('skip-previous', skipPrevious);
-      ipcRenderer.removeListener('skip-next', skipNext);
+      // ipcRenderer.removeListener('play-pause', onTogglePause);
+      // ipcRenderer.removeListener('skip-previous', skipPrevious);
+      // ipcRenderer.removeListener('skip-next', skipNext);
     };
   }, [onTogglePause, skipPrevious, skipNext]);
 
