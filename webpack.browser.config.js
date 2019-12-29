@@ -126,10 +126,22 @@ module.exports = (env, argv) => {
         })
       ]
     };
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim')
+      })
+    );
   } else {
     config.mode = 'development';
     config.devtool = 'eval-source-map';
     config.plugins.push(new webpack.HotModuleReplacementPlugin({}));
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.LYRA_URL': JSON.stringify('http://localhost:5000')
+      })
+    );
   }
 
   return config;

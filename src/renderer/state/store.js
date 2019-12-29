@@ -18,10 +18,17 @@ const store = createStore<StoreState, Action, Dispatch>(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-// TODO: browser storage
-store.dispatch({
-  type: 'LOAD_STORAGE',
-  state: initialState
-});
+const state = window.localStorage.getItem('state');
+if (state) {
+  store.dispatch({
+    type: 'LOAD_STORAGE',
+    state
+  });
+} else {
+  store.dispatch({
+    type: 'LOAD_STORAGE',
+    state: initialState
+  });
+}
 
 export default store;

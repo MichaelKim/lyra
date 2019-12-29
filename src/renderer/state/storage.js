@@ -26,25 +26,14 @@ export const initialState: StoreState = {
 };
 
 export function save(state: StoreState) {
-  void state;
-  // storage.set('state', state, err => {
-  //   if (err) console.log(err);
-  //   else console.log('Stored state:', state);
-  // });
+  try {
+    window.localStorage.setItem('state', JSON.stringify(state));
+    console.log('Stored state:', state);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export function clear() {
-  // const storagePath = storage.getDataPath();
-  // fs.readdir(storagePath, (err, files) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  //   files.forEach(file => {
-  //     fs.unlink(path.join(storagePath, file), err => {
-  //       if (err) {
-  //         throw err;
-  //       }
-  //     });
-  //   });
-  // });
+  window.localStorage.removeItem('state');
 }
