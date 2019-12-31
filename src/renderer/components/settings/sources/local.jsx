@@ -3,10 +3,9 @@
 import * as React from 'react';
 import path from 'path';
 import { connect } from 'react-redux';
-import { remote } from 'electron';
 
 import Toggle from '../../toggle';
-import { getSongs } from '../../../util';
+import { getSongs, selectLocalDir } from '../../../util';
 
 import type {
   Dispatch,
@@ -49,9 +48,7 @@ class Sources extends React.Component<Props, State> {
   };
 
   _onSelect = async () => {
-    const dirs: ?(string[]) = remote.dialog.showOpenDialog({
-      properties: ['openDirectory', 'multiSelections']
-    });
+    const dirs = selectLocalDir();
 
     if (dirs == null) {
       return;

@@ -1,4 +1,5 @@
 const os = require('os');
+const webpack = require('webpack');
 
 module.exports = config => {
   // Enable .jsx extensions
@@ -11,6 +12,13 @@ module.exports = config => {
   // Only bundle matching ffmpeg executable
   config.externals.push(
     new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
+  );
+
+  // Add process.env.PRODUCTION
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env.PRODUCTION': config.mode === 'production'
+    })
   );
 
   return config;

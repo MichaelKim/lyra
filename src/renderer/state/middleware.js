@@ -7,9 +7,7 @@ import { downloadVideo, getRelatedVideos } from '../yt-util';
 import type { Middleware, Song } from '../types';
 
 export const logger: Middleware = () => next => action => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(action);
-  }
+  console.log(action);
   return next(action);
 };
 
@@ -115,8 +113,10 @@ export const saveToStorage: Middleware = store => next => action => {
         .on('progress', (progress: number) =>
           store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
         )
-        .on('end', (song: Song) => {
-          store.dispatch({ type: 'DOWNLOAD_FINISH', song });
+        .on('end', (song: ?Song) => {
+          if (song != null) {
+            store.dispatch({ type: 'DOWNLOAD_FINISH', song });
+          }
         });
       break;
     }

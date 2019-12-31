@@ -151,10 +151,3 @@ type $DeepShape<O: Object> = Object &
 declare module 'updeep' {
   declare module.exports: <T>(update: $DeepShape<T>, object: T) => T;
 }
-
-// EventEmitter with specifically typed events
-declare class DownloadEventEmitter extends EventEmitter {
-  on('progress', (percent: number) => void): this;
-  on('end', (song: Song) => void): this;
-  on(string, (e: mixed) => void): this;
-}

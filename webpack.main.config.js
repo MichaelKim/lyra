@@ -1,11 +1,12 @@
-const webpack = require('webpack');
 const os = require('os');
+const webpack = require('webpack');
 
 module.exports = config => {
-  // Add process.env.LINUX
+  // Add process.env.LINUX, process.env.PRODUCTION
   config.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.LINUX': process.platform === 'linux'
+      'process.env.LINUX': process.platform === 'linux',
+      'process.env.PRODUCTION': config.mode === 'production'
     })
   );
 

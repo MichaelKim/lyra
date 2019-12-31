@@ -9,7 +9,6 @@
   code, and avoid duplication across the codebase.
 */
 
-// eslint-disable-next-line no-unused-vars
 import EventEmitter from 'events';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from '@ffmpeg-installer/ffmpeg';
@@ -32,6 +31,14 @@ ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 //   version: "v3",
 //   auth: process.env.ELECTRON_WEBPACK_APP_YT_API
 // });
+
+// EventEmitter with specifically typed events
+declare class DownloadEventEmitter extends EventEmitter {
+  on('progress', (percent: number) => void): this;
+  // 'end' returns null if run in browser to end properly
+  on('end', (song: ?Song) => void): this;
+  on(string, (e: mixed) => void): this;
+}
 
 export async function getStreamURL(id: SongID): Promise<string> {
   const info = await ytdl.getInfo(id);

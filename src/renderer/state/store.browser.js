@@ -1,6 +1,5 @@
 // @flow strict
 
-import storage from 'electron-json-storage';
 import { applyMiddleware, createStore, compose } from 'redux';
 
 import reducer from './reducer';
@@ -19,26 +18,16 @@ const store = createStore<StoreState, Action, Dispatch>(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-storage.has('state', (err, exists) => {
-  if (err) return;
+let state = window.localStorage.getItem('state');
+try {
+  state = JSON.parse(state);
+} finally {
+  if (!state) state = initialState;
+}
 
-  if (!exists) {
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state: initialState
-    });
-
-    return;
-  }
-
-  storage.get<StoreState>('state', (err, state) => {
-    if (err) return;
-
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state
-    });
-  });
+store.dispatch({
+  type: 'LOAD_STORAGE',
+  state
 });
 
 export default store;

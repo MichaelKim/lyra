@@ -5,9 +5,11 @@
   "main": "src/main/index.jsx",
   "scripts": {
     "dev": "electron-webpack dev",
-    "build": "electron-webpack",
     "dist": "electron-webpack && electron-builder --dir",
     "pack": "electron-webpack && electron-builder",
+    "browser": "webpack-dev-server --config ./webpack.browser.config.js",
+    "browser-build": "webpack -p --progress --config ./webpack.browser.config.js",
+    "serve": "http-server -c-1 ./dist/browser",
     "postinstall": "node install-app-deps"
   },
   "repository": {
@@ -43,13 +45,15 @@
     "eslint-plugin-react-hooks": "^2.3.0",
     "flow-bin": "^0.114.0",
     "he": "^1.2.0",
+    "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "redux": "^4.0.1",
     "sass-loader": "^7.1.0",
-    "webpack": "^4.41.4"
+    "webpack": "^4.41.4",
+    "webpack-dev-server": "^3.10.1"
   },
   "electronWebpack": {
     "main": {

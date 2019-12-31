@@ -37,8 +37,8 @@ class Sources extends React.Component<Props, State> {
 
     downloadVideo(this.state.link)
       .on('progress', (progress: number) => this.setState({ progress }))
-      .on('end', (song: Song) => {
-        this.props.addSongs([song]);
+      .on('end', (song: ?Song) => {
+        if (song != null) this.props.addSongs([song]);
         this.setState({ loading: false });
       });
   };

@@ -7,8 +7,6 @@ import checkAccessibility from './accessibility';
 
 let win = null;
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
 function installExtensions() {
   const installExtension = require('electron-devtools-installer');
 
@@ -44,7 +42,7 @@ function createWindow() {
 
   win.setMenu(null);
 
-  if (isDevelopment) {
+  if (!process.env.PRODUCTION) {
     if (process.env.ELECTRON_WEBPACK_WDS_PORT == null) {
       throw 'Missing electron-webpack port';
     }

@@ -75,14 +75,12 @@ const AudioControl = (props: Props) => {
     onEnd && onEnd();
   };
 
+  if (src == null) {
+    return null;
+  }
+
   return (
-    <audio
-      ref={ref}
-      src={src}
-      autoPlay
-      onTimeUpdate={_onProgress}
-      onEnded={_onEnd}
-    />
+    <audio ref={ref} src={src} onTimeUpdate={_onProgress} onEnded={_onEnd} />
   );
 };
 

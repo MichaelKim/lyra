@@ -1,7 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
+import { useMediaShortcuts } from '../../hooks';
 
 type Props = {|
   +disabled: boolean,
@@ -24,17 +24,11 @@ const Controls = ({
   const onReplay = () => onSeek(-10);
 
   // Media control shortcuts
-  React.useEffect(() => {
-    ipcRenderer.on('play-pause', onTogglePause);
-    ipcRenderer.on('skip-previous', skipPrevious);
-    ipcRenderer.on('skip-next', skipNext);
-
-    return () => {
-      ipcRenderer.removeListener('play-pause', onTogglePause);
-      ipcRenderer.removeListener('skip-previous', skipPrevious);
-      ipcRenderer.removeListener('skip-next', skipNext);
-    };
-  }, [onTogglePause, skipPrevious, skipNext]);
+  useMediaShortcuts({
+    'play-pause': onTogglePause,
+    'skip-previous': skipPrevious,
+    'skip-next': skipNext
+  });
 
   return (
     <div className='playback-center'>

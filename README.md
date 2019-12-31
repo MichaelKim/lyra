@@ -42,22 +42,33 @@ Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino
 
 ## Development
 
-To run locally, clone the repo and run the following:
+There are several ways to run Lyra:
 
-```
-npm install
-npm run dev
-```
-
-To build the executable, you have two options:
+### Electron App
 
 ```sh
-# Create unpacked release
-npm run dist
+npm run dev  # Run locally in development mode
 
-# Create packaged executable
-npm run pack
+npm run dist # Create unpacked release
+
+npm run pack # Create packaged executable
 ```
+
+### Browser Web App
+
+```sh
+npm run browser  # Available on localhost:9000
+
+npm run browser-build # Create release
+
+npm run serve # Serve built release on localhost:8080
+```
+
+This also requires lyra-server to be running (on localhost:5000).
+
+### Neutrino App
+
+See the build instructions [here](https://github.com/LenKagamine/lyra-neutrino).
 
 TODO:
 
@@ -172,8 +183,8 @@ Long term features:
     - When listening to a Youtube song, download it in the background as a cache
     - Future playbacks and actual downloads will fetch from server's cache instead
   - Upload songs
-- Web App
-  - Change storage to localStorage?
+- Rooms!
+  - Several users listening to the same stream
 
 Ideas:
 
