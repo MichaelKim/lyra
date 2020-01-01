@@ -22,12 +22,7 @@ export default function rootReducer(
       const cache = queue.next.reduce((cache, id) => {
         if (cache[id] == null) return cache;
         if (cache[id].count === 1) {
-          return u(
-            {
-              [id]: undefined
-            },
-            cache
-          );
+          return u.omit(id, cache);
         }
         return u(
           {
@@ -47,48 +42,42 @@ export default function rootReducer(
       };
 
       if (state.songs[id] != null) {
-        return u(
-          {
-            queue: newQueue
-          },
-          state
-        );
+        return {
+          ...state,
+          queue: newQueue
+        };
       }
 
       if (queue.cache[id] != null) {
-        return u(
-          {
-            queue: u(
-              {
-                cache: {
-                  [id]: {
-                    count: state.queue.cache[id].count + 1
-                  }
-                }
-              },
-              newQueue
-            )
-          },
-          state
-        );
-      }
-
-      return u(
-        {
+        return {
+          ...state,
           queue: u(
             {
               cache: {
                 [id]: {
-                  song: action.song,
-                  count: 1
+                  count: state.queue.cache[id].count + 1
                 }
               }
             },
             newQueue
           )
-        },
-        state
-      );
+        };
+      }
+
+      return {
+        ...state,
+        queue: u(
+          {
+            cache: {
+              [id]: {
+                song: action.song,
+                count: 1
+              }
+            }
+          },
+          newQueue
+        )
+      };
     }
 
     case 'SELECT_PLAYLIST':
@@ -160,12 +149,12 @@ export default function rootReducer(
         if (index !== -1) songs[id].playlists.splice(index, 1);
       });
 
+      const playlists = u.omit(action.id, state.playlists);
+
       if (state.currScreen === action.id) {
         return u(
           {
-            playlists: {
-              [action.id]: null
-            },
+            playlists,
             songs,
             currScreen: null
           },
@@ -175,9 +164,7 @@ export default function rootReducer(
 
       return u(
         {
-          playlists: {
-            [action.id]: null
-          },
+          playlists,
           songs
         },
         state
