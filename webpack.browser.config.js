@@ -4,9 +4,6 @@
 const renderer = require('electron-webpack/webpack.renderer.config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-
-// process.env.LYRA_USE_API
-
 const webpack = require('webpack');
 
 module.exports = async (env, argv) => {
@@ -26,6 +23,7 @@ module.exports = async (env, argv) => {
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim'),
+        'process.env.LYRA_USE_API': JSON.stringify(true),
         'process.env.BROWSER': JSON.stringify(true),
         'process.env.PRODUCTION': JSON.stringify(true)
       })
@@ -36,6 +34,7 @@ module.exports = async (env, argv) => {
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env.LYRA_URL': JSON.stringify('http://localhost:5000'),
+        'process.env.LYRA_USE_API': JSON.stringify(false),
         'process.env.BROWSER': JSON.stringify(true),
         'process.env.PRODUCTION': JSON.stringify(false)
       })
