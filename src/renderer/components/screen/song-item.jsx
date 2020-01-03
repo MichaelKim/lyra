@@ -226,9 +226,7 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-const ConnectedComp: React.ComponentType<PassedProps> = connect(
+export default (connect(
   mapState,
   mapDispatch
-)(SongItem);
-
-export default ConnectedComp;
+)(SongItem): React.ComponentType<PassedProps>);

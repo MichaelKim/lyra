@@ -125,9 +125,4 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-const ConnectedComp: React.ComponentType<{||}> = connect(
-  null,
-  mapDispatch
-)(Sources);
-
-export default ConnectedComp;
+export default (connect(null, mapDispatch)(Sources): React.ComponentType<{||}>);
