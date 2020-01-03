@@ -149,12 +149,10 @@ export default function rootReducer(
         if (index !== -1) songs[id].playlists.splice(index, 1);
       });
 
-      const playlists = u.omit(action.id, state.playlists);
-
       if (state.currScreen === action.id) {
         return u(
           {
-            playlists,
+            playlists: u.omit(action.id),
             songs,
             currScreen: null
           },
@@ -164,7 +162,7 @@ export default function rootReducer(
 
       return u(
         {
-          playlists,
+          playlists: u.omit(action.id),
           songs
         },
         state

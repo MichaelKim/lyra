@@ -3,13 +3,14 @@
 import * as React from 'react';
 
 import { values } from '../util';
-import { useSelector, useDispatch } from '../hooks';
+import { useSelector, useDispatch, useToggle } from '../hooks';
 
 import type { Playlist, PlaylistID } from '../types';
 
 import '../../css/sidebar.scss';
 
 export default function Sidebar() {
+  const [openSidebar, toggleSidebar] = useToggle(false);
   const currScreen = useSelector(state => state.currScreen);
   const playlists = useSelector(state => values(state.playlists));
 
@@ -39,7 +40,7 @@ export default function Sidebar() {
           (deletable ? ' sidebar-del' : '')
         }
       >
-        <p onClick={() => selectPlaylist(key)}>{name}</p>
+        <p onClick={() => selectPlaylist(key) && toggleSidebar()}>{name}</p>
         <button
           className='del-btn'
           onClick={() => key && deletePlaylist(key)}
@@ -88,45 +89,54 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className='sidebar'>
-      <h3 className='sidebar-title'>Lyra Player</h3>
+    <>
+      <button className='sidebar-icon' onClick={toggleSidebar} />
+      <div className={'sidebar ' + (openSidebar ? 'sidebar-open' : '')}>
+        <h3 className='sidebar-title'>Lyra Player</h3>
 
-      <div className='sidebar-section'>
-        <p className='label'>Library</p>
-      </div>
-      {items.map(item =>
-        renderItem(item.enum, item.name, currScreen == item.enum)
-      )}
+        <div className='sidebar-section'>
+          <p className='label'>Library</p>
+        </div>
+        {items.map(item =>
+          renderItem(item.enum, item.name, currScreen == item.enum)
+        )}
 
-      <div className='sidebar-section'>
-        <p className='label'>YouTube</p>
-      </div>
-      {renderItem('yt-search', 'Search', currScreen === 'yt-search')}
-      {renderItem('yt-playing', 'Playing', currScreen === 'yt-playing')}
+        <div className='sidebar-section'>
+          <p className='label'>YouTube</p>
+        </div>
+        {renderItem('yt-search', 'Search', currScreen === 'yt-search')}
+        {renderItem('yt-playing', 'Playing', currScreen === 'yt-playing')}
 
-      <div className='sidebar-section'>
-        <p className='label'>Playlists</p>
-        <button className='add-btn' onClick={addPlaylist} />
+        <div className='sidebar-section'>
+          <p className='label'>Playlists</p>
+          <button className='add-btn' onClick={addPlaylist} />
+        </div>
+        {editing && (
+          <input
+            autoFocus
+            type='text'
+            placeholder='Playlist Name'
+            value={value}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+          />
+        )}
+        {playlists.map(playlist =>
+          renderItem(
+            playlist.id,
+            playlist.name,
+            currScreen === playlist.name,
+            true
+          )
+        )}
       </div>
-      {editing && (
-        <input
-          autoFocus
-          type='text'
-          placeholder='Playlist Name'
-          value={value}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-          onBlur={onBlur}
-        />
-      )}
-      {playlists.map(playlist =>
-        renderItem(
-          playlist.id,
-          playlist.name,
-          currScreen === playlist.name,
-          true
-        )
-      )}
-    </div>
+      <div
+        className={
+          'sidebar-close ' + (openSidebar ? 'sidebar-close-active' : '')
+        }
+        onClick={toggleSidebar}
+      />
+    </>
   );
 }

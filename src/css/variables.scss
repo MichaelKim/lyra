@@ -20,3 +20,13 @@ $modal-fade: #00000080;
 
 // Slider
 $slider-thumb-color: #aaa;
+
+// Media Query Breakpoints
+
+$phone-width: 700px;
+
+@mixin phone {
+  @media (max-width: #{$phone-width}) {
+    @content;
+  }
+}

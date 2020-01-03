@@ -1,10 +1,12 @@
 @import './variables.scss';
 
 .sidebar {
-  width: 100px;
+  box-sizing: border-box; // Width: 140px (including padding)
+  width: 140px;
   background-color: $sidebar-color;
   color: $text-color;
   padding: 20px;
+  z-index: 1;
 
   .sidebar-title {
     margin-top: 0;
@@ -58,4 +60,49 @@
       }
     }
   }
+}
+
+.sidebar-icon {
+  position: absolute;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../icons/menu.svg');
+  display: none;
+}
+
+.sidebar-close {
+  pointer-events: none; // Clicks should go through
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: transparent;
+  transition: background-color 0.25s ease-out;
+}
+
+@include phone {
+  .sidebar-icon {
+    display: block;
+  }
+
+  .sidebar {
+    position: absolute;
+    left: -140px;
+    height: 100%;
+    transition: left 0.25s ease-out;
+  }
+
+  .sidebar-close-active {
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.sidebar-open {
+  left: 0;
 }
