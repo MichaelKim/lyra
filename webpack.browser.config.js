@@ -40,7 +40,7 @@ module.exports = async (env, argv) => {
       })
     );
   }
-  config.resolve.extensions.unshift('.browser.js');
+  config.resolve.extensions.unshift('.browser.js', '.browser.jsx');
   config.target = 'web';
 
   return config;

@@ -1,6 +1,8 @@
 // @flow strict
 /* eslint-disable no-unused-vars */
 
+import ContextMenu from './components/context';
+
 import type { Song, LocalSong, Metadata, SongID, SortType } from './types';
 
 export function fileExists(path: string) {
@@ -100,13 +102,6 @@ export function readableViews(viewCount: number): string {
     'B'
   );
 }
-
-export function showContextMenu(
-  items: Array<{|
-    +label: string,
-    +click: () => void
-  |}>
-) {}
 
 export function registerShortcuts(shortcuts: { +[key: string]: () => mixed }) {}
 

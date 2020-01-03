@@ -159,20 +159,6 @@ export function readableViews(viewCount: number): string {
   );
 }
 
-export function showContextMenu(
-  items: Array<{|
-    +label: string,
-    +click: () => void
-  |}>
-) {
-  const menu = new remote.Menu();
-  for (const item of items) {
-    const menuItem = new remote.MenuItem(item);
-    menu.append(menuItem);
-  }
-  menu.popup(remote.getCurrentWindow());
-}
-
 export function registerShortcuts(shortcuts: { +[key: string]: () => mixed }) {
   Object.keys(shortcuts).forEach(key => {
     ipcRenderer.on(key, shortcuts[key]);

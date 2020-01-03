@@ -1,8 +1,9 @@
 // @flow strict
 
 import * as React from 'react';
+import ContextMenu from '../context';
 
-import { formatDuration, showContextMenu } from '../../util';
+import { formatDuration } from '../../util';
 import { useDispatchMap } from '../../hooks';
 
 import type { Song, SongID, VideoSong, Dispatch } from '../../types';
@@ -19,25 +20,6 @@ const YtItem = (props: Props) => {
 
   const { video, onClick } = props;
 
-  const showOptions = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-
-    showContextMenu([
-      {
-        label: 'Add to Library',
-        click: () => {
-          addSong(video);
-        }
-      },
-      {
-        label: 'Download Audio',
-        click: () => {
-          downloadAdd(video.id);
-        }
-      }
-    ]);
-  };
-
   return (
     <div className='youtube-item'>
       <div className='youtube-item-thumbnail' onClick={onClick}>
@@ -50,9 +32,25 @@ const YtItem = (props: Props) => {
           {video.views && ` • ${video.views} views`}
         </h5>
       </div>
-      <div>
-        <button className='options-btn' onClick={showOptions} />
-      </div>
+      <ContextMenu
+        className='context-content'
+        items={[
+          {
+            label: 'Add to Library',
+            click: () => {
+              addSong(video);
+            }
+          },
+          {
+            label: 'Download Audio',
+            click: () => {
+              downloadAdd(video.id);
+            }
+          }
+        ]}
+      >
+        <button className='options-btn' />
+      </ContextMenu>
     </div>
   );
 };

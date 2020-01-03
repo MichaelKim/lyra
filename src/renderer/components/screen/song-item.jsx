@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 
 import AddModal from './add-modal';
 import Click from '../click';
+import ContextMenu from '../context';
 
-import { fileExists, formatDuration, showContextMenu } from '../../util';
+import { fileExists, formatDuration } from '../../util';
 
 import type {
   StoreState,
@@ -50,23 +51,6 @@ class SongItem extends React.Component<Props, State> {
 
   _onClick = () => {
     this.props.selectSong(this.props.song);
-  };
-
-  _onContextMenu = () => {
-    showContextMenu([
-      {
-        label: 'Add to Playlist',
-        click: () => this.setState({ showModal: true })
-      },
-      {
-        label: 'Add to Queue',
-        click: () => this.props.queueSong(this.props.song)
-      },
-      {
-        label: 'Remove Song',
-        click: () => this.props.removeSong(this.props.song.id)
-      }
-    ]);
   };
 
   _onDblClick = editStart => {
@@ -177,31 +161,49 @@ class SongItem extends React.Component<Props, State> {
     const date = new Date(this.props.song.date).toLocaleDateString();
 
     return (
-      <div
-        className={'song-row ' + (status === 'MISSING' ? 'song-missing' : '')}
-        onFocus={this._onFocus}
-        onBlur={this._onBlur}
-        onClick={this._onClick}
-        onContextMenu={this._onContextMenu}
+      <ContextMenu
+        rightClick={true}
+        className='context-content'
+        items={[
+          {
+            label: 'Add to Playlist',
+            click: () => this.setState({ showModal: true })
+          },
+          {
+            label: 'Add to Queue',
+            click: () => this.props.queueSong(this.props.song)
+          },
+          {
+            label: 'Remove Song',
+            click: () => this.props.removeSong(this.props.song.id)
+          }
+        ]}
       >
-        <div className='is-playing'>
-          {isPlaying && (
-            <>
-              <div />
-              <div />
-              <div />
-            </>
+        <div
+          className={'song-row ' + (status === 'MISSING' ? 'song-missing' : '')}
+          onFocus={this._onFocus}
+          onBlur={this._onBlur}
+          onClick={this._onClick}
+        >
+          <div className='is-playing'>
+            {isPlaying && (
+              <>
+                <div />
+                <div />
+                <div />
+              </>
+            )}
+          </div>
+          {this._renderInput('TITLE', title, this._changeTitle)}
+          {this._renderInput('ARTIST', artist, this._changeArtist)}
+          <div>{formatDuration(this.props.song.duration)}</div>
+          <div>{date}</div>
+
+          {this.state.showModal && (
+            <AddModal song={this.props.song} onClose={this._onModalClose} />
           )}
         </div>
-        {this._renderInput('TITLE', title, this._changeTitle)}
-        {this._renderInput('ARTIST', artist, this._changeArtist)}
-        <div>{formatDuration(this.props.song.duration)}</div>
-        <div>{date}</div>
-
-        {this.state.showModal && (
-          <AddModal song={this.props.song} onClose={this._onModalClose} />
-        )}
-      </div>
+      </ContextMenu>
     );
   }
 }

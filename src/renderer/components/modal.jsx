@@ -6,10 +6,10 @@ import ReactDOM from 'react-dom';
 import '../../css/modal.scss';
 
 type Props = {|
-  isOpen: boolean,
-  className: string,
-  onClose: () => void,
-  children: React.Node
+  +isOpen: boolean,
+  +className: string,
+  +onClose: () => void,
+  +children: React.Node
 |};
 
 export default function Modal(props: Props) {
