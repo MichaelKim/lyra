@@ -268,3 +268,18 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
     };
   });
 }
+
+const YT_SUGGEST_URL =
+  'https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=';
+
+export async function ytSuggest(query: string): Promise<Array<string>> {
+  if (!query) return [];
+
+  const url = YT_SUGGEST_URL + query.trim().replace(/\s+/, '+');
+
+  // Format: [query: string, suggestions: string[]]
+  const res = await fetch(url);
+  const body: [string, string[]] = await res.json();
+
+  return body[1];
+}

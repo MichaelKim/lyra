@@ -38,6 +38,8 @@ Refactor:
 
 Minor fixes:
 
+- Autoplay
+  - Autoplay song when selected (and nothing is currently selected)
 - Scroll bar
   - Sidebar scroll bar should only scroll playlists?
 - Deleting playlist
@@ -74,6 +76,9 @@ Long term features:
   - Upload songs
 - Rooms!
   - Several users listening to the same stream
+- Yt search suggest
+  - While typing in yt search, show suggestions below it
+  - Clicking a suggestion will search for it
 
 Ideas:
 

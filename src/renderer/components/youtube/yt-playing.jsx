@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import Search from '../search';
+import YtSuggest from './search-suggest';
 import Loading from '../loading';
 import YtItem from './yt-item';
 
@@ -61,7 +61,7 @@ class YtPlaying extends React.Component<Props, State> {
         <div className='yt-playing-header'>
           <h1>YouTube</h1>
           <div>
-            <Search onEnter={this.props.onSearch} />
+            <YtSuggest onSearch={this.props.onSearch} />
           </div>
         </div>
         <div className='yt-playing-current'>

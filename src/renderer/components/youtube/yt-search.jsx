@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import Search from '../search';
+import YtSuggest from './search-suggest';
 import Loading from '../loading';
 import YtItem from './yt-item';
 
@@ -18,7 +18,7 @@ type Props = {|
 
 export default function YtSearch(props: Props) {
   const [searching, setSearching] = React.useState(false);
-  const [videos, setVideos] = React.useState([]);
+  const [videos, setVideos] = React.useState<VideoSong[]>([]);
 
   const dispatch = useDispatch();
   const showYtPlaying = () =>
@@ -47,9 +47,9 @@ export default function YtSearch(props: Props) {
   return (
     <>
       <h1>YouTube</h1>
-      <Search
+      <YtSuggest
         key={props.initialKeyword}
-        onEnter={onSearch}
+        onSearch={onSearch}
         initialValue={props.initialKeyword || ''}
       />
       {searching ? (

@@ -111,21 +111,6 @@ input[type='text'] {
   }
 }
 
-// Search input
-.search-box {
-  margin: 0 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  img {
-    content: url('../icons/search.svg');
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-}
-
 // Scrolling
 .scroll {
   overflow: hidden auto;

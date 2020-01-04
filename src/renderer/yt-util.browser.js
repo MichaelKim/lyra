@@ -50,3 +50,13 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
   const videos = res.json();
   return videos;
 }
+
+export async function ytSuggest(keyword: string) {
+  if (!keyword) return [];
+
+  const res = await fetch(
+    `${LYRA_URL}/yt/suggest?query=${keyword}&api=${USE_API}`
+  );
+  const json = res.json();
+  return json;
+}

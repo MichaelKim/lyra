@@ -1,0 +1,45 @@
+@import './variables.scss';
+
+// Search input
+.search-box {
+  margin: 0 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img {
+    content: url('../icons/search.svg');
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+
+  .search-input {
+    position: relative;
+    width: 100%;
+
+    .search-suggest-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: $screen-color;
+      border: 1px solid $border-color;
+      border-top: 0;
+      border-bottom: 0;
+      cursor: pointer;
+
+      .search-suggest-focus {
+        background-color: $border-color;
+      }
+
+      .search-suggest:hover {
+        background-color: $border-color;
+      }
+
+      .search-suggest:last-child {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+  }
+}
