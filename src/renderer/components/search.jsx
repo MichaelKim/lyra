@@ -27,7 +27,7 @@ export default function Search(props: Props) {
       const onEnter = props.onEnter;
       if (onEnter == null) return;
 
-      e.target.blur();
+      e.currentTarget.blur();
       if (props.suggestions != null && props.suggestions[focus]) {
         const suggest = props.suggestions[focus];
         setValue(suggest);

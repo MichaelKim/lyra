@@ -10,8 +10,8 @@ import { logger, saveToStorage, queueSong } from './middleware';
 import type { StoreState, Action, Dispatch } from '../types';
 
 const composeEnhancers = process.env.PRODUCTION
-  ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose)
-  : compose;
+  ? compose
+  : (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose);
 
 const store = createStore<StoreState, Action, Dispatch>(
   reducer,

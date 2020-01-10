@@ -1,10 +1,11 @@
 // @flow strict
 
 import * as React from 'react';
+import { connect } from 'react-redux';
 
-import { useSelector } from '../../hooks';
+import type { StoreState } from '../../types';
 
-type Props = {|
+type PassedProps = {|
   +src: ?string,
   +playing: boolean,
   +progress: number,
@@ -12,76 +13,80 @@ type Props = {|
   +onEnd?: () => mixed
 |};
 
-const AudioControl = (props: Props) => {
-  const { src, playing, progress, onProgress, onEnd } = props;
+type Props = PassedProps & {|
+  +volume: number
+|};
 
-  const volume = useSelector(state =>
-    state.volume.muted ? 0 : state.volume.amount
-  );
+class AudioControl extends React.Component<Props> {
+  audio = React.createRef<HTMLAudioElement>();
 
-  const audio = React.useRef<?HTMLAudioElement>(null);
-
-  const checkVolume = React.useCallback(() => {
-    if (audio.current) {
-      audio.current.volume = volume;
+  checkVolume = () => {
+    if (this.audio.current) {
+      this.audio.current.volume = this.props.volume;
     }
-  }, [volume]);
+  };
 
-  const checkPlaying = React.useCallback(() => {
-    if (!audio.current) {
+  checkPlaying = () => {
+    if (!this.audio.current) {
       return;
     }
-    if (playing) {
-      audio.current.play();
+    if (this.props.playing) {
+      this.audio.current.play();
     } else {
-      audio.current.pause();
+      this.audio.current.pause();
     }
-  }, [playing]);
+  };
 
-  const checkPosition = React.useCallback(() => {
-    if (audio.current && Math.abs(progress - audio.current.currentTime) > 0.2) {
-      audio.current.currentTime = progress;
+  checkPosition = () => {
+    const { progress } = this.props;
+    if (
+      this.audio.current &&
+      Math.abs(progress - this.audio.current.currentTime) > 0.2
+    ) {
+      this.audio.current.currentTime = progress;
     }
-  }, [progress]);
+  };
 
-  const ref = React.useCallback(node => {
-    audio.current = node;
+  componentDidMount() {
+    this.checkVolume();
+    this.checkPlaying();
+    this.checkPosition();
+  }
 
-    checkVolume();
-    checkPlaying();
-    checkPosition();
-
-    // This callback is only for when the ref is initally set
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    checkVolume();
-  }, [checkVolume]);
-
-  React.useEffect(() => {
-    checkPlaying();
-  }, [checkPlaying]);
-
-  React.useEffect(() => {
-    checkPosition();
-  }, [checkPosition]);
-
-  const _onProgress = (e: SyntheticEvent<HTMLAudioElement>) => {
+  onProgress = (e: SyntheticEvent<HTMLAudioElement>) => {
+    const { onProgress } = this.props;
     onProgress && onProgress(e.currentTarget.currentTime);
   };
 
-  const _onEnd = () => {
+  onEnd = () => {
+    const { onEnd } = this.props;
     onEnd && onEnd();
   };
 
-  if (src == null) {
-    return null;
-  }
+  render() {
+    const { src } = this.props;
 
-  return (
-    <audio ref={ref} src={src} onTimeUpdate={_onProgress} onEnded={_onEnd} />
-  );
+    if (src == null) {
+      return null;
+    }
+
+    return (
+      <audio
+        ref={this.audio}
+        src={src}
+        onTimeUpdate={this.onProgress}
+        onEnded={this.onEnd}
+      />
+    );
+  }
+}
+
+const mapState = (state: StoreState) => {
+  return {
+    volume: state.volume.muted ? 0 : state.volume.amount
+  };
 };
 
-export default AudioControl;
+export default (connect(mapState)(
+  AudioControl
+): React.ComponentType<PassedProps>);

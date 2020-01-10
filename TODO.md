@@ -15,6 +15,8 @@ TODO:
   - all songs? playlist? youtube?
   - opens the respective screen for the song
   - Remove "playing" tab in sidebar under youtube
+- Invalid state
+  - Recover from invalid state
 
 Refactor:
 
@@ -76,9 +78,6 @@ Long term features:
   - Upload songs
 - Rooms!
   - Several users listening to the same stream
-- Yt search suggest
-  - While typing in yt search, show suggestions below it
-  - Clicking a suggestion will search for it
 
 Ideas:
 
