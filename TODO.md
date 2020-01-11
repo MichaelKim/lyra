@@ -49,6 +49,10 @@ Minor fixes:
 - Inconsistent action to open context menu
   - Youtube playing: click options icon
   - Library: right click
+- seeking
+  - use HTML5 Audio fastSeek()
+- mediasession
+  - use navigator.mediaSession.setPositionState
 
 Bugs:
 

@@ -21,15 +21,19 @@ class AudioControl extends React.Component<Props> {
   audio = React.createRef<HTMLAudioElement>();
 
   checkVolume = () => {
-    if (this.audio.current) {
+    if (this.audio.current && this.audio.current.volume !== this.props.volume) {
       this.audio.current.volume = this.props.volume;
     }
   };
 
   checkPlaying = () => {
-    if (!this.audio.current) {
+    if (
+      !this.audio.current ||
+      this.audio.current.paused !== this.props.playing
+    ) {
       return;
     }
+
     if (this.props.playing) {
       this.audio.current.play();
     } else {
@@ -41,13 +45,19 @@ class AudioControl extends React.Component<Props> {
     const { progress } = this.props;
     if (
       this.audio.current &&
-      Math.abs(progress - this.audio.current.currentTime) > 0.2
+      Math.abs(progress - this.audio.current.currentTime) > 0.5
     ) {
       this.audio.current.currentTime = progress;
     }
   };
 
   componentDidMount() {
+    this.checkVolume();
+    this.checkPlaying();
+    this.checkPosition();
+  }
+
+  componentDidUpdate() {
     this.checkVolume();
     this.checkPlaying();
     this.checkPosition();

@@ -41,3 +41,24 @@ export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
     };
   }, [shortcuts]);
 }
+
+export function useMediaSessionHandlers(actionHandlers: {
+  // $FlowFixMe
+  +[key: string]: Function
+}) {
+  React.useEffect(() => {
+    if (!('mediaSession' in navigator)) {
+      return;
+    }
+
+    Object.entries(actionHandlers).forEach(([eventName, handler]) =>
+      navigator.mediaSession.setActionHandler(eventName, handler)
+    );
+
+    return () => {
+      Object.entries(actionHandlers).forEach(([eventName]) =>
+        navigator.mediaSession.setActionHandler(eventName, null)
+      );
+    };
+  }, [actionHandlers]);
+}

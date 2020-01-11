@@ -36,14 +36,20 @@ class PlaybackBar extends React.Component<Props, State> {
     progress: 0
   };
 
-  previousOrStart = () => {
+  skipPreviousOrStart = () => {
+    this.setState({
+      progress: 0
+    });
     if (this.state.progress < 3) {
       this.props.skipPrevious();
-    } else {
-      this.setState({
-        progress: 0
-      });
     }
+  };
+
+  skipNext = () => {
+    this.setState({
+      progress: 0
+    });
+    this.props.skipNext();
   };
 
   onProgress = (time: number) => {
@@ -71,14 +77,11 @@ class PlaybackBar extends React.Component<Props, State> {
     this.props.skipNext();
   };
 
-  loadSong = async (prevSongID: ?string) => {
+  loadSong = async (autoplay: boolean, prevSongID: ?string) => {
     const { currSong } = this.props;
     if (currSong == null || prevSongID === currSong.id) {
       return;
     }
-
-    // prevSongID == null means called by didMount
-    const replay = prevSongID != null || this.state.playing;
 
     this.setState({
       playing: false
@@ -89,11 +92,21 @@ class PlaybackBar extends React.Component<Props, State> {
       this.setState({
         src
       });
+
+      if ('mediaSession' in navigator) {
+        /* eslint-disable no-undef */
+        navigator.mediaSession.metadata = new MediaMetadata({
+          /* eslint-enable no-undef */
+          title: currSong.title,
+          artist: currSong.artist,
+          artwork: [{ src: currSong.thumbnail.url }]
+        });
+      }
     } else {
       this.setState({ src: path.join('file://', currSong.filepath) });
     }
 
-    if (replay) {
+    if (autoplay) {
       this.setState({
         playing: true
       });
@@ -101,15 +114,24 @@ class PlaybackBar extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    this.loadSong();
+    this.loadSong(false);
+    navigator.mediaSession.playbackState = 'paused';
   }
 
-  componentDidUpdate(prevState) {
-    this.loadSong(prevState.currSong?.id);
+  componentDidUpdate(prevProps) {
+    this.loadSong(true, prevProps.currSong?.id);
+
+    navigator.mediaSession.playbackState = this.state.playing
+      ? 'playing'
+      : 'paused';
+  }
+
+  componentWillUnmount() {
+    navigator.mediaSession.playbackState = 'none';
   }
 
   render() {
-    const { currSong, skipNext } = this.props;
+    const { currSong } = this.props;
     const { src, playing, progress } = this.state;
 
     return (
@@ -139,8 +161,8 @@ class PlaybackBar extends React.Component<Props, State> {
           <Controls
             disabled={currSong == null}
             playing={playing}
-            skipPrevious={this.previousOrStart}
-            skipNext={skipNext}
+            skipPrevious={this.skipPreviousOrStart}
+            skipNext={this.skipNext}
             onTogglePause={this.onTogglePause}
             onSeek={this.onSeek}
           />

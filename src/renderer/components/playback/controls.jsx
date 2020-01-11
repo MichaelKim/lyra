@@ -1,7 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
-import { useMediaShortcuts } from '../../hooks';
+import { useMediaShortcuts, useMediaSessionHandlers } from '../../hooks';
 
 type Props = {|
   +disabled: boolean,
@@ -28,6 +28,17 @@ const Controls = ({
     'play-pause': onTogglePause,
     'skip-previous': skipPrevious,
     'skip-next': skipNext
+  });
+
+  // Media Session API handlers
+  useMediaSessionHandlers({
+    seekbackward: onReplay,
+    seekforward: onForward,
+    play: onTogglePause,
+    pause: onTogglePause,
+    previoustrack: skipPrevious,
+    nexttrack: skipNext,
+    seekto: e => onSeek(e.seekTime)
   });
 
   return (

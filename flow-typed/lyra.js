@@ -154,3 +154,31 @@ declare module 'updeep' {
     omit: <T>(property: string, object: T) => T
   };
 }
+
+// Patch Flow's navigator type with MediaSession API
+declare class MediaMetadata {
+  constructor(args: {|
+    title: string,
+    artist: string,
+    artwork: Array<{
+      src: string,
+      sizes?: string,
+      type?: string
+    }>
+  |}): this;
+}
+
+declare var navigator: Navigator & {
+  mediaSession: {
+    metadata: MediaMetadata,
+    playbackState: 'none' | 'paused' | 'playing',
+    // TODO: the callback function for some events (e.g. the seeking ones) have optional / required parameters
+    setActionHandler: (eventName: string, callback: Function) => void,
+    // TODO: Chrome 81 will have this feature
+    setPositionState: (stateDict?: {|
+      duration?: number,
+      playbackRate?: number,
+      position?: number
+    |}) => void
+  }
+};

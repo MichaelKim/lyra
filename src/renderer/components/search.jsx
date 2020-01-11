@@ -56,6 +56,10 @@ export default function Search(props: Props) {
     }
   }
 
+  function onBlur() {
+    setFocus(-1);
+  }
+
   const suggestions = props.suggestions ?? [];
 
   return (
@@ -67,6 +71,7 @@ export default function Search(props: Props) {
           placeholder='Search...'
           onChange={onChange}
           onKeyDown={onEnter}
+          onBlur={onBlur}
           value={value}
         />
         <div className='search-suggest-box'>
