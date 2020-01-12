@@ -82,17 +82,21 @@ export const saveToStorage: Middleware = store => next => action => {
   const newState = store.getState();
 
   switch (action.type) {
-    case 'ADD_SONGS':
+    case 'LOAD_STORAGE':
     case 'SELECT_SONG':
-    case 'CREATE_PLAYLIST':
     case 'SELECT_PLAYLIST':
+    case 'ADD_SONGS':
+    case 'REMOVE_SONG':
+    case 'CREATE_PLAYLIST':
     case 'DELETE_PLAYLIST':
+    case 'SET_PLAYLISTS':
     case 'CHANGE_VOLUME':
     case 'SKIP_PREVIOUS':
     case 'SKIP_NEXT':
     case 'UPDATE_TAGS':
     case 'SET_SORT':
-    case 'SET_NEXT_SONG':
+    case 'SET_SHUFFLE':
+    case 'QUEUE_SONG':
       save(newState);
       break;
 
@@ -124,6 +128,15 @@ export const saveToStorage: Middleware = store => next => action => {
     case 'CLEAR_DATA':
       clear();
       break;
+
+    // Any types that don't trigger a save
+    case 'MUTE':
+    case 'DOWNLOAD_PROGRESS':
+      break;
+
+    // Ensure that all action types are handled
+    default:
+      (action: empty);
   }
 
   return result;
