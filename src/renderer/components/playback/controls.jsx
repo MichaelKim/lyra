@@ -38,8 +38,34 @@ const Controls = ({
     pause: onTogglePause,
     previoustrack: skipPrevious,
     nexttrack: skipNext,
-    seekto: e => onSeek(e.seekTime)
+    seekto: (e: { seekTime: number }) => onSeek(e.seekTime)
   });
+
+  // Keyboard shortcuts
+  const keyboardShortcuts = {
+    KeyK: onTogglePause,
+    Space: onTogglePause,
+    KeyJ: onReplay,
+    ArrowLeft: onReplay,
+    KeyL: onForward,
+    ArrowRight: onForward,
+    KeyH: skipPrevious,
+    Semicolon: skipNext
+  };
+
+  React.useEffect(() => {
+    const handleKeyboardShortcuts = ({ code }: KeyboardEvent) => {
+      if (keyboardShortcuts[code]) {
+        keyboardShortcuts[code]();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyboardShortcuts);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyboardShortcuts);
+    };
+  }, [keyboardShortcuts]);
 
   return (
     <div className='playback-center'>

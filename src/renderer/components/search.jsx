@@ -23,6 +23,7 @@ export default function Search(props: Props) {
   }
 
   function onEnter(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
     if (e.key === 'Enter') {
       const onEnter = props.onEnter;
       if (onEnter == null) return;

@@ -1,8 +1,5 @@
 TODO:
 
-- Keyboard shortcuts
-  - Space to play/pause
-  - Left/right arrow keys to skip 10 seconds
 - While editing, metadata input fields should wrap
 - Queue management
   - Cap previous queue list to 50? songs
