@@ -83,6 +83,7 @@ class AudioControl extends React.Component<Props> {
     return (
       <audio
         ref={this.audio}
+        preload='auto'
         src={src}
         onTimeUpdate={this.onProgress}
         onEnded={this.onEnd}

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import AddModal from './add-modal';
 import Click from '../click';
 import ContextMenu from '../context';
+import EditBox from './edit-box';
 
 import { fileExists, formatDuration } from '../../util';
 
@@ -67,15 +68,9 @@ class SongItem extends React.Component<Props, State> {
 
   _onBlur = () => {
     this._focusTimer = setTimeout(() => {
-      this._finishEdit();
+      this._cancelEdit();
       this._focusTimer = null;
     }, 10);
-  };
-
-  _onKeyDown = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      this._finishEdit();
-    }
   };
 
   _finishEdit = () => {
@@ -96,15 +91,24 @@ class SongItem extends React.Component<Props, State> {
     }
   };
 
-  _changeTitle = (e: SyntheticInputEvent<HTMLInputElement>) => {
+  _cancelEdit = () => {
+    // Reset metadata
     this.setState({
-      title: e.target.value
+      status: 'READY',
+      title: this.props.song.title,
+      artist: this.props.song.artist
     });
   };
 
-  _changeArtist = (e: SyntheticInputEvent<HTMLInputElement>) => {
+  _changeTitle = (title: string) => {
     this.setState({
-      artist: e.target.value
+      title
+    });
+  };
+
+  _changeArtist = (artist: string) => {
+    this.setState({
+      artist
     });
   };
 
@@ -132,15 +136,12 @@ class SongItem extends React.Component<Props, State> {
         onDblClick={() => this._onDblClick(name)}
       >
         {status === 'EDITING' ? (
-          <input
+          <EditBox
+            initialValue={value}
             autoFocus={editStart === name}
-            type='text'
-            value={value}
-            onClick={(e: SyntheticMouseEvent<HTMLInputElement>) =>
-              e.stopPropagation()
-            }
             onChange={onChange}
-            onKeyDown={this._onKeyDown}
+            onEnter={this._finishEdit}
+            onCancel={this._cancelEdit}
           />
         ) : (
           value

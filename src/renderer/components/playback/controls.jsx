@@ -37,8 +37,9 @@ const Controls = ({
     play: onTogglePause,
     pause: onTogglePause,
     previoustrack: skipPrevious,
-    nexttrack: skipNext,
-    seekto: (e: { seekTime: number }) => onSeek(e.seekTime)
+    nexttrack: skipNext
+    // Doesn't work on Electron (and Chrome seems broken anyways)
+    // seekto: (e: { seekTime: number }) => onSeek(e.seekTime)
   });
 
   // Keyboard shortcuts
@@ -60,10 +61,10 @@ const Controls = ({
       }
     };
 
-    document.addEventListener('keydown', handleKeyboardShortcuts);
+    window.addEventListener('keydown', handleKeyboardShortcuts);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyboardShortcuts);
+      window.removeEventListener('keydown', handleKeyboardShortcuts);
     };
   }, [keyboardShortcuts]);
 

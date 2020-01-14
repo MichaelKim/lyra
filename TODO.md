@@ -1,6 +1,5 @@
 TODO:
 
-- While editing, metadata input fields should wrap
 - Queue management
   - Cap previous queue list to 50? songs
   - Song getting pushed off of prev queue will be removed from cache if it's in it
@@ -50,6 +49,9 @@ Minor fixes:
   - use HTML5 Audio fastSeek()
 - mediasession
   - use navigator.mediaSession.setPositionState
+- right align on all songs is not all aligned if no scroll bar
+  - the date added header is moved left slightly to line up with items if there's a scroll bar
+  - with no scroll bar, the header doesn't line up with the song items
 
 Bugs:
 
