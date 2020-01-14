@@ -1,9 +1,5 @@
 TODO:
 
-- Queue management
-  - Cap previous queue list to 50? songs
-  - Song getting pushed off of prev queue will be removed from cache if it's in it
-  - If song in cache is popped, it should be removed from cache
 - Search history
   - Show youtube search history on blank yt search screen
 - Clicking the song info on bottom left

@@ -79,7 +79,19 @@ class PlaybackBar extends React.Component<Props, State> {
 
   loadSong = async (autoplay: boolean, prevSongID: ?string) => {
     const { currSong } = this.props;
-    if (currSong == null || prevSongID === currSong.id) {
+    if (currSong == null) {
+      if (prevSongID != null) {
+        // currSong turned null, stop playing
+        this.setState({
+          playing: false,
+          src: null,
+          progress: 0
+        });
+      }
+      return;
+    }
+
+    if (prevSongID === currSong.id) {
       return;
     }
 

@@ -4,7 +4,32 @@ import u from 'updeep';
 import { initialState } from './storage';
 import { values } from '../util';
 
-import type { StoreState, Action, SortType, QueueType } from '../types';
+import type { SongID, StoreState, Action, SortType, QueueType } from '../types';
+
+const MAX_QUEUE_SIZE = 50;
+
+// Removes ids from cache
+function cleanCache(ids: Array<SongID>, cache) {
+  return ids.reduce((acc, id) => {
+    // Missing id
+    if (cache[id] == null) {
+      return cache;
+    }
+    // Only one left, remove from cache
+    if (cache[id].count === 1) {
+      return u.omit(id, cache);
+    }
+    // Decrease count
+    return u(
+      {
+        [id]: {
+          count: cache[id].count - 1
+        }
+      },
+      cache
+    );
+  }, cache);
+}
 
 export default function rootReducer(
   state: StoreState = initialState,
@@ -18,27 +43,20 @@ export default function rootReducer(
       const { id } = action.song;
       const { queue } = state;
 
-      // Update cache
-      const cache = queue.next.reduce((cache, id) => {
-        if (cache[id] == null) return cache;
-        if (cache[id].count === 1) {
-          return u.omit(id, cache);
-        }
-        return u(
-          {
-            [id]: {
-              count: cache[id].count - 1
-            }
-          },
-          cache
-        );
-      }, queue.cache);
+      // Clean cache
+      const cache = cleanCache(queue.next, queue.cache);
 
       const newQueue: QueueType = {
-        prev: queue.curr != null ? [...queue.prev, queue.curr] : queue.prev,
+        prev:
+          queue.curr != null
+            ? [...queue.prev, queue.curr].slice(-MAX_QUEUE_SIZE)
+            : queue.prev,
         curr: id,
         next: [],
-        cache
+        cache:
+          queue.prev.length >= MAX_QUEUE_SIZE
+            ? cleanCache([queue.prev[0]], cache)
+            : cache
       };
 
       if (state.songs[id] != null) {
@@ -89,20 +107,23 @@ export default function rootReducer(
       );
 
     case 'ADD_SONGS': {
-      const newSongs: $Shape<typeof state.songs> = action.songs.reduce(
-        (acc, song) => {
-          acc[song.id] = song;
-          return acc;
-        },
-        {}
-      );
+      const newSongs = action.songs.reduce((acc, song) => {
+        acc[song.id] = song;
+        return acc;
+      }, {});
 
-      return u(
-        {
-          songs: newSongs
-        },
-        state
-      );
+      // Remove songs from cache
+      const songIDs = action.songs.map(s => s.id);
+      const cache = cleanCache(songIDs, state.queue.cache);
+
+      return {
+        ...state,
+        songs: newSongs,
+        queue: {
+          ...state.queue,
+          cache
+        }
+      };
     }
 
     case 'REMOVE_SONG': {
@@ -111,19 +132,19 @@ export default function rootReducer(
         return state;
       }
 
-      return u(
-        {
-          songs: {
-            [action.id]: null
-          },
-          queue: {
-            prev: queue.prev.filter(p => p !== action.id),
-            curr: queue.curr === action.id ? null : action.id,
-            next: queue.next.filter(p => p !== action.id)
-          }
-        },
-        state
-      );
+      // Clean cache
+      const cache = cleanCache([action.id], queue.cache);
+
+      return {
+        ...state,
+        songs: u.omit(action.id, songs),
+        queue: {
+          prev: queue.prev.filter(p => p !== action.id),
+          curr: queue.curr === action.id ? null : action.id,
+          next: queue.next.filter(p => p !== action.id),
+          cache
+        }
+      };
     }
 
     case 'CREATE_PLAYLIST':
@@ -246,26 +267,27 @@ export default function rootReducer(
     case 'SKIP_NEXT': {
       const { queue } = state;
       const { prev, curr, next } = queue;
-      if (curr == null) {
-        // Nothing playing right now
-        return state;
-      }
 
       // Middleware: queues song if next is empty
       if (next.length === 0) {
         return state;
       }
 
-      return u(
-        {
-          queue: {
-            prev: [...prev, curr],
-            curr: next[0],
-            next: next.slice(1)
-          }
-        },
-        state
-      );
+      // Clean cache
+      const cache =
+        prev.length >= MAX_QUEUE_SIZE
+          ? cleanCache([prev[0]], queue.cache)
+          : queue.cache;
+
+      return {
+        ...state,
+        queue: {
+          prev: curr == null ? prev : [...prev, curr].slice(-MAX_QUEUE_SIZE),
+          curr: next[0],
+          next: next.slice(1),
+          cache
+        }
+      };
     }
 
     case 'UPDATE_TAGS': {
