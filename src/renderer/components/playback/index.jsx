@@ -20,7 +20,8 @@ import '../../../css/playback.scss';
 type Props = {|
   +currSong: ?Song,
   +skipPrevious: () => void,
-  +skipNext: () => void
+  +skipNext: () => void,
+  +goToPlaying: (id: ?string) => void
 |};
 
 type State = {|
@@ -96,7 +97,8 @@ class PlaybackBar extends React.Component<Props, State> {
     }
 
     this.setState({
-      playing: false
+      playing: false,
+      progress: 0
     });
 
     if (currSong.source === 'YOUTUBE') {
@@ -122,6 +124,19 @@ class PlaybackBar extends React.Component<Props, State> {
       this.setState({
         playing: true
       });
+    }
+  };
+
+  onInfoClick = () => {
+    const { currSong } = this.props;
+    if (currSong == null) {
+      return;
+    }
+
+    if (currSong.source === 'YOUTUBE') {
+      this.props.goToPlaying('yt-playing');
+    } else {
+      this.props.goToPlaying(null);
     }
   };
 
@@ -161,14 +176,16 @@ class PlaybackBar extends React.Component<Props, State> {
           onChange={this.onProgress}
         />
         <div className='playback-controls'>
-          <div className='playback-left'>
-            {currSong != null && (
-              <>
-                <h3>{currSong.title}</h3>
-                <br />
-                <h5>{currSong.artist}</h5>
-              </>
-            )}
+          <div className='playback-left' onClick={this.onInfoClick}>
+            <div className='playback-left-expand'>
+              {currSong != null && (
+                <>
+                  <h3>{currSong.title}</h3>
+                  <br />
+                  <h5>{currSong.artist}</h5>
+                </>
+              )}
+            </div>
           </div>
           <Controls
             disabled={currSong == null}
@@ -201,7 +218,8 @@ const mapState = (state: StoreState) => {
 const mapDispatch = (dispatch: Dispatch) => {
   return {
     skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    skipNext: () => dispatch({ type: 'SKIP_NEXT' })
+    skipNext: () => dispatch({ type: 'SKIP_NEXT' }),
+    goToPlaying: (id: ?string) => dispatch({ type: 'SELECT_PLAYLIST', id })
   };
 };
 

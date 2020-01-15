@@ -2,6 +2,8 @@
 
 /* Playback Bar */
 .playback-box {
+  display: flex;
+  flex-direction: column;
   height: 75px;
   background-color: $playback-color;
 
@@ -29,6 +31,7 @@
   .playback-controls {
     display: flex;
     flex-direction: row;
+    flex: 1;
   }
 
   .playback-center {
@@ -51,17 +54,20 @@
   .playback-left {
     color: $text-color;
     flex: 1;
-    justify-content: center;
     margin-left: 5px;
-    padding: 5px 10px;
-    border-radius: 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    cursor: pointer;
 
-    &:hover {
-      width: auto;
-      background-color: #222;
+    .playback-left-expand {
+      padding: 3px 10px;
+      border-radius: 10px;
+
+      &:hover {
+        position: absolute;
+        background-color: #222;
+      }
     }
 
     h3,
