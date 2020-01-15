@@ -72,6 +72,7 @@ export default function Sidebar() {
   }
 
   function onKeyDown(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation();
     if (e.key === 'Enter') {
       finishEdit();
     }
@@ -122,14 +123,16 @@ export default function Sidebar() {
             onBlur={onBlur}
           />
         )}
-        {playlists.map(playlist =>
-          renderItem(
-            playlist.id,
-            playlist.name,
-            currScreen === playlist.name,
-            true
-          )
-        )}
+        <div className='sidebar-playlists'>
+          {playlists.map(playlist =>
+            renderItem(
+              playlist.id,
+              playlist.name,
+              currScreen === playlist.name,
+              true
+            )
+          )}
+        </div>
       </div>
       <div
         className={

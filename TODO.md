@@ -32,10 +32,6 @@ Refactor:
 
 Minor fixes:
 
-- Autoplay
-  - Autoplay song when selected (and nothing is currently selected)
-- Scroll bar
-  - Sidebar scroll bar should only scroll playlists?
 - Deleting playlist
   - Show confirmation modal?
 - Inconsistent action to open context menu
@@ -48,6 +44,8 @@ Minor fixes:
 - right align on all songs is not all aligned if no scroll bar
   - the date added header is moved left slightly to line up with items if there's a scroll bar
   - with no scroll bar, the header doesn't line up with the song items
+- Fix bottom-left info
+  - on hover it should show the whole title / artist
 
 Bugs:
 
