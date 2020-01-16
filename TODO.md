@@ -25,7 +25,9 @@ Refactor:
     - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
     - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
   - make it like lyra-mobile?
-- what to do with "playing" sidebar
+- mobile redesign!
+  - remove hamburger menu, replace with bottom navigation
+- move to css modules
 
 Minor fixes:
 
@@ -75,6 +77,8 @@ Long term features:
   - Upload songs
 - Rooms!
   - Several users listening to the same stream
+- Captions
+- loading circle on play / pause button when loading song
 
 Ideas:
 

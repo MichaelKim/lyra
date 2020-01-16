@@ -33,6 +33,14 @@ Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino
   - Add video to library
   - Download YouTube video as audio
 
+Keyboard Shortcuts:
+
+- K: Toggle play / pause
+- J: Skip back 10 seconds
+- L: Skip forward 10 seconds
+- H: Skip to previous song / start of song
+- (Semicolon): Skip to next song
+
 ## Screenshots
 
 <div align="center">

@@ -142,19 +142,26 @@ class PlaybackBar extends React.Component<Props, State> {
 
   componentDidMount() {
     this.loadSong(false);
-    navigator.mediaSession.playbackState = 'paused';
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'paused';
+    }
   }
 
   componentDidUpdate(prevProps) {
     this.loadSong(true, prevProps.currSong?.id);
 
-    navigator.mediaSession.playbackState = this.state.playing
-      ? 'playing'
-      : 'paused';
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = this.state.playing
+        ? 'playing'
+        : 'paused';
+    }
   }
 
   componentWillUnmount() {
-    navigator.mediaSession.playbackState = 'none';
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'none';
+    }
   }
 
   render() {

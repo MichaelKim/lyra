@@ -32,7 +32,7 @@ function DownloadEventEmitter() {
 }
 
 // eslint-disable-next-line no-unused-vars
-export function downloadVideo(id: SongID) {
+export function downloadVideo() {
   const emitter = new DownloadEventEmitter();
   return emitter;
 }

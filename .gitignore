@@ -4,3 +4,4 @@ misc/
 .env
 .DS_Store
 .vscode/
+state.json
