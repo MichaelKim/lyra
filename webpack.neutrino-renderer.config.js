@@ -48,7 +48,8 @@ module.exports = config => {
     },
     {
       test: /\.jsx?$/,
-      exclude: /node_modules/,
+      // TODO: eslint error when removing neutrino/lib
+      exclude: /node_modules|neutrino[\\/]lib/,
       use: [
         'eslint-loader',
         {
