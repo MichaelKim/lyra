@@ -1,7 +1,7 @@
 TODO:
 
-- Search history
-  - Show youtube search history on blank yt search screen
+- mobile redesign!
+  - remove hamburger menu, replace with bottom navigation
 - Invalid state
   - Recover from invalid state
 - Fix playback bar on mobile
@@ -25,8 +25,6 @@ Refactor:
     - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
     - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
   - make it like lyra-mobile?
-- mobile redesign!
-  - remove hamburger menu, replace with bottom navigation
 - move to css modules
 
 Minor fixes:
@@ -45,6 +43,8 @@ Minor fixes:
 
 Bugs:
 
+- mobile web
+  - when phone is closed, queue / related songs requests aren't performed
 - Sorting by name should ignore punctuation (like brackets)
 - If the song skips before related songs are loaded, it won't autoplay the next song
 - Linux:
@@ -79,6 +79,9 @@ Long term features:
   - Several users listening to the same stream
 - Captions
 - loading circle on play / pause button when loading song
+- liked / favourite songs
+  - add button on song / yt items
+  - add special playlist for liked / fav songs
 
 Ideas:
 
