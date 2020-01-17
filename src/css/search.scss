@@ -33,12 +33,35 @@
         background-color: $border-color;
       }
 
-      .search-suggest:hover {
-        background-color: $border-color;
-      }
+      .search-suggest {
+        display: flex;
+        justify-content: space-between;
 
-      .search-suggest:last-child {
-        border-bottom: 1px solid $border-color;
+        &:hover {
+          background-color: $border-color;
+        }
+
+        &:last-child {
+          border-bottom: 1px solid $border-color;
+        }
+
+        .search-suggest-history-item {
+          color: #83b2ff;
+        }
+
+        .search-suggest-clear {
+          width: 24px;
+          height: 24px;
+          background-color: transparent;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-image: url('../icons/clear.svg');
+          border-radius: 0;
+
+          &:hover {
+            background-color: #222;
+          }
+        }
       }
     }
   }

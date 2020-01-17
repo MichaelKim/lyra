@@ -1,17 +1,20 @@
 // @flow strict
 
 import * as React from 'react';
+import Suggestion from './suggest';
 
 import '../../css/search.scss';
 
 type Props = {|
   +initialValue?: string,
   +suggestions?: Array<string>,
+  +defaultSuggestions?: Array<string>,
   +onChange?: (value: string) => void,
   +onEnter?: (value: string) => void
 |};
 
 export default function Search(props: Props) {
+  const [focused, setFocused] = React.useState(false);
   const [focus, setFocus] = React.useState(-1);
   const [value, setValue] = React.useState<string>(props.initialValue || '');
 
@@ -29,8 +32,10 @@ export default function Search(props: Props) {
       if (onEnter == null) return;
 
       e.currentTarget.blur();
-      if (props.suggestions != null && props.suggestions[focus]) {
-        const suggest = props.suggestions[focus];
+      const [def, sug] = getSuggestions();
+      const suggestions = [...def, ...sug];
+      if (suggestions[focus]) {
+        const suggest = suggestions[focus];
         setValue(suggest);
         onEnter(suggest);
       } else {
@@ -57,11 +62,33 @@ export default function Search(props: Props) {
     }
   }
 
+  function onFocus() {
+    setFocused(true);
+  }
+
   function onBlur() {
+    setFocused(false);
     setFocus(-1);
   }
 
-  const suggestions = props.suggestions ?? [];
+  function onClick(suggest) {
+    setValue(suggest);
+    props.onEnter && props.onEnter(suggest);
+  }
+
+  function getSuggestions() {
+    // If no text is entered, show up to 10 previous searches
+    // Otherwise, show up to 2
+    const def = (props.defaultSuggestions ?? [])
+      .filter((ds: string) => ds.includes(value))
+      .slice(0, value ? 2 : 10);
+    // Fill up to 10 with suggestions
+    const sug = (props.suggestions ?? []).slice(0, 10 - def.length);
+
+    return [def, sug];
+  }
+
+  const [def, sug] = getSuggestions();
 
   return (
     <div className='search-box'>
@@ -72,25 +99,33 @@ export default function Search(props: Props) {
           placeholder='Search...'
           onChange={onChange}
           onKeyDown={onEnter}
+          onFocus={onFocus}
           onBlur={onBlur}
           value={value}
         />
         <div className='search-suggest-box'>
-          {suggestions.map((suggest: string, idx) => (
-            <div
-              key={suggest}
-              className={
-                'search-suggest ' +
-                (idx === focus ? 'search-suggest-focus' : '')
-              }
-              onClick={() => {
-                setValue(suggest);
-                props.onEnter && props.onEnter(suggest);
-              }}
-            >
-              {suggest}
-            </div>
-          ))}
+          {focused &&
+            def.map((suggest: string, idx) => (
+              <Suggestion
+                key={`${suggest}-${idx}`}
+                text={suggest}
+                search={value}
+                focused={idx === focus}
+                isHistory
+                onClick={onClick}
+              />
+            ))}
+          {focused &&
+            sug.map((suggest: string, idx) => (
+              <Suggestion
+                key={`${suggest}-${idx}`}
+                text={suggest}
+                search={value}
+                focused={idx + def.length === focus}
+                isHistory={false}
+                onClick={onClick}
+              />
+            ))}
         </div>
       </div>
     </div>

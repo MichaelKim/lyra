@@ -381,6 +381,32 @@ export default function rootReducer(
       );
     }
 
+    case 'ADD_TO_HISTORY': {
+      const cache = new Set<string>();
+      // Remove duplicates and limit to 50
+      const history = [action.search, ...state.history]
+        .filter(str => {
+          if (cache.has(str)) return false;
+          cache.add(str);
+          return true;
+        })
+        .slice(0, MAX_QUEUE_SIZE);
+      return {
+        ...state,
+        history
+      };
+    }
+
+    case 'REMOVE_FROM_HISTORY': {
+      const idx = state.history.indexOf(action.search);
+      const history = state.history.slice();
+      history.splice(idx, 1);
+      return {
+        ...state,
+        history
+      };
+    }
+
     case 'DOWNLOAD_ADD': {
       return u(
         {
@@ -431,6 +457,7 @@ export default function rootReducer(
       );
 
     default:
+      (action: empty);
       return state;
   }
 }

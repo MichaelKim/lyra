@@ -84,6 +84,7 @@ export type StoreState = {|
   +sort: SortType,
   +shuffle: boolean,
   +queue: QueueType,
+  +history: string[], // Search history
   +dlQueue: SongID[], // Queue of downloading videos
   +dlProgress: number
 |};
@@ -109,6 +110,8 @@ export type Action =
   | {| +type: 'SET_SORT', +column: SortColumn, +direction: boolean |}
   | {| +type: 'SET_SHUFFLE', +shuffle: boolean |}
   | {| +type: 'QUEUE_SONG', +song: Song |}
+  | {| +type: 'ADD_TO_HISTORY', +search: string |}
+  | {| +type: 'REMOVE_FROM_HISTORY', +search: string |}
   | {| +type: 'DOWNLOAD_ADD', +id: SongID |}
   | {| +type: 'DOWNLOAD_PROGRESS', +progress: number |}
   | {| +type: 'DOWNLOAD_FINISH', +song: ?Song |}

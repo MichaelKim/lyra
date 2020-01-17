@@ -2,6 +2,7 @@
 // Wrapper around Search that adds YouTube autocomplete
 
 import * as React from 'react';
+import { useSelector, useDispatch } from '../../hooks';
 
 import Search from '../search';
 
@@ -14,6 +15,9 @@ type Props = {|
 
 export default function YtSuggest(props: Props) {
   const [suggests, setSuggests] = React.useState<string[]>([]);
+  const history = useSelector(state => state.history);
+  const dispatch = useDispatch();
+  const addToHistory = search => dispatch({ type: 'ADD_TO_HISTORY', search });
 
   function onChange(value: string) {
     ytSuggest(value).then(setSuggests);
@@ -21,8 +25,10 @@ export default function YtSuggest(props: Props) {
 
   function onSearch(value: string) {
     setSuggests([]);
-
-    props.onSearch && props.onSearch(value);
+    if (value) {
+      addToHistory(value);
+      props.onSearch && props.onSearch(value);
+    }
   }
 
   return (
@@ -31,6 +37,7 @@ export default function YtSuggest(props: Props) {
       onEnter={onSearch}
       initialValue={props.initialValue || ''}
       suggestions={suggests}
+      defaultSuggestions={history}
     />
   );
 }

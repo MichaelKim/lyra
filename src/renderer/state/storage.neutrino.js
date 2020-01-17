@@ -23,6 +23,7 @@ export const initialState: StoreState = {
     next: [],
     cache: {}
   },
+  history: [],
   dlQueue: [],
   dlProgress: 0
 };

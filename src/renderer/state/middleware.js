@@ -97,6 +97,8 @@ export const saveToStorage: Middleware = store => next => action => {
     case 'SET_SORT':
     case 'SET_SHUFFLE':
     case 'QUEUE_SONG':
+    case 'ADD_TO_HISTORY':
+    case 'REMOVE_FROM_HISTORY':
       save(newState);
       break;
 
