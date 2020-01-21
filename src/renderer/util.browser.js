@@ -1,9 +1,7 @@
 // @flow strict
 /* eslint-disable no-unused-vars */
 
-import ContextMenu from './components/context';
-
-import type { Song, LocalSong, Metadata, SongID, SortType } from './types';
+import type { Song, LocalSong, SongID, SortType } from './types';
 
 export function fileExists(path: string) {
   return false;
