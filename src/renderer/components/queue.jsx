@@ -1,21 +1,20 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 import SongItem from './screen/song-item';
 
-import { useSelector } from '../hooks';
+import { useCurrSong, useSelector } from '../hooks';
+
+import type { Song } from '../types';
 
 import '../../css/screen.scss';
 import '../../css/song-row.scss';
 
 const Queue = () => {
-  const currSong = useSelector(state => {
-    const { curr } = state.queue;
-    return curr ? state.songs[curr] ?? state.queue.cache[curr]?.song : null;
-  });
+  const currSong = useCurrSong();
 
-  const nextSongs = useSelector(state => {
+  const nextSongs: Array<Song> = useSelector(state => {
     const { next } = state.queue;
     return next.map(id => state.songs[id] ?? state.queue.cache[id]?.song);
   });

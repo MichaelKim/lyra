@@ -47,14 +47,14 @@ export default function Search(props: Props) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         if (numSuggests > 0) {
-          setFocus((focus + 1) % numSuggests);
+          setFocus(f => (f + 1) % numSuggests);
         } else {
           setFocus(-1);
         }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (numSuggests > 0) {
-          setFocus((focus - 1) % numSuggests);
+          setFocus(f => (f === -1 ? numSuggests - 1 : (f - 1) % numSuggests));
         } else {
           setFocus(-1);
         }

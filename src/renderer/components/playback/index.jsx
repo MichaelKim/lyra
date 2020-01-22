@@ -39,6 +39,7 @@ class PlaybackBar extends React.Component<Props, State> {
 
   skipPreviousOrStart = () => {
     this.setState({
+      playing: false,
       progress: 0
     });
     if (this.state.progress < 3) {
@@ -48,6 +49,7 @@ class PlaybackBar extends React.Component<Props, State> {
 
   skipNext = () => {
     this.setState({
+      playing: false,
       progress: 0
     });
     this.props.skipNext();
@@ -69,13 +71,6 @@ class PlaybackBar extends React.Component<Props, State> {
     this.setState(({ playing }) => ({
       playing: !playing
     }));
-  };
-
-  onEnded = () => {
-    this.setState({
-      playing: false
-    });
-    this.props.skipNext();
   };
 
   loadSong = async (autoplay: boolean, prevSongID: ?string) => {
@@ -175,7 +170,7 @@ class PlaybackBar extends React.Component<Props, State> {
           playing={playing}
           progress={progress}
           onProgress={this.onProgress}
-          onEnd={this.onEnded}
+          onEnd={this.skipNext}
         />
         <Bar
           currSong={currSong}

@@ -32,6 +32,17 @@ export function useToggle(defaultValue: boolean) {
   return [value, () => setValue(!value)];
 }
 
+export function useCurrSong() {
+  return useSelector(state => {
+    const {
+      songs,
+      queue: { cache, curr }
+    } = state;
+
+    return curr != null ? songs[curr] ?? cache[curr]?.song : null;
+  });
+}
+
 export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
   return React.useEffect(() => {
     registerShortcuts(shortcuts);

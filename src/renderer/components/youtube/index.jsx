@@ -1,11 +1,11 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 import YtSearch from './yt-search';
 import YtPlaying from './yt-playing';
 
-import { useSelector, useDispatchMap } from '../../hooks';
+import { useCurrSong, useSelector, useDispatchMap } from '../../hooks';
 
 import type { Dispatch, Song, VideoSong } from '../../types';
 
@@ -14,12 +14,7 @@ import '../../../css/youtube.scss';
 const Youtube = () => {
   const [keyword, setKeyword] = React.useState('');
 
-  const currSong = useSelector(state => {
-    const { queue } = state;
-    const { curr } = queue;
-
-    return curr != null ? state.songs[curr] ?? queue.cache[curr]?.song : null;
-  });
+  const currSong = useCurrSong();
   const currScreen = useSelector(state => state.currScreen);
 
   const { selectSong, selectPlaylist } = useDispatchMap(mapDispatch);
