@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import Suggestion from './suggest';
 
 import '../../css/search.scss';
@@ -9,8 +9,8 @@ type Props = {|
   +initialValue?: string,
   +suggestions?: Array<string>,
   +defaultSuggestions?: Array<string>,
-  +onChange?: (value: string) => void,
-  +onEnter?: (value: string) => void
+  +onChange?: (value: string) => mixed,
+  +onEnter?: (value: string) => mixed
 |};
 
 export default function Search(props: Props) {

@@ -1,36 +1,48 @@
-TODO:
+## TODO
 
-- mobile redesign!
-  - remove hamburger menu, replace with bottom navigation
-- Invalid state
-  - Recover from invalid state
-- Fix playback bar on mobile
+All:
 
-Refactor:
+- downloading (on electron and native mobile, possibly neutrino)
+  - when a song is downloaded, it acts just like a normal song, but with a downloaded icon next to it
+  - when selected to play, it plays the local file instead of fetching the url
 
-- Unify lyra and lyra-native
-  - Use css-in-js similar to react native's stylesheets (?)
-    - move variables.scss to constants.js
-  - standardize file names
-    - rangeinput -> slider
-    - songItem -> song-item
-  - standardize common utils
-    - useToggle hook
-- Screen display
-  - currently, it's hacked together with playlists
-  - playlists / all songs should be seperately handled from other screens (e.g. settings, youtube)
-  - loading all songs is laggy due to reloading all songs again
-    - bring `getSongList` into component, and only update if props change
-  - new screen management:
-    - currScreen: 'MAIN' | 'PLAYLIST' | 'SETTINGS' | 'YOUTUBE'
-    - currSubScreen: PlaylistID | 'SEARCH' | 'PLAYING'
-  - make it like lyra-mobile?
-- move to css modules
+Mobile Web:
 
-Minor fixes:
+- Switch to bottom navigation
+  - Same as mobile native, but bottom sheet is tap based
+- when phone is closed, queue / related songs requests aren't performed
+
+Lyra:
+
+- change platform-specific file structure
+  - move to folder (e.g. storage/)
+  - index.js: get environment variable and conditionally export
+  - index.electron.js, index.browser.js, index.neutrino.js: platform specific
+    - neutrino and browser can share files
+
+Mobile Native:
+
+- Stylize song item
+- downloading?
+- playlists
+- set app icon
+- media controls
+
+## Possible Features
+
+All:
+
+- Recover from invalid state
+- State updates across versions (like Mercury)
+
+Server:
+
+- Cache video data
+
+Lyra:
 
 - Deleting playlist
-  - Show confirmation modal?
+  - Show confirmation (modal?)
 - Inconsistent action to open context menu
   - Youtube playing: click options icon
   - Library: right click
@@ -40,23 +52,17 @@ Minor fixes:
   - the date added header is moved left slightly to line up with items if there's a scroll bar
   - with no scroll bar, the header doesn't line up with the song items
   - same with playlists in sidebar
-
-Bugs:
-
-- mobile web
-  - when phone is closed, queue / related songs requests aren't performed
-- Sorting by name should ignore punctuation (like brackets)
-- If the song skips before related songs are loaded, it won't autoplay the next song
 - Linux:
   - If something else takes control of the media buttons and releases them, the media buttons won't work anymore
-
-Browser:
-
+- Unify lyra and lyra-native
+  - Use css-in-js similar to react native's stylesheets (?)
+    - move variables.scss to constants.js
+  - move to css modules
 - mediasession
   - use navigator.mediaSession.setPositionState (coming Chrome v81)
   - enable media session action handler for 'onseek' (buggy on Chrome mobile)
 
-Long term features:
+## Ideas
 
 - Music metadata
   - Edit metadata on song add
@@ -82,9 +88,6 @@ Long term features:
 - liked / favourite songs
   - add button on song / yt items
   - add special playlist for liked / fav songs
-
-Ideas:
-
 - Song row interaction
   - Single click does nothing
   - Double click to play

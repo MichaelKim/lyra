@@ -1,6 +1,8 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
+
+import '../../css/loading.scss';
 
 export default function Loading() {
   return (

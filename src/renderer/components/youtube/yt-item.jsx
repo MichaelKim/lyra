@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import ContextMenu from '../context';
 
 import { formatDuration } from '../../util';
@@ -11,14 +11,12 @@ import type { Song, SongID, VideoSong, Dispatch } from '../../types';
 import '../../../css/youtube.scss';
 
 type Props = {|
-  +onClick?: () => void,
-  +video: VideoSong
+  +video: VideoSong,
+  +onClick?: () => mixed
 |};
 
-const YtItem = (props: Props) => {
+const YtItem = ({ video, onClick }: Props) => {
   const { addSong, downloadAdd } = useDispatchMap(mapDispatch);
-
-  const { video, onClick } = props;
 
   return (
     <div className='youtube-item'>

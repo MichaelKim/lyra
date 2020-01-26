@@ -11,33 +11,32 @@ import type { Song } from '../types';
 import '../../css/screen.scss';
 import '../../css/song-row.scss';
 
+const columns = [
+  { enum: 'TITLE', name: 'Title' },
+  { enum: 'ARTIST', name: 'Artist' },
+  { enum: 'DURATION', name: 'Duration' },
+  { enum: 'DATE', name: 'Date Added' }
+];
+
+const renderHeader = (
+  <div className='song-row-header'>
+    <div className='song-row'>
+      <div />
+      {columns.map(col => (
+        <div key={col.enum} className='label'>
+          {col.name}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const Queue = () => {
   const currSong = useCurrSong();
-
-  const nextSongs: Array<Song> = useSelector(state => {
+  const nextSongs = useSelector<Array<Song>>(state => {
     const { next } = state.queue;
     return next.map(id => state.songs[id] ?? state.queue.cache[id]?.song);
   });
-
-  const columns = [
-    { enum: 'TITLE', name: 'Title' },
-    { enum: 'ARTIST', name: 'Artist' },
-    { enum: 'DURATION', name: 'Duration' },
-    { enum: 'DATE', name: 'Date Added' }
-  ];
-
-  const renderHeader = (
-    <div className='song-row-header'>
-      <div className='song-row'>
-        <div />
-        {columns.map(col => (
-          <div key={col.enum} className='label'>
-            {col.name}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
   return (
     <>

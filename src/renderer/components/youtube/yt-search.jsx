@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 import YtSuggest from './search-suggest';
 import Loading from '../loading';
@@ -12,7 +12,7 @@ import { useDispatch } from '../../hooks';
 import type { VideoSong } from '../../types';
 
 type Props = {|
-  +playVideo: (video: VideoSong) => void,
+  +playVideo: (video: VideoSong) => mixed,
   +initialKeyword?: string
 |};
 
@@ -24,19 +24,18 @@ export default function YtSearch(props: Props) {
   const showYtPlaying = () =>
     dispatch({ type: 'SELECT_PLAYLIST', id: 'yt-playing' });
 
-  function onSearch(value: string) {
+  const onSearch = async (value: string) => {
     setSearching(true);
 
-    ytSearch(value).then(videos => {
-      setSearching(false);
-      setVideos(videos);
-    });
-  }
+    const videos = await ytSearch(value);
+    setSearching(false);
+    setVideos(videos);
+  };
 
-  function onClick(video: VideoSong) {
+  const onClick = (video: VideoSong) => {
     showYtPlaying();
     props.playVideo(video);
-  }
+  };
 
   React.useEffect(() => {
     if (props.initialKeyword) {

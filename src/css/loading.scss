@@ -1,0 +1,20 @@
+@import './variables.scss';
+
+// Loading circle
+.loading-box {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loading {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 4px solid #777;
+    border-top: 4px solid #ddd;
+    animation: 1s spin linear infinite;
+    display: inline-block;
+  }
+}

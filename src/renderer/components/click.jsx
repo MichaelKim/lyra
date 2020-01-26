@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 // Max delay in ms between two clicks
 const DBL_CLICK_DELAY = 250;
@@ -8,7 +8,7 @@ const DBL_CLICK_DELAY = 250;
 type Props = {|
   +onSngClick?: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
   +onDblClick: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
-  +children: React.Node,
+  +children: React$Node,
   +className?: string
 |};
 

@@ -1,13 +1,13 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 type Props = {|
   +initialValue: string,
+  +autoFocus: boolean,
   +onChange: (value: string) => mixed,
   +onEnter: () => mixed,
-  +onCancel: () => mixed,
-  +autoFocus: boolean
+  +onCancel: () => mixed
 |};
 
 type State = {|

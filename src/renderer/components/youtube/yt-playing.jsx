@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 
 import YtSuggest from './search-suggest';
 import Loading from '../loading';
@@ -12,8 +12,8 @@ import type { Song, SongID, VideoSong } from '../../types';
 
 type Props = {|
   +currSong: Song,
-  +playVideo: (video: VideoSong) => void,
-  +onSearch: (value: string) => void
+  +playVideo: (video: VideoSong) => mixed,
+  +onSearch: (value: string) => mixed
 |};
 
 type State = {|

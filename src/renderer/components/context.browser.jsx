@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 import type { Props } from './context';
@@ -65,14 +65,14 @@ export default function Context(props: Props) {
     };
   }, []);
 
-  function onClick(e) {
+  function onClick(e: SyntheticMouseEvent<HTMLDivElement>) {
     if (!props.rightClick) {
       e.stopPropagation();
       openMenu(e);
     }
   }
 
-  function onContextMenu(e) {
+  function onContextMenu(e: SyntheticMouseEvent<HTMLDivElement>) {
     if (props.rightClick) {
       e.stopPropagation();
       e.preventDefault();
@@ -86,11 +86,34 @@ export default function Context(props: Props) {
     callback();
   }
 
-  // For some reason, Flow doesn't like inlining this null check
-  if (document.body == null) {
-    return null;
-  }
-  const { body } = document;
+  const renderMenu = () => {
+    if (!isOpen || document.body == null) {
+      return null;
+    }
+
+    return ReactDOM.createPortal(
+      <div
+        className='context'
+        onClick={onOutsideClick}
+        style={{ visibility: isVisible ? 'visible' : 'hidden' }}
+      >
+        <div
+          className={props.className}
+          style={position}
+          onClick={onInsideClick}
+          ref={el}
+        >
+          {props.items.map(item => (
+            <div key={item.label} onClick={() => onItemClick(item.click)}>
+              {item.label}
+            </div>
+          ))}
+        </div>
+      </div>,
+      // $FlowFixMe
+      document.body
+    );
+  };
 
   return (
     <div
@@ -99,28 +122,7 @@ export default function Context(props: Props) {
       onContextMenu={onContextMenu}
     >
       {props.children}
-      {isOpen &&
-        ReactDOM.createPortal(
-          <div
-            className='context'
-            onClick={onOutsideClick}
-            style={{ visibility: isVisible ? 'visible' : 'hidden' }}
-          >
-            <div
-              className={props.className}
-              style={position}
-              onClick={onInsideClick}
-              ref={el}
-            >
-              {props.items.map(item => (
-                <div key={item.label} onClick={() => onItemClick(item.click)}>
-                  {item.label}
-                </div>
-              ))}
-            </div>
-          </div>,
-          body
-        )}
+      {renderMenu()}
     </div>
   );
 }

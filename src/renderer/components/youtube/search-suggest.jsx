@@ -1,7 +1,7 @@
 // @flow strict
 // Wrapper around Search that adds YouTube autocomplete
 
-import * as React from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from '../../hooks';
 
 import Search from '../search';
@@ -10,7 +10,7 @@ import { ytSuggest } from '../../yt-util';
 
 type Props = {|
   +initialValue?: string,
-  +onSearch?: (value: string) => void
+  +onSearch?: (value: string) => mixed
 |};
 
 export default function YtSuggest(props: Props) {

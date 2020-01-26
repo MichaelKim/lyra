@@ -14,7 +14,8 @@
     "neutrino": "neutrino-webpack -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
     "neutrino:build": "neutrino-webpack -p -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
     "neutrino:dist": "neutrino-builder -m ./dist/neutrino -r ./dist/neutrino-renderer",
-    "postinstall": "node install-app-deps"
+    "postinstall": "node install-app-deps",
+    "test": "flow check"
   },
   "repository": {
     "type": "git",

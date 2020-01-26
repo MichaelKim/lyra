@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import { remote } from 'electron';
 
 export type Props = {|
@@ -10,33 +10,33 @@ export type Props = {|
     +label: string,
     +click: () => void
   |}>,
-  +children: React.Node
+  +children: React$Node
 |};
 
 export default function ContextMenu(props: Props) {
-  function openMenu() {
+  const openMenu = () => {
     const menu = new remote.Menu();
     for (const item of props.items) {
       const menuItem = new remote.MenuItem(item);
       menu.append(menuItem);
     }
     menu.popup(remote.getCurrentWindow());
-  }
+  };
 
-  function onClick(e) {
+  const onClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
     if (!props.rightClick) {
       e.stopPropagation();
       openMenu();
     }
-  }
+  };
 
-  function onContextMenu(e) {
+  const onContextMenu = (e: SyntheticMouseEvent<HTMLDivElement>) => {
     if (props.rightClick) {
       e.stopPropagation();
       e.preventDefault();
       openMenu();
     }
-  }
+  };
 
   return (
     <div

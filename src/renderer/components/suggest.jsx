@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import { useDispatch } from '../hooks';
 
 type Props = {|
@@ -8,7 +8,7 @@ type Props = {|
   +search: string,
   +focused: boolean,
   +isHistory: boolean,
-  +onClick: (value: string) => void
+  +onClick: (value: string) => mixed
 |};
 
 const Suggestion = ({ text, search, focused, isHistory, onClick }: Props) => {

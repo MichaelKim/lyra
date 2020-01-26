@@ -1,21 +1,21 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
+import { useToggle } from '../hooks';
 
 import '../../css/toggle.scss';
 
 type Props = {|
-  +onToggle: (selected: boolean) => void,
-  +selected: boolean
+  +selected: boolean,
+  +onToggle: (selected: boolean) => mixed
 |};
 
 export default function Toggle(props: Props) {
-  const [selected, setSelected] = React.useState(props.selected);
+  const [selected, toggleSelected] = useToggle(props.selected);
 
   function onToggle() {
     props.onToggle(!selected);
-
-    setSelected(!selected);
+    toggleSelected();
   }
 
   return (
