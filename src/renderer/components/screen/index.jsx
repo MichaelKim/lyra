@@ -13,6 +13,13 @@ import type { SortColumn } from '../../types';
 import '../../../css/screen.scss';
 import '../../../css/song-row.scss';
 
+const COLUMNS = [
+  { enum: 'TITLE', name: 'Title' },
+  { enum: 'ARTIST', name: 'Artist' },
+  { enum: 'DURATION', name: 'Duration' },
+  { enum: 'DATE', name: 'Date Added' }
+];
+
 export default function Screen() {
   const songs = useSelector(state =>
     getSongList(state.songs, state.currScreen, state.sort)
@@ -42,13 +49,6 @@ export default function Screen() {
     setSearch(value.toUpperCase());
   }
 
-  const columns = [
-    { enum: 'TITLE', name: 'Title' },
-    { enum: 'ARTIST', name: 'Artist' },
-    { enum: 'DURATION', name: 'Duration' },
-    { enum: 'DATE', name: 'Date Added' }
-  ];
-
   const filtered = search
     ? songs.filter(song => song.title.toUpperCase().includes(search))
     : songs;
@@ -62,7 +62,7 @@ export default function Screen() {
       <div className='song-row-header'>
         <div className='song-row'>
           <div />
-          {columns.map(col => (
+          {COLUMNS.map(col => (
             <div
               key={col.enum}
               className='label'

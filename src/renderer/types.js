@@ -28,6 +28,14 @@ export type VideoSong = {|
   +thumbnail: Thumbnail
 |};
 
+export type DlSong = {|
+  ...SongShared,
+  +source: 'DOWNLOADED',
+  +filepath: string,
+  +views: string,
+  +thumbnail: Thumbnail
+|};
+
 export type Song = LocalSong | VideoSong;
 
 type Thumbnail = {|

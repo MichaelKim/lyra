@@ -5,6 +5,7 @@ All:
 - downloading (on electron and native mobile, possibly neutrino)
   - when a song is downloaded, it acts just like a normal song, but with a downloaded icon next to it
   - when selected to play, it plays the local file instead of fetching the url
+- fix icon
 
 Mobile Web:
 
@@ -22,11 +23,10 @@ Lyra:
 
 Mobile Native:
 
-- Stylize song item
 - downloading?
 - playlists
 - set app icon
-- media controls
+- storage
 
 ## Possible Features
 

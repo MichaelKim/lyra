@@ -10,49 +10,46 @@ import Queue from './queue';
 
 import { useSelector } from '../hooks';
 
+// Top-level screen components that should retain state when not being displayed
+const TOPS = [
+  {
+    Component: Settings,
+    enum: 'settings',
+    visible: c => c === 'settings'
+  },
+  {
+    Component: Youtube,
+    enum: 'yt',
+    visible: c => c != null && c.startsWith('yt-')
+  },
+  {
+    Component: Queue,
+    enum: 'queue',
+    visible: c => c === 'queue'
+  },
+  {
+    Component: Screen,
+    enum: 'screen',
+    visible: c =>
+      c == null || (c !== 'settings' && c !== 'queue' && !c.startsWith('yt-'))
+  }
+];
+
 export default function Top() {
   const currScreen = useSelector(state => state.currScreen);
-
-  // Top-level screen components that should retain state when not being displayed
-
-  const tops = [
-    {
-      Component: Settings,
-      enum: 'settings',
-      visible: currScreen === 'settings'
-    },
-    {
-      Component: Youtube,
-      enum: 'yt',
-      visible: currScreen != null && currScreen.startsWith('yt-')
-    },
-    {
-      Component: Queue,
-      enum: 'queue',
-      visible: currScreen === 'queue'
-    }
-  ];
-
-  let screen = true;
 
   return (
     <div className='top'>
       <Sidebar />
 
-      {tops.map(t => {
-        if (t.visible) {
-          screen = false;
-        }
-        return (
-          <div key={t.enum} className={'screen ' + (t.visible ? '' : 'hidden')}>
-            <t.Component />
-          </div>
-        );
-      })}
-
-      <div className={'screen ' + (screen ? '' : 'hidden')}>
-        <Screen />
-      </div>
+      {TOPS.map(t => (
+        <div
+          key={t.enum}
+          className={'screen ' + (t.visible(currScreen) ? '' : 'hidden')}
+        >
+          <t.Component />
+        </div>
+      ))}
     </div>
   );
 }
