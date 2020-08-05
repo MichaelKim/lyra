@@ -56,8 +56,7 @@ class Sources extends React.Component<Props, State> {
 
     const values = await Promise.all(dirs.map(dir => getSongs(dir)));
 
-    // $FlowFixMe: Array.flat() not in Flow
-    const songs: Song[] = values.flat();
+    const songs: LocalSong[] = values.flat();
     const ids: SongID[] = songs.map(song => song.id);
     const toggle = ids.reduce((acc, val) => {
       acc[val] = true;

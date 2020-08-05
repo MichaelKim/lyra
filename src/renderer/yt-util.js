@@ -68,8 +68,8 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
 
     ffmpeg(ytdl.downloadFromInfo(info))
       .audioBitrate(128)
-      .outputOptions('-metadata', 'title=' + info.title)
-      .outputOptions('-metadata', 'artist=' + info.author.name)
+      .outputOptions('-metadata', 'title=' + info.videoDetails.title)
+      .outputOptions('-metadata', 'artist=' + info.videoDetails.author.name)
       .on('progress', progress => {
         /*
           ffmpeg's progress event contains a "percent" property, but
@@ -87,7 +87,7 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
         currDuration = h * 3600 + m * 60 + s;
 
         const percent = Math.min(
-          100 * (currDuration / info.length_seconds),
+          100 * (currDuration / info.videoDetails.lengthSeconds),
           100
         );
 
@@ -96,7 +96,8 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
       .save(dlPath)
       .on('end', () => {
         // Sanitize for file name
-        const safeName = info.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
+        const safeName =
+          info.videoDetails.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
         const filepath = path.join(storage.getDataPath(), safeName);
 
         fs.rename(dlPath, filepath, err => {
@@ -107,11 +108,11 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
 
           const song: Song = {
             id: createHash('sha256')
-              .update(info.video_id)
+              .update(info.videoDetails.videoId)
               .digest('hex'),
             filepath,
-            title: info.title,
-            artist: info.author.name,
+            title: info.videoDetails.title,
+            artist: info.videoDetails.author.name,
             duration: currDuration,
             playlists: [],
             date: Date.now(),
@@ -216,8 +217,8 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
       playlists: [],
       date: Date.now(),
       source: 'YOUTUBE',
-      url: info.video_id,
-      duration: info.length_seconds,
+      url: info.videoDetails.videoId,
+      duration: info.videoDetails.lengthSeconds,
       views
     };
   });

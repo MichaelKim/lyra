@@ -43,12 +43,14 @@ declare module 'ytdl-core' {
   };
 
   declare type Info = {|
-    +video_id: string,
-    +title: string,
-    +author: {|
-      +name: string
+    +videoDetails: {|
+      +title: string,
+      +author: {|
+        +name: string
+      |},
+      +videoId: string,
+      +lengthSeconds: number
     |},
-    +length_seconds: number,
     +player_response: {|
       +videoDetails: {|
         +viewCount: string, // Number stored as a string
