@@ -2,6 +2,8 @@
 
 Lyra is a cross-platform music player app that can play songs on your computer and on YouTube.
 
+This repository contains the code for the desktop and browser app versions of Lyra, written in Electron. Also check out the [mobile app](https://github.com/LenKagamine/lyra-mobile).
+
 Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino) built with [Neutrino](https://github.com/LenKagamine/neutrino)!
 
 ## Features
