@@ -1,10 +1,7 @@
 // @flow strict
 
-import fs from 'fs';
-import path from 'path';
-import storage from 'electron-json-storage';
-
 import type { StoreState } from '../types';
+import { ipcRenderer } from 'electron';
 
 export const initialState: StoreState = {
   loaded: false,
@@ -31,27 +28,10 @@ export const initialState: StoreState = {
 };
 
 export function save(state: StoreState) {
-  storage.set('state', state, err => {
-    if (err) console.log(err);
-    else console.log('Stored state:', state);
-  });
+  ipcRenderer.send('state-save', state);
+  console.log('Stored state:', state);
 }
 
 export function clear() {
-  const storagePath = storage.getDataPath();
-  fs.readdir(storagePath, (err, files) => {
-    if (err) {
-      throw err;
-    }
-
-    files.forEach(file => {
-      fs.unlink(path.join(storagePath, file), err => {
-        if (err) {
-          throw err;
-        }
-      });
-    });
-  });
+  ipcRenderer.send('state-clear');
 }
-
-console.log(storage.getDataPath());

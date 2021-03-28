@@ -1,13 +1,11 @@
 // @flow strict
 
-import storage from 'electron-json-storage';
-import { applyMiddleware, createStore, compose } from 'redux';
-
+import { ipcRenderer } from 'electron';
+import { applyMiddleware, compose, createStore } from 'redux';
+import type { Action, Dispatch, StoreState } from '../types';
+import { logger, queueSong, saveToStorage } from './middleware';
 import reducer from './reducer';
 import { initialState } from './storage';
-import { logger, saveToStorage, queueSong } from './middleware';
-
-import type { StoreState, Action, Dispatch } from '../types';
 
 const composeEnhancers =
   (!process.env.PRODUCTION &&
@@ -20,25 +18,10 @@ const store = createStore<StoreState, Action, Dispatch>(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-storage.has('state', (err, exists) => {
-  if (err) return;
-
-  if (!exists) {
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state: initialState
-    });
-
-    return;
-  }
-
-  storage.get<StoreState>('state', (err, state) => {
-    if (err) return;
-
-    store.dispatch({
-      type: 'LOAD_STORAGE',
-      state
-    });
+ipcRenderer.on('state-load', (_, state: StoreState) => {
+  store.dispatch({
+    type: 'LOAD_STORAGE',
+    state
   });
 });
 

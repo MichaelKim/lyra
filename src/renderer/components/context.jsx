@@ -1,7 +1,7 @@
 // @flow strict
 
+import { ipcRenderer } from 'electron';
 import React from 'react';
-import { remote } from 'electron';
 
 export type Props = {|
   +className: string,
@@ -15,12 +15,17 @@ export type Props = {|
 
 export default function ContextMenu(props: Props) {
   const openMenu = () => {
-    const menu = new remote.Menu();
+    const labels = {};
+    const clicks = {};
     for (const item of props.items) {
-      const menuItem = new remote.MenuItem(item);
-      menu.append(menuItem);
+      const id = Math.random().toString(36).substr(2, 9);
+      labels[id] = item.label;
+      clicks[id] = item.click;
     }
-    menu.popup(remote.getCurrentWindow());
+    ipcRenderer.send('menu-show', labels);
+    ipcRenderer.once('menu-click', (event, id: string) => {
+      clicks[id]?.();
+    });
   };
 
   const onClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {

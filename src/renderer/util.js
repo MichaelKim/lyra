@@ -4,7 +4,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import { remote, ipcRenderer } from 'electron';
+import { dialog, ipcRenderer } from 'electron';
 
 import type { Song, LocalSong, Metadata, SongID, SortType } from './types';
 
@@ -28,9 +28,7 @@ export function getSongs(dir: string): Promise<LocalSong[]> {
 
       const promises: Promise<LocalSong>[] = names.map(name =>
         getMetadata(dir, name).then(metadata => ({
-          id: createHash('sha256')
-            .update(path.join(dir, name))
-            .digest('hex'),
+          id: createHash('sha256').update(path.join(dir, name)).digest('hex'),
           title: metadata.title,
           artist: metadata.artist,
           duration: metadata.duration,
@@ -172,7 +170,7 @@ export function removeShortcuts(shortcuts: { +[key: string]: () => mixed }) {
 }
 
 export function selectLocalDir(): ?Array<string> {
-  return remote.dialog.showOpenDialog({
+  return dialog.showOpenDialog({
     properties: ['openDirectory', 'multiSelections']
   });
 }

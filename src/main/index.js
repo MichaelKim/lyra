@@ -4,6 +4,8 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 
 import checkAccessibility from './accessibility';
+import { sendState } from './storage';
+import { loadMenuListener } from './context';
 
 let win = null;
 
@@ -58,6 +60,12 @@ function createWindow() {
 
   checkAccessibility();
   require('./shortcuts');
+
+  win.webContents.on('did-finish-load', () => {
+    // $FlowFixMe
+    sendState(win.webContents);
+    loadMenuListener();
+  });
 
   win.on('closed', () => {
     win = null;
