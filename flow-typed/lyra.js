@@ -4,34 +4,43 @@
 // [Error, void] and [void, Data], but I don't know how to type that properly.
 
 declare module 'ytsr' {
+  declare type Result = {|
+    +query: string,
+    +items: Array<{|
+      +title: string,
+      +url: string,
+      +author: {|
+        +name: string
+      |},
+      +bestThumbnail: {|
+        url: ?string,
+        width: number,
+        height: number
+      |}
+    |}>
+  |};
+
   declare module.exports: {
     (
       searchString: string,
-      options: ?{|
-        +limit: number,
-        +nextpageRef: string
+      options?: {|
+        +limit: ?number
       |}
-    ): Promise<{|
-      +query: string,
-      +items: Array<{|
-        +title: string,
-        +link: string,
-        +author: {|
-          +name: string
-        |},
-        +thumbnail: string
-      |}>
-    |}>,
+    ): Promise<Result>,
     getFilters: (
       searchString: string
     ) => Promise<
       Map<
         string,
-        Array<{|
-          +name: string,
-          +ref: string,
-          +active: boolean
-        |}>
+        Map<
+          string,
+          {|
+            +url: ?string,
+            +name: string,
+            +description: string,
+            +active: boolean
+          |}
+        >
       >
     >
   };
@@ -64,12 +73,19 @@ declare module 'ytdl-core' {
       |}
     |},
     +related_videos: Array<{|
-      +author: string,
+      +author: {
+        +name: string
+      },
       +id: string,
       +length_seconds: number,
       +title: string,
       +video_thumbnail: string,
-      +view_count: string // Bug where only the first comma is removed
+      +view_count: string, // Bug where only the first comma is removed
+      +thumbnails: Array<{|
+        url: string,
+        width: number,
+        height: number
+      |}>
     |}>,
     +formats: Array<Format>
   |};

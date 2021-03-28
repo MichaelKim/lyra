@@ -15,7 +15,7 @@ electron-webpack
 electron-webpack-eslint
 
 Sass
-node-sass
+sass
 sass-loader
 
 Electron
