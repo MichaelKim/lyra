@@ -23,16 +23,13 @@ export async function getStreamURL(id: SongID): Promise<string> {
 }
 
 // Mock EventEmitter for browser
-function DownloadEventEmitter() {
-  return {
-    on: (key: string, callback: mixed => void) => {
-      callback();
-    }
-  };
+class DownloadEventEmitter {
+  on(key: string, callback: mixed => void) {
+    callback();
+  }
 }
 
-// eslint-disable-next-line no-unused-vars
-export function downloadVideo() {
+export function downloadVideo(): DownloadEventEmitter {
   const emitter = new DownloadEventEmitter();
   return emitter;
 }
@@ -51,7 +48,7 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
   return videos;
 }
 
-export async function ytSuggest(keyword: string) {
+export async function ytSuggest(keyword: string): Promise<string[]> {
   if (!keyword) return [];
 
   const res = await fetch(

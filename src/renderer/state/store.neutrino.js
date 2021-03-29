@@ -7,13 +7,14 @@ import reducer from './reducer';
 import { logger, saveToStorage } from './middleware';
 import { initialState } from './storage';
 
+import type { Store } from 'redux';
 import type { StoreState, Action, Dispatch } from '../types';
 
-const store = createStore<StoreState, Action, Dispatch>(
-  reducer,
-  initialState,
-  applyMiddleware(logger, saveToStorage)
-);
+const store: Store<StoreState, Action, Dispatch> = createStore<
+  StoreState,
+  Action,
+  Dispatch
+>(reducer, initialState, applyMiddleware(logger, saveToStorage));
 
 fs.readFile('state.json', 'utf-8', (err, data) => {
   let state = initialState;

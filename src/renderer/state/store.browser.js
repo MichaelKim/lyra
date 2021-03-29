@@ -6,6 +6,7 @@ import reducer from './reducer';
 import { initialState } from './storage';
 import { logger, saveToStorage, queueSong } from './middleware';
 
+import type { Store } from 'redux';
 import type { StoreState, Action, Dispatch } from '../types';
 
 const composeEnhancers =
@@ -13,7 +14,11 @@ const composeEnhancers =
     (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose)) ||
   compose;
 
-const store = createStore<StoreState, Action, Dispatch>(
+const store: Store<StoreState, Action, Dispatch> = createStore<
+  StoreState,
+  Action,
+  Dispatch
+>(
   reducer,
   initialState,
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))

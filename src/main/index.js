@@ -36,7 +36,7 @@ function createWindow() {
   };
 
   if (process.env.LINUX) {
-    // $FlowFixMe
+    // $FlowFixMe[prop-missing]
     options.icon = path.join(__static, 'icon.png');
   }
 
@@ -49,24 +49,29 @@ function createWindow() {
       throw 'Missing electron-webpack port';
     }
 
+    // $FlowFixMe[incompatible-use]
     win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
 
     installExtensions();
 
+    // $FlowFixMe[incompatible-use]
     win.webContents.openDevTools();
   } else {
+    // $FlowFixMe[incompatible-use]
     win.loadURL('file://' + __dirname + '/index.html');
   }
 
   checkAccessibility();
   require('./shortcuts');
 
+  // $FlowFixMe[incompatible-use]
   win.webContents.on('did-finish-load', () => {
-    // $FlowFixMe
+    // $FlowFixMe[incompatible-use]
     sendState(win.webContents);
     loadMenuListener();
   });
 
+  // $FlowFixMe[incompatible-use]
   win.on('closed', () => {
     win = null;
   });

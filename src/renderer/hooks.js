@@ -1,6 +1,6 @@
 // @flow strict
 
-import React from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   useSelector as _useSelector,
   useDispatch as _useDispatch
@@ -8,7 +8,7 @@ import {
 
 import { registerShortcuts, removeShortcuts } from './util';
 
-import type { StoreState, Dispatch } from './types';
+import type { Song, StoreState, Dispatch } from './types';
 
 // Type wrappers for built-in hooks
 export function useSelector<Selected>(
@@ -17,22 +17,22 @@ export function useSelector<Selected>(
   return _useSelector<StoreState, Selected>(selector);
 }
 
-export function useDispatch() {
+export function useDispatch(): Dispatch {
   return _useDispatch<Dispatch>();
 }
 
 export function useDispatchMap<T>(mapDispatch: Dispatch => T): T {
   const dispatch = useDispatch();
-  return React.useMemo(() => mapDispatch(dispatch), [mapDispatch, dispatch]);
+  return useMemo(() => mapDispatch(dispatch), [mapDispatch, dispatch]);
 }
 
-export function useToggle(defaultValue: boolean) {
-  const [value, setValue] = React.useState(defaultValue);
+export function useToggle(defaultValue: boolean): [boolean, () => void] {
+  const [value, setValue] = useState(defaultValue);
 
   return [value, () => setValue(!value)];
 }
 
-export function useCurrSong() {
+export function useCurrSong(): Song | null {
   return useSelector(state => {
     const {
       songs,
@@ -44,7 +44,7 @@ export function useCurrSong() {
 }
 
 export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
-  return React.useEffect(() => {
+  useEffect(() => {
     registerShortcuts(shortcuts);
 
     return () => {
@@ -54,10 +54,9 @@ export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
 }
 
 export function useMediaSessionHandlers(actionHandlers: {
-  // $FlowFixMe
-  +[key: string]: Function
+  +[key: string]: <T: []>(...args: T) => void
 }) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!('mediaSession' in navigator)) {
       return;
     }
