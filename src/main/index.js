@@ -1,7 +1,6 @@
 // @flow strict
 
 import { app, BrowserWindow } from 'electron';
-import path from 'path';
 
 import checkAccessibility from './accessibility';
 import { sendState } from './storage';

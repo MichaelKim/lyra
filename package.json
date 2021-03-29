@@ -78,6 +78,9 @@
     },
     "npmRebuild": false,
     "files": [
+      "!**/*",
+      "package.json",
+      "**/node_modules/**/*",
       "!node_modules/@ffmpeg-installer",
       {
         "from": "node_modules/@ffmpeg-installer",
@@ -86,7 +89,12 @@
           "ffmpeg",
           "${platform}-${arch}"
         ]
-      }
+      },
+      "!node_modules/dbus",
+      "!node_modules/neutrinojs",
+      "static",
+      "dist/main",
+      "dist/renderer"
     ]
   },
   "optionalDependencies": {

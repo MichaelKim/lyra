@@ -23,12 +23,12 @@ module.exports = async (env, argv) => {
     output: {
       path: path.resolve('./dist/renderer'),
       filename: '[name].js',
-      chunkFilename: '[name].bundle.js'
+      chunkFilename: '[name].bundle.js',
+      library: {
+        type: 'commonjs2'
+      }
     },
     target: 'electron-renderer',
-    node: {
-      __dirname: true
-    },
     module: {
       rules: [
         {
@@ -102,6 +102,9 @@ module.exports = async (env, argv) => {
       colors: true
     },
     externals: [
+      '@ffmpeg-installer/ffmpeg',
+      'fluent-ffmpeg',
+      'dbus',
       new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
     ]
   };
@@ -109,13 +112,13 @@ module.exports = async (env, argv) => {
   if (isDev) {
     config.mode = 'development';
     config.devtool = 'eval-source-map';
-    // config.devServer = {
-    //   contentBase: path.resolve('./build'),
-    //   host: 'localhost',
-    //   port: '8080',
-    //   hot: true,
-    //   overlay: true
-    // };
+    config.devServer = {
+      contentBase: path.resolve('./dist/renderer'),
+      host: 'localhost',
+      port: '8080',
+      hot: true,
+      overlay: true
+    };
   } else {
     config.mode = 'production';
     // Basic options, except ignore console statements

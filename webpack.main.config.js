@@ -24,9 +24,6 @@ module.exports = async (env, argv) => {
       }
     },
     target: 'electron-main',
-    node: {
-      __dirname: true
-    },
     module: {
       rules: [
         {
@@ -56,6 +53,9 @@ module.exports = async (env, argv) => {
     ],
     stats: {
       colors: true
+    },
+    node: {
+      __dirname: true
     }
   };
 
