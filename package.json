@@ -2,14 +2,14 @@
   "name": "lyra",
   "version": "1.0.0",
   "description": "A music player app",
-  "main": "src/main/index.jsx",
+  "main": "dist/main/main.js",
   "scripts": {
     "electron": "electron-webpack dev",
-    "electron:build": "electron-webpack",
+    "electron:build": "webpack --mode production --config webpack.main.config.js",
     "electron:dist": "electron-builder --dir",
     "electron:pack": "electron-builder",
-    "browser": "webpack-dev-server --config ./webpack.browser.config.js",
-    "browser:build": "webpack -p --progress --config ./webpack.browser.config.js",
+    "browser": "webpack serve --mode development --config ./webpack.browser.config.js",
+    "browser:build": "webpack --mode production --config ./webpack.browser.config.js",
     "browser:serve": "http-server -c-1 ./dist/browser",
     "neutrino": "neutrino-webpack -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
     "neutrino:build": "neutrino-webpack -p -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
@@ -24,51 +24,47 @@
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.17",
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "dbus": "^1.0.5",
-    "electron-json-storage": "^4.4.0",
     "fluent-ffmpeg": "^2.1.2",
-    "googleapis": "^68.0.0",
-    "neutrinojs": "file:../neutrino",
-    "source-map-support": "^0.5.11",
-    "updeep": "^1.2.0",
-    "ytdl-core": "^4.5.0",
-    "ytsr": "^3.3.1"
+    "neutrinojs": "file:../neutrino"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.6.0",
-    "@babel/preset-flow": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-flow": "^7.13.13",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^5.2.0",
     "dotenv": "^8.0.0",
     "electron": "^10.0.0",
     "electron-builder": "^22.10.5",
     "electron-devtools-installer": "^3.1.1",
-    "electron-webpack": "^2.8.2",
-    "electron-webpack-eslint": "^6.0.0",
-    "eslint-plugin-flowtype": "^3.11.1",
-    "eslint-plugin-react": "^7.14.2",
-    "eslint-plugin-react-hooks": "^2.3.0",
+    "electron-json-storage": "^4.4.0",
+    "eslint": "^7.23.0",
+    "eslint-plugin-flowtype": "^5.4.0",
+    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-webpack-plugin": "^2.5.3",
     "flow-bin": "^0.147.0",
+    "googleapis": "^68.0.0",
     "he": "^1.2.0",
-    "html-webpack-plugin": "^3.2.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.1",
+    "html-webpack-plugin": "^5.3.1",
+    "mini-css-extract-plugin": "^1.4.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
     "sass": "^1.32.8",
-    "sass-loader": "^7.1.0",
-    "webpack": "^4.44.1",
-    "webpack-dev-server": "^3.11.0"
-  },
-  "electronWebpack": {
-    "main": {
-      "webpackConfig": "webpack.main.config.js"
-    },
-    "renderer": {
-      "webpackConfig": "webpack.renderer.config.js"
-    }
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "updeep": "^1.2.0",
+    "webpack": "^5.28.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2",
+    "ytdl-core": "^4.5.0",
+    "ytsr": "^3.3.1"
   },
   "build": {
     "productName": "Lyra Music Player",
@@ -79,9 +75,6 @@
     "linux": {
       "category": "Audio;AudioVideo",
       "artifactName": "Lyra-Music-Player-${version}.${ext}"
-    },
-    "appImage": {
-      "systemIntegration": "doNotAsk"
     },
     "npmRebuild": false,
     "files": [

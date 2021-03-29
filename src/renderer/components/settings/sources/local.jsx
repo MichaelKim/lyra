@@ -1,7 +1,6 @@
 // @flow strict
 
 import * as React from 'react';
-import path from 'path';
 import { connect } from 'react-redux';
 
 import Toggle from '../../toggle';
@@ -94,7 +93,7 @@ class Sources extends React.Component<Props, State> {
                 <h5>{dir}</h5>
                 <div className='scroll'>
                   {this.state.tempSongs
-                    .filter(song => path.dirname(song.filepath) === dir)
+                    .filter(song => song.filepath.startsWith(dir))
                     .map(song => (
                       <div className='sources-song-item' key={song.id}>
                         <span className='sources-song-name'>{song.title}</span>

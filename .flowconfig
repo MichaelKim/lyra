@@ -6,6 +6,7 @@
 [libs]
 
 [lints]
+all=warn
 
 [options]
 module.file_ext=.js
@@ -13,12 +14,10 @@ module.file_ext=.json
 module.file_ext=.jsx
 module.file_ext=.css
 module.file_ext=.scss
-esproposal.optional_chaining=enable
 
 [strict]
 deprecated-type
 nonstrict-import
-; sketchy-null
 unclear-type
 unsafe-getters-setters
 untyped-type-import

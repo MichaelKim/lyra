@@ -1,19 +1,91 @@
-const os = require('os');
-const webpack = require('webpack');
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
-module.exports = config => {
-  // Add process.env.LINUX, process.env.PRODUCTION
-  config.plugins.push(
-    new webpack.DefinePlugin({
-      'process.env.LINUX': process.platform === 'linux',
-      'process.env.PRODUCTION': config.mode === 'production'
-    })
+module.exports = async (env, argv) => {
+  const isDev = argv.mode !== 'production';
+  console.log(
+    `===================${isDev ? 'DEV' : 'PROD'} MAIN========================`
   );
 
-  // Only bundle matching ffmpeg executable
-  config.externals.push(
-    new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
-  );
+  const config = {
+    context: __dirname,
+    entry: {
+      main: path.resolve('./src/main/index.js')
+    },
+    output: {
+      path: path.resolve('./dist/main'),
+      filename: '[name].js',
+      chunkFilename: '[name].bundle.js',
+      library: {
+        type: 'commonjs2'
+      }
+    },
+    target: 'electron-main',
+    node: {
+      __dirname: true
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/i,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              targets: {
+                electron: '10'
+              },
+              presets: ['@babel/preset-env', '@babel/preset-flow']
+            }
+          }
+        }
+      ]
+    },
+    plugins: [
+      new DefinePlugin({
+        'process.env.LINUX': process.platform === 'linux',
+        'process.env.PRODUCTION': !isDev,
+        'process.env.ELECTRON_MAIN_PORT': 8080
+      }),
+      new ESLintPlugin({
+        files: './src/main/**/*.{js}'
+      })
+    ],
+    stats: {
+      colors: true
+    }
+  };
+
+  if (isDev) {
+    config.mode = 'development';
+    config.devtool = 'eval-source-map';
+    // config.devServer = {
+    //   contentBase: path.resolve('./build'),
+    //   host: 'localhost',
+    //   port: '8080',
+    //   hot: true,
+    //   overlay: true
+    // };
+  } else {
+    config.mode = 'production';
+    // Basic options, except ignore console statements
+    config.optimization = {
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          terserOptions: {
+            compress: {
+              drop_console: true
+            }
+          }
+        })
+      ]
+    };
+    config.plugins.push(new CleanWebpackPlugin());
+  }
 
   return config;
 };

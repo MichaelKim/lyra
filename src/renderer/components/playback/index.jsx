@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import path from 'path';
 
 import AudioControl from './audio';
 import Bar from './bar';
@@ -112,7 +111,7 @@ class PlaybackBar extends React.Component<Props, State> {
         });
       }
     } else {
-      this.setState({ src: path.join('file://', currSong.filepath) });
+      this.setState({ src: 'file://' + currSong.filepath });
     }
 
     if (autoplay) {

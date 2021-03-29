@@ -1,25 +1,138 @@
+const path = require('path');
 const os = require('os');
-const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
-module.exports = config => {
-  // Enable .jsx extensions
-  config.resolve.extensions.push('.jsx');
-  const idx = config.module.rules.findIndex(
-    r => r.use.loader === 'babel-loader'
-  );
-  config.module.rules[idx].test = /\.jsx?$/;
-
-  // Only bundle matching ffmpeg executable
-  config.externals.push(
-    new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
+module.exports = async (env, argv) => {
+  const isDev = argv.mode !== 'production';
+  console.log(
+    `===================${
+      isDev ? 'DEV' : 'PROD'
+    } RENDERER========================`
   );
 
-  // Add process.env.PRODUCTION
-  config.plugins.push(
-    new webpack.DefinePlugin({
-      'process.env.PRODUCTION': config.mode === 'production'
-    })
-  );
+  const config = {
+    context: __dirname,
+    entry: {
+      renderer: path.resolve('./src/renderer/index.jsx')
+    },
+    output: {
+      path: path.resolve('./dist/renderer'),
+      filename: '[name].js',
+      chunkFilename: '[name].bundle.js'
+    },
+    target: 'electron-renderer',
+    node: {
+      __dirname: true
+    },
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/i,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              targets: {
+                electron: '10'
+              },
+              presets: [
+                '@babel/preset-env',
+                [
+                  '@babel/preset-react',
+                  {
+                    runtime: 'automatic'
+                  }
+                ],
+                '@babel/preset-flow'
+              ],
+              plugins: ['@babel/plugin-proposal-class-properties']
+            }
+          }
+        },
+        {
+          test: /\.scss$/i,
+          use: [
+            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: !isDev
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: !isDev
+              }
+            }
+          ]
+        },
+        {
+          test: /\.svg$/,
+          type: 'asset'
+        },
+        {
+          test: /\.ttf$/i,
+          type: 'asset/resource'
+        }
+      ]
+    },
+    plugins: [
+      new DefinePlugin({
+        'process.env.PRODUCTION': !isDev,
+        'process.env.FLUENTFFMPEG_COV': false
+      }),
+      new ESLintPlugin({
+        files: './src/renderer/**/*.{js}'
+      }),
+      new HtmlWebpackPlugin({
+        template: path.resolve('./src/index.html')
+      }),
+      new MiniCssExtractPlugin()
+    ],
+    resolve: {
+      extensions: ['.js', '.jsx']
+    },
+    stats: {
+      colors: true
+    },
+    externals: [
+      new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
+    ]
+  };
+
+  if (isDev) {
+    config.mode = 'development';
+    config.devtool = 'eval-source-map';
+    // config.devServer = {
+    //   contentBase: path.resolve('./build'),
+    //   host: 'localhost',
+    //   port: '8080',
+    //   hot: true,
+    //   overlay: true
+    // };
+  } else {
+    config.mode = 'production';
+    // Basic options, except ignore console statements
+    config.optimization = {
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          terserOptions: {
+            compress: {
+              drop_console: true
+            }
+          }
+        })
+      ]
+    };
+    config.plugins.push(new CleanWebpackPlugin());
+  }
 
   return config;
 };

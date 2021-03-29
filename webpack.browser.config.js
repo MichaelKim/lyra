@@ -1,47 +1,145 @@
 // Webpack config for browser
 // See: https://webpack.electron.build/extending-as-a-library
 
-const renderer = require('electron-webpack/webpack.renderer.config.js');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 module.exports = async (env, argv) => {
-  // electron-webpack reads from process.env.NODE_ENV
-  process.env.NODE_ENV = argv.mode;
-  const config = await renderer(env, argv);
+  const isDev = argv.mode !== 'production';
+  console.log(
+    `===================${
+      isDev ? 'DEV' : 'PROD'
+    } BROWSER========================`
+  );
 
-  config.externals = [];
-  config.node = {};
-  config.output.libraryTarget = 'var';
-  config.output.path = path.join(__dirname, 'dist/browser');
-  config.plugins[0] = new HtmlWebpackPlugin({
-    template: './src/index.html',
-    favicon: './static/icon.png'
-  });
-  if (argv.mode === 'production') {
+  const config = {
+    context: __dirname,
+    entry: {
+      main: path.resolve('./src/renderer/index.jsx')
+    },
+    output: {
+      path: path.resolve('./dist/browser'),
+      filename: '[name].js',
+      chunkFilename: '[name].bundle.js'
+    },
+    target: 'web',
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/i,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              targets: '> 1%, not ie 11',
+              presets: [
+                '@babel/preset-env',
+                [
+                  '@babel/preset-react',
+                  {
+                    runtime: 'automatic'
+                  }
+                ],
+                '@babel/preset-flow'
+              ],
+              plugins: ['@babel/plugin-proposal-class-properties']
+            }
+          }
+        },
+        {
+          test: /\.scss$/i,
+          use: [
+            isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: !isDev
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: !isDev
+              }
+            }
+          ]
+        },
+        {
+          test: /\.svg$/,
+          type: 'asset'
+        },
+        {
+          test: /\.ttf$/i,
+          type: 'asset/resource'
+        }
+      ]
+    },
+    plugins: [
+      new DefinePlugin({
+        'process.env.PRODUCTION': JSON.stringify(!isDev),
+        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+      }),
+      new ESLintPlugin({
+        files: './src/renderer/**/*.{js}'
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        favicon: './static/icon.png'
+      }),
+      new MiniCssExtractPlugin()
+    ],
+    resolve: {
+      extensions: ['.browser.js', '.browser.jsx', '.js', '.jsx']
+    },
+    stats: {
+      colors: true
+    }
+  };
+
+  if (isDev) {
+    config.mode = 'development';
+    config.devtool = 'eval-source-map';
+    config.devServer = {
+      contentBase: path.resolve('./dist/browser'),
+      host: 'localhost',
+      port: '9000',
+      hot: true,
+      overlay: true
+    };
     config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim'),
-        'process.env.LYRA_USE_API': JSON.stringify(true),
-        'process.env.BROWSER': JSON.stringify(true),
-        'process.env.PRODUCTION': JSON.stringify(true)
+      new DefinePlugin({
+        'process.env.LYRA_URL': JSON.stringify('http://localhost:5000'),
+        'process.env.LYRA_USE_API': JSON.stringify(false)
       })
     );
   } else {
-    config.devServer.port = 9000;
-    config.plugins = config.plugins.slice(0, 4);
+    config.mode = 'production';
+    // Basic options, except ignore console statements
+    config.optimization = {
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          terserOptions: {
+            compress: {
+              drop_console: true
+            }
+          }
+        })
+      ]
+    };
     config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.LYRA_URL': JSON.stringify('http://localhost:5000'),
-        'process.env.LYRA_USE_API': JSON.stringify(false),
-        'process.env.BROWSER': JSON.stringify(true),
-        'process.env.PRODUCTION': JSON.stringify(false)
+      new CleanWebpackPlugin(),
+      new DefinePlugin({
+        'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim'),
+        'process.env.LYRA_USE_API': JSON.stringify(true)
       })
     );
   }
-  config.resolve.extensions.unshift('.browser.js', '.browser.jsx');
-  config.target = 'web';
 
   return config;
 };

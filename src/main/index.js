@@ -37,7 +37,7 @@ function createWindow() {
 
   if (process.env.LINUX) {
     // $FlowFixMe[prop-missing]
-    options.icon = path.join(__static, 'icon.png');
+    options.icon = './static/icon.png';
   }
 
   win = new BrowserWindow(options);
@@ -45,12 +45,12 @@ function createWindow() {
   win.setMenu(null);
 
   if (!process.env.PRODUCTION) {
-    if (process.env.ELECTRON_WEBPACK_WDS_PORT == null) {
-      throw 'Missing electron-webpack port';
+    if (process.env.ELECTRON_MAIN_PORT == null) {
+      throw 'Missing webpack port';
     }
 
     // $FlowFixMe[incompatible-use]
-    win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    win.loadURL(`http://localhost:${process.env.ELECTRON_MAIN_PORT}`);
 
     installExtensions();
 

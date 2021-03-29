@@ -1,7 +1,5 @@
 // @flow strict
 
-declare var __static: string;
-
 // Technically, the callbacks with error parameters would be a union of
 // [Error, void] and [void, Data], but I don't know how to type that properly.
 
