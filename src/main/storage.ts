@@ -10,7 +10,7 @@ import { initialState } from '../renderer/state/storage';
 import type { StoreState } from '../renderer/types';
 
 export function sendState(webContents: { send: (string, StoreState) => void }) {
-  storage.get<StoreState>('state', (err, state: ?StoreState) => {
+  storage.get('state', (err, state: ?StoreState) => {
     if (err || state == null) {
       webContents.send('state-load', initialState);
     } else {
