@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import type { Node } from 'React';
+
 type Props = {|
   +initialValue: string,
   +autoFocus: boolean,
@@ -24,15 +26,19 @@ type State = {|
 
 class EditBox extends React.Component<Props, State> {
   // Store the initial value so the div element never updates
-  state = {
+  state: State = {
     initialValue: this.props.initialValue
   };
-  static defaultProps = {
+  static defaultProps: {| autoFocus: boolean |} = {
     autoFocus: false
   };
-  _inputRef = React.createRef<HTMLDivElement>();
+  _inputRef: {|
+    current: null | HTMLDivElement
+  |} = React.createRef<HTMLDivElement>();
 
-  onKeyDown = (e: SyntheticKeyboardEvent<HTMLDivElement>) => {
+  onKeyDown: (e: SyntheticKeyboardEvent<HTMLDivElement>) => void = (
+    e: SyntheticKeyboardEvent<HTMLDivElement>
+  ) => {
     e.stopPropagation();
     if (e.key === 'Enter') {
       this.props.onEnter();
@@ -41,7 +47,9 @@ class EditBox extends React.Component<Props, State> {
     }
   };
 
-  onInput = (e: SyntheticInputEvent<HTMLDivElement>) => {
+  onInput: (e: SyntheticInputEvent<HTMLDivElement>) => void = (
+    e: SyntheticInputEvent<HTMLDivElement>
+  ) => {
     this.props.onChange(e.currentTarget.textContent);
   };
 
@@ -66,7 +74,7 @@ class EditBox extends React.Component<Props, State> {
     }
   }
 
-  render() {
+  render(): Node {
     return (
       <div
         ref={this._inputRef}

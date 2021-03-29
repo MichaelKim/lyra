@@ -1,10 +1,11 @@
 // @flow strict
 
 import React from 'react';
-
 import { useDispatch, useSelector } from '../../hooks';
 
-const Shuffle = () => {
+import type { Node } from 'React';
+
+const Shuffle = (): Node => {
   const shuffle = useSelector(state => state.shuffle);
 
   const dispatch = useDispatch();

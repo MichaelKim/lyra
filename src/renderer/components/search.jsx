@@ -3,6 +3,8 @@
 import React from 'react';
 import Suggestion from './suggest';
 
+import type { Node } from 'React';
+
 import '../../css/search.scss';
 
 type Props = {|
@@ -13,7 +15,7 @@ type Props = {|
   +onEnter?: (value: string) => mixed
 |};
 
-export default function Search(props: Props) {
+export default function Search(props: Props): Node {
   const [focused, setFocused] = React.useState(false);
   const [focus, setFocus] = React.useState(-1);
   const [value, setValue] = React.useState<string>(props.initialValue || '');

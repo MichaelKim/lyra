@@ -1,17 +1,16 @@
 // @flow strict
 
 import React from 'react';
-
 import YtSearch from './yt-search';
 import YtPlaying from './yt-playing';
-
 import { useCurrSong, useSelector, useDispatchMap } from '../../hooks';
 
+import type { Node } from 'React';
 import type { Dispatch, Song, VideoSong } from '../../types';
 
 import '../../../css/youtube.scss';
 
-const Youtube = () => {
+const Youtube = (): Node => {
   const [keyword, setKeyword] = React.useState('');
 
   const currSong = useCurrSong();

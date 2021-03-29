@@ -1,13 +1,13 @@
 // @flow strict
 
 import React from 'react';
-
 import Top from './top';
 import PlaybackBar from './playback';
-
 import { useSelector } from '../hooks';
 
-export default function Root() {
+import type { Node } from 'React';
+
+export default function Root(): Node {
   const loaded = useSelector(state => state.loaded);
   return loaded ? (
     <>

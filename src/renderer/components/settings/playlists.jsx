@@ -1,13 +1,13 @@
 // @flow strict
 
 import React from 'react';
-
 import { values } from '../../util';
 import { useSelector, useDispatch } from '../../hooks';
-
 import type { Playlist, PlaylistID } from '../../types';
 
-export default function Playlists() {
+import type { Node } from 'React';
+
+export default function Playlists(): Node {
   const playlists = useSelector(state => values(state.playlists));
 
   const dispatch = useDispatch();

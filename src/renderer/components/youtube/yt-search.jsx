@@ -1,14 +1,13 @@
 // @flow strict
 
 import React from 'react';
-
 import YtSuggest from './search-suggest';
 import Loading from '../loading';
 import YtItem from './yt-item';
-
 import { ytSearch } from '../../yt-util';
 import { useDispatch } from '../../hooks';
 
+import type { Node } from 'React';
 import type { VideoSong } from '../../types';
 
 type Props = {|
@@ -16,7 +15,7 @@ type Props = {|
   +initialKeyword?: string
 |};
 
-export default function YtSearch(props: Props) {
+export default function YtSearch(props: Props): Node {
   const [searching, setSearching] = React.useState(false);
   const [videos, setVideos] = React.useState<VideoSong[]>([]);
 

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import ContextMenu from '../context';
-
 import { formatDuration } from '../../util';
 import { useDispatchMap } from '../../hooks';
 
+import type { Node } from 'React';
 import type { Song, SongID, VideoSong, Dispatch } from '../../types';
 
 import '../../../css/youtube.scss';
@@ -15,7 +15,7 @@ type Props = {|
   +onClick?: () => mixed
 |};
 
-const YtItem = ({ video, onClick }: Props) => {
+const YtItem = ({ video, onClick }: Props): Node => {
   const { addSong, downloadAdd } = useDispatchMap(mapDispatch);
 
   return (

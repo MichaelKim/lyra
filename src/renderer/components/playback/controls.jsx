@@ -3,6 +3,8 @@
 import React from 'react';
 import { useMediaShortcuts, useMediaSessionHandlers } from '../../hooks';
 
+import type { Node } from 'React';
+
 type Props = {|
   +disabled: boolean,
   +playing: boolean,
@@ -19,7 +21,7 @@ const Controls = ({
   skipPrevious,
   skipNext,
   onSeek
-}: Props) => {
+}: Props): Node => {
   const onForward = () => onSeek(10);
   const onReplay = () => onSeek(-10);
 

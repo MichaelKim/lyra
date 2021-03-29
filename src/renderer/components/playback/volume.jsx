@@ -1,14 +1,14 @@
 // @flow strict
 
 import React from 'react';
-
 import RangeInput from './range';
-
 import { useSelector, useDispatch } from '../../hooks';
+
+import type { Node } from 'React';
 
 import '../../../css/volume.scss';
 
-export function VolumeBar() {
+export function VolumeBar(): Node {
   const volume = useSelector(state => state.volume.amount);
   const muted = useSelector(state => state.volume.muted);
 

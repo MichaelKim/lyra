@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import type { Node } from 'React';
+
 // Max delay in ms between two clicks
 const DBL_CLICK_DELAY = 250;
 
@@ -12,7 +14,7 @@ type Props = {|
   +className?: string
 |};
 
-export default function Click(props: Props) {
+export default function Click(props: Props): Node {
   // Double click
   let isDblClick: boolean = false;
   let clickTimer: ?TimeoutID = null;

@@ -54,7 +54,7 @@ export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
 }
 
 export function useMediaSessionHandlers(actionHandlers: {
-  +[key: string]: <T: []>(...args: T) => void
+  +[key: string]: <T: []>(...args: T) => mixed
 }) {
   useEffect(() => {
     if (!('mediaSession' in navigator)) {

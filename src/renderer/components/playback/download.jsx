@@ -1,10 +1,11 @@
 // @flow strict
 
 import React from 'react';
-
 import { useSelector, useToggle } from '../../hooks';
 
-const DownloadQueue = () => {
+import type { Node } from 'React';
+
+const DownloadQueue = (): Node => {
   const dlQueue = useSelector(state => state.dlQueue);
   const dlProgress = useSelector(state => (0 | (state.dlProgress * 100)) / 100);
   const [showQueue, toggleQueue] = useToggle(false);

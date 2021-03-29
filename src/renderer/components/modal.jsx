@@ -3,6 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import type { Node } from 'react';
+
 import '../../css/modal.scss';
 
 type Props = {|
@@ -12,7 +14,7 @@ type Props = {|
   +children: React$Node
 |};
 
-export default function Modal(props: Props) {
+export default function Modal(props: Props): Node {
   const onOutsideClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     props.onClose();

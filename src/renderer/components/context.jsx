@@ -3,6 +3,8 @@
 import { ipcRenderer } from 'electron';
 import React from 'react';
 
+import type { Node } from 'React';
+
 export type Props = {|
   +className: string,
   +rightClick?: boolean,
@@ -13,7 +15,7 @@ export type Props = {|
   +children: React$Node
 |};
 
-export default function ContextMenu(props: Props) {
+export default function ContextMenu(props: Props): Node {
   const openMenu = () => {
     const labels = {};
     const clicks = {};

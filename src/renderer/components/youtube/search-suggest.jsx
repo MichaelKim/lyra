@@ -3,17 +3,17 @@
 
 import React from 'react';
 import { useSelector, useDispatch } from '../../hooks';
-
 import Search from '../search';
-
 import { ytSuggest } from '../../yt-util';
+
+import type { Node } from 'React';
 
 type Props = {|
   +initialValue?: string,
   +onSearch?: (value: string) => mixed
 |};
 
-export default function YtSuggest(props: Props) {
+export default function YtSuggest(props: Props): Node {
   const [suggests, setSuggests] = React.useState<string[]>([]);
   const history = useSelector(state => state.history);
   const dispatch = useDispatch();

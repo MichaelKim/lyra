@@ -3,6 +3,8 @@
 import React from 'react';
 import { useDispatch } from '../hooks';
 
+import type { Node } from 'React';
+
 type Props = {|
   +text: string,
   +search: string,
@@ -11,7 +13,13 @@ type Props = {|
   +onClick: (value: string) => mixed
 |};
 
-const Suggestion = ({ text, search, focused, isHistory, onClick }: Props) => {
+const Suggestion = ({
+  text,
+  search,
+  focused,
+  isHistory,
+  onClick
+}: Props): Node => {
   const dispatch = useDispatch();
   const deleteFromHistory = search =>
     dispatch({ type: 'REMOVE_FROM_HISTORY', search });

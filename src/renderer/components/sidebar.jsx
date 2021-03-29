@@ -1,15 +1,15 @@
 // @flow strict
 
 import React from 'react';
-
 import { values } from '../util';
 import { useSelector, useDispatch, useToggle } from '../hooks';
 
+import type { Node } from 'React';
 import type { Playlist, PlaylistID } from '../types';
 
 import '../../css/sidebar.scss';
 
-export default function Sidebar() {
+export default function Sidebar(): Node {
   const [openSidebar, toggleSidebar] = useToggle(false);
   const currScreen = useSelector(state => state.currScreen);
   const playlists = useSelector(state => values(state.playlists));

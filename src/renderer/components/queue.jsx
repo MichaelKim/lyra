@@ -1,11 +1,10 @@
 // @flow strict
 
 import React from 'react';
-
 import SongItem from './screen/song-item';
-
 import { useCurrSong, useSelector } from '../hooks';
 
+import type { Node } from 'React';
 import type { Song } from '../types';
 
 import '../../css/screen.scss';
@@ -31,7 +30,7 @@ const renderHeader = (
   </div>
 );
 
-const Queue = () => {
+const Queue = (): Node => {
   const currSong = useCurrSong();
   const nextSongs = useSelector<Array<Song>>(state => {
     const { next } = state.queue;

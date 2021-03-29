@@ -1,13 +1,12 @@
 // @flow strict
 
 import React from 'react';
-
 import Modal from '../modal';
 import Toggle from '../toggle';
-
 import { useSelector } from '../../hooks';
 import { values } from '../../util';
 
+import type { Node } from 'React';
 import type { Song, PlaylistID } from '../../types';
 
 type Props = {|
@@ -15,7 +14,7 @@ type Props = {|
   +onClose: (toggle: PlaylistID[]) => mixed
 |};
 
-const AddModal = (props: Props) => {
+const AddModal = (props: Props): Node => {
   const playlists = useSelector(state => values(state.playlists));
   const [toggle, setToggle] = React.useState(
     new Set(

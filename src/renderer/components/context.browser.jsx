@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom';
 
 import type { Props } from './context';
 
+import type { Node } from 'React';
+
 import '../../css/context.scss';
 
 /*
@@ -17,7 +19,7 @@ import '../../css/context.scss';
   4. Move the menu to its new position, and display it
 */
 
-export default function Context(props: Props) {
+export default function Context(props: Props): Node {
   const [isOpen, setOpen] = React.useState(false);
   const [isVisible, setVisible] = React.useState(false);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });

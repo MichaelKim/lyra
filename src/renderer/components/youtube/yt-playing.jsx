@@ -1,13 +1,12 @@
 // @flow strict
 
 import React from 'react';
-
 import YtSuggest from './search-suggest';
 import Loading from '../loading';
 import YtItem from './yt-item';
-
 import { getRelatedVideos } from '../../yt-util';
 
+import type { Node } from 'React';
 import type { Song, SongID, VideoSong } from '../../types';
 
 type Props = {|
@@ -21,16 +20,16 @@ type State = {|
 |};
 
 class YtPlaying extends React.Component<Props, State> {
-  mounted = false;
-  state = {
+  mounted: boolean = false;
+  state: State = {
     related: []
   };
 
-  _playVideo = (video: VideoSong) => {
+  _playVideo: (video: VideoSong) => void = (video: VideoSong) => {
     this.props.playVideo(video);
   };
 
-  _loadRelated = (id: SongID) => {
+  _loadRelated: (id: SongID) => void = (id: SongID) => {
     getRelatedVideos(id).then(related => {
       if (this.mounted) {
         this.setState({ related });
@@ -49,7 +48,7 @@ class YtPlaying extends React.Component<Props, State> {
     this.mounted = false;
   }
 
-  render() {
+  render(): null | Node {
     const { currSong } = this.props;
 
     if (currSong.source !== 'YOUTUBE') {

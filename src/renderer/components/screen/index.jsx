@@ -1,19 +1,18 @@
 // @flow strict
 
 import React from 'react';
-
 import SongItem from './song-item';
 import Search from '../search';
-
 import { getSongList } from '../../util';
 import { useSelector, useDispatch } from '../../hooks';
 
+import type { Node } from 'React';
 import type { SortColumn } from '../../types';
 
 import '../../../css/screen.scss';
 import '../../../css/song-row.scss';
 
-export default function Screen() {
+export default function Screen(): Node {
   const songs = useSelector(state =>
     getSongList(state.songs, state.currScreen, state.sort)
   );

@@ -1,13 +1,13 @@
 // @flow strict
 
 import React from 'react';
-
 import Sources from './sources';
 import Playlists from './playlists';
-
 import { useDispatch } from '../../hooks';
 
-export default function Settings() {
+import type { Node } from 'React';
+
+export default function Settings(): Node {
   const dispatch = useDispatch();
   const clearData = () => dispatch({ type: 'CLEAR_DATA' });
 

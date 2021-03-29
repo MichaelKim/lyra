@@ -1,16 +1,16 @@
 // @flow strict
 
 import React from 'react';
-
-import Sidebar from './sidebar';
-import Screen from './screen';
-import Youtube from './youtube';
-import Settings from './settings';
-import Queue from './queue';
-
 import { useSelector } from '../hooks';
+import Queue from './queue';
+import Screen from './screen';
+import Settings from './settings';
+import Sidebar from './sidebar';
+import Youtube from './youtube';
 
-export default function Top() {
+import type { Node } from 'React';
+
+export default function Top(): Node {
   const currScreen = useSelector(state => state.currScreen);
 
   // Top-level screen components that should retain state when not being displayed

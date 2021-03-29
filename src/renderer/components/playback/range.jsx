@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import type { Node } from 'React';
+
 import '../../../css/range.scss';
 
 type Props = {|
@@ -11,7 +13,7 @@ type Props = {|
   +onChange?: (value: number) => mixed
 |};
 
-export default function RangeInput(props: Props) {
+export default function RangeInput(props: Props): Node {
   function onChange(e: SyntheticEvent<HTMLInputElement>) {
     const value = Number(e.currentTarget.value);
     props.onChange && props.onChange(value);
