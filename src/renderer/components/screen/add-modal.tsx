@@ -1,22 +1,17 @@
-// @flow strict
-
-import React from 'react';
+import { useState } from 'react';
+import { useSelector } from '../../hooks';
+import { PlaylistID, Song } from '../../types';
 import Modal from '../modal';
 import Toggle from '../toggle';
-import { useSelector } from '../../hooks';
-import { values } from '../../util';
 
-import type { Node } from 'React';
-import type { Song, PlaylistID } from '../../types';
+type Props = {
+  song: Song;
+  onClose: (toggle: PlaylistID[]) => void;
+};
 
-type Props = {|
-  +song: Song,
-  +onClose: (toggle: PlaylistID[]) => mixed
-|};
-
-const AddModal = (props: Props): Node => {
-  const playlists = useSelector(state => values(state.playlists));
-  const [toggle, setToggle] = React.useState(
+const AddModal = (props: Props) => {
+  const playlists = useSelector(state => Object.values(state.playlists));
+  const [toggle, setToggle] = useState(
     new Set(
       playlists.filter(p => props.song.playlists.includes(p.id)).map(p => p.id)
     )

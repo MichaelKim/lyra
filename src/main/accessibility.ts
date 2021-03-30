@@ -1,5 +1,3 @@
-// @flow strict
-
 import { dialog, systemPreferences } from 'electron';
 
 // On macOS Mojave (and higher), access to media keys requires
@@ -7,7 +5,7 @@ import { dialog, systemPreferences } from 'electron';
 // for macOS if permissions are not provided.
 
 // Taken from https://github.com/salomvary/soundcleod/commit/b9b37e2bfbe9c8f5dab07c4c050c47a6da08cbc5
-export default function checkAccessibility() {
+export default async function checkAccessibility() {
   if (process.platform !== 'darwin') {
     return;
   }
@@ -19,7 +17,7 @@ export default function checkAccessibility() {
   }
 
   // No permission, open dialog and request access
-  const result = dialog.showMessageBox({
+  const result = await dialog.showMessageBox({
     type: 'warning',
     message: 'Turn on accessibility',
     detail:
@@ -29,7 +27,7 @@ export default function checkAccessibility() {
     buttons: ['Not Now', 'Turn On Accessibility']
   });
 
-  if (result === 1) {
+  if (result.response === 1) {
     systemPreferences.isTrustedAccessibilityClient(true);
   }
 }

@@ -1,13 +1,7 @@
-// @flow strict
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import type { Props } from './context';
-
-import type { Node } from 'React';
-
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import '../../css/context.scss';
+import { Props } from './context';
 
 /*
   Custom Context Menu for browsers
@@ -19,33 +13,33 @@ import '../../css/context.scss';
   4. Move the menu to its new position, and display it
 */
 
-export default function Context(props: Props): Node {
-  const [isOpen, setOpen] = React.useState(false);
-  const [isVisible, setVisible] = React.useState(false);
-  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+export default function Context(props: Props) {
+  const [isOpen, setOpen] = useState(false);
+  const [isVisible, setVisible] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
   // Ref for cancelling setTimeout
-  const ref = React.useRef<?TimeoutID>(null);
+  const ref = useRef<number | undefined>();
   // Ref for context menu container
-  const el = React.useRef(null);
+  const el = useRef<HTMLDivElement>(null);
 
-  function onOutsideClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onOutsideClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     setOpen(false);
     setVisible(false);
   }
 
-  function onInsideClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onInsideClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
   }
 
-  function openMenu(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function openMenu(e: React.MouseEvent<HTMLDivElement>) {
     const { pageX, pageY } = e;
 
     // Initial render
     setOpen(true);
-    ref.current = setTimeout(() => {
+    ref.current = window.setTimeout(() => {
       // Calculate size and reposition
-      ref.current = null;
+      ref.current = undefined;
       if (el.current == null) return;
       const { offsetWidth, offsetHeight } = el.current;
 
@@ -60,21 +54,21 @@ export default function Context(props: Props): Node {
     }, 0);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Clear timeout on unmount
     return () => {
       clearTimeout(ref.current);
     };
   }, []);
 
-  function onClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onClick(e: React.MouseEvent<HTMLDivElement>) {
     if (!props.rightClick) {
       e.stopPropagation();
       openMenu(e);
     }
   }
 
-  function onContextMenu(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onContextMenu(e: React.MouseEvent<HTMLDivElement>) {
     if (props.rightClick) {
       e.stopPropagation();
       e.preventDefault();
@@ -93,7 +87,7 @@ export default function Context(props: Props): Node {
       return null;
     }
 
-    return ReactDOM.createPortal(
+    return createPortal(
       <div
         className='context'
         onClick={onOutsideClick}

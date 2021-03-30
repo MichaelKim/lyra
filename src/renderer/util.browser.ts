@@ -1,22 +1,23 @@
-// @flow strict
-/* eslint-disable no-unused-vars */
-
-import type { Song, LocalSong, SongID, SortType } from './types';
+import { LocalSong } from './types';
 
 export * from './util.shared';
 
-export function fileExists(path: string): boolean {
+export function fileExists(): boolean {
   return false;
 }
 
-export async function getSongs(dir: string): Promise<LocalSong[]> {
+export async function getSongs(): Promise<LocalSong[]> {
   return [];
 }
 
-export function registerShortcuts(shortcuts: { +[key: string]: () => mixed }) {}
+export function registerShortcuts() {
+  // noop
+}
 
-export function removeShortcuts(shortcuts: { +[key: string]: () => mixed }) {}
+export function removeShortcuts() {
+  // noop
+}
 
-export function selectLocalDir(): ?Array<string> {
+export function selectLocalDir(): Array<string> | null {
   return null;
 }

@@ -1,8 +1,8 @@
-// @flow strict
-
-import * as React from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
-
+import '../../../css/playback.scss';
+import { Dispatch, Song, StoreState } from '../../types';
+import { getStreamURL } from '../../yt-util';
 import AudioControl from './audio';
 import Bar from './bar';
 import Controls from './controls';
@@ -10,27 +10,21 @@ import DownloadQueue from './download';
 import Shuffle from './shuffle';
 import VolumeBar from './volume';
 
-import { getStreamURL } from '../../yt-util';
+type Props = {
+  currSong: Song | null;
+  skipPrevious: () => void;
+  skipNext: () => void;
+  goToPlaying: (id: string | null) => void;
+};
 
-import type { Song, StoreState, Dispatch } from '../../types';
+type State = {
+  src: string | null;
+  playing: boolean;
+  progress: number;
+};
 
-import '../../../css/playback.scss';
-
-type Props = {|
-  +currSong: ?Song,
-  +skipPrevious: () => void,
-  +skipNext: () => void,
-  +goToPlaying: (id: ?string) => void
-|};
-
-type State = {|
-  src: ?string,
-  playing: boolean,
-  progress: number
-|};
-
-class PlaybackBar extends React.Component<Props, State> {
-  state = {
+class PlaybackBar extends Component<Props, State> {
+  state: State = {
     src: null,
     playing: false,
     progress: 0
@@ -72,7 +66,7 @@ class PlaybackBar extends React.Component<Props, State> {
     }));
   };
 
-  loadSong = async (autoplay: boolean, prevSongID: ?string) => {
+  loadSong = async (autoplay: boolean, prevSongID?: string) => {
     const { currSong } = this.props;
     if (currSong == null) {
       if (prevSongID != null) {
@@ -101,7 +95,7 @@ class PlaybackBar extends React.Component<Props, State> {
         src
       });
 
-      if ('mediaSession' in navigator) {
+      if (navigator.mediaSession) {
         /* eslint-disable no-undef */
         navigator.mediaSession.metadata = new MediaMetadata({
           /* eslint-enable no-undef */
@@ -137,15 +131,15 @@ class PlaybackBar extends React.Component<Props, State> {
   componentDidMount() {
     this.loadSong(false);
 
-    if ('mediaSession' in navigator) {
+    if (navigator.mediaSession) {
       navigator.mediaSession.playbackState = 'paused';
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     this.loadSong(true, prevProps.currSong?.id);
 
-    if ('mediaSession' in navigator) {
+    if (navigator.mediaSession) {
       navigator.mediaSession.playbackState = this.state.playing
         ? 'playing'
         : 'paused';
@@ -153,7 +147,7 @@ class PlaybackBar extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    if ('mediaSession' in navigator) {
+    if (navigator.mediaSession) {
       navigator.mediaSession.playbackState = 'none';
     }
   }
@@ -220,11 +214,9 @@ const mapDispatch = (dispatch: Dispatch) => {
   return {
     skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
     skipNext: () => dispatch({ type: 'SKIP_NEXT' }),
-    goToPlaying: (id: ?string) => dispatch({ type: 'SELECT_PLAYLIST', id })
+    goToPlaying: (id: string | null) =>
+      dispatch({ type: 'SELECT_PLAYLIST', id })
   };
 };
 
-export default (connect(
-  mapState,
-  mapDispatch
-)(PlaybackBar): React.ComponentType<{||}>);
+export default connect(mapState, mapDispatch)(PlaybackBar);

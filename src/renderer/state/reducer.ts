@@ -1,15 +1,31 @@
-// @flow strict
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
 import u from 'updeep';
 import { initialState } from './storage';
-import { values } from '../util';
 
-import type { SongID, StoreState, Action, SortType, QueueType } from '../types';
+import {
+  SongID,
+  StoreState,
+  Action,
+  SortType,
+  QueueType,
+  Song
+} from '../types';
 
 const MAX_QUEUE_SIZE = 50;
 
 // Removes ids from cache
-function cleanCache(ids: Array<SongID>, cache) {
+function cleanCache(
+  ids: Array<SongID>,
+  cache: Record<
+    string,
+    {
+      song: Song;
+      count: number;
+    }
+  >
+) {
   return ids.reduce((acc, id) => {
     // Missing id
     if (cache[id] == null) {
@@ -203,7 +219,7 @@ export default function rootReducer(
         return state;
       }
 
-      for (let pid of pids) {
+      for (const pid of pids) {
         // Invalid playlist ID
         if (state.playlists[pid] == null) {
           return state;
@@ -295,7 +311,9 @@ export default function rootReducer(
     }
 
     case 'UPDATE_TAGS': {
-      const song = values(state.songs).find(song => song.id === action.id);
+      const song = Object.values(state.songs).find(
+        song => song.id === action.id
+      );
       if (song == null) {
         return state;
       }
@@ -461,7 +479,6 @@ export default function rootReducer(
       );
 
     default:
-      (action: empty);
       return state;
   }
 }

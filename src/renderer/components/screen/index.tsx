@@ -1,18 +1,13 @@
-// @flow strict
-
-import React from 'react';
-import SongItem from './song-item';
-import Search from '../search';
-import { getSongList } from '../../util';
-import { useSelector, useDispatch } from '../../hooks';
-
-import type { Node } from 'React';
-import type { SortColumn } from '../../types';
-
+import { useState } from 'react';
 import '../../../css/screen.scss';
 import '../../../css/song-row.scss';
+import { useDispatch, useSelector } from '../../hooks';
+import { SortColumn } from '../../types';
+import { getSongList } from '../../util';
+import Search from '../search';
+import SongItem from './song-item';
 
-export default function Screen(): Node {
+export default function Screen() {
   const songs = useSelector(state =>
     getSongList(state.songs, state.currScreen, state.sort)
   );
@@ -23,7 +18,7 @@ export default function Screen(): Node {
   );
   const sort = useSelector(state => state.sort);
 
-  const [search, setSearch] = React.useState('');
+  const [search, setSearch] = useState('');
 
   const dispatch = useDispatch();
   const setSort = (column: SortColumn, direction: boolean) =>
@@ -41,7 +36,7 @@ export default function Screen(): Node {
     setSearch(value.toUpperCase());
   }
 
-  const columns = [
+  const columns: { enum: SortColumn; name: string }[] = [
     { enum: 'TITLE', name: 'Title' },
     { enum: 'ARTIST', name: 'Artist' },
     { enum: 'DURATION', name: 'Duration' },

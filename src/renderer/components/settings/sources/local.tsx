@@ -1,31 +1,21 @@
-// @flow strict
-
-import * as React from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
-
-import Toggle from '../../toggle';
+import { Dispatch, LocalSong, Song, SongID, VideoSong } from '../../../types';
 import { getSongs, selectLocalDir } from '../../../util';
+import Toggle from '../../toggle';
 
-import type {
-  Dispatch,
-  LocalSong,
-  VideoSong,
-  Song,
-  SongID
-} from '../../../types';
+type Props = {
+  addSongs: (songs: LocalSong[] | VideoSong[]) => void;
+};
 
-type Props = {|
-  +addSongs: (songs: LocalSong[] | VideoSong[]) => void
-|};
+type State = {
+  selected: boolean;
+  tempDirs: string[];
+  tempSongs: LocalSong[];
+  toggle: Record<SongID, boolean>;
+};
 
-type State = {|
-  selected: boolean,
-  tempDirs: string[],
-  tempSongs: LocalSong[],
-  toggle: { [id: SongID]: boolean }
-|};
-
-class Sources extends React.Component<Props, State> {
+class Sources extends Component<Props, State> {
   state: State = {
     selected: false,
     tempDirs: [],
@@ -47,23 +37,25 @@ class Sources extends React.Component<Props, State> {
   };
 
   _onSelect = async () => {
-    const dirs = selectLocalDir();
+    const result = await selectLocalDir();
 
-    if (dirs == null) {
+    if (result.filePaths.length === 0) {
       return;
     }
 
-    const values = await Promise.all(dirs.map(dir => getSongs(dir)));
+    const values = await Promise.all(
+      result.filePaths.map(dir => getSongs(dir))
+    );
 
-    const songs: LocalSong[] = values.flat();
+    const songs = values.flat();
     const ids: SongID[] = songs.map(song => song.id);
     const toggle = ids.reduce((acc, val) => {
       acc[val] = true;
       return acc;
-    }, ({}: $PropertyType<State, 'toggle'>));
+    }, {} as Record<SongID, boolean>);
     this.setState({
       selected: true,
-      tempDirs: dirs,
+      tempDirs: result.filePaths,
       tempSongs: songs,
       toggle
     });
@@ -123,4 +115,4 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-export default (connect(null, mapDispatch)(Sources): React.ComponentType<{||}>);
+export default connect(null, mapDispatch)(Sources);

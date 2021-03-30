@@ -1,27 +1,25 @@
-// @flow strict
-
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 
 import checkAccessibility from './accessibility';
 import { sendState } from './storage';
 import { loadMenuListener } from './context';
 
-let win = null;
+let win: BrowserWindow | null = null;
 
 function installExtensions() {
-  const installExtension = require('electron-devtools-installer');
-
-  installExtension
-    .default([
-      installExtension.REACT_DEVELOPER_TOOLS,
-      installExtension.REDUX_DEVTOOLS
-    ])
+  import('electron-devtools-installer')
+    .then(installExtension =>
+      installExtension.default([
+        installExtension.REACT_DEVELOPER_TOOLS,
+        installExtension.REDUX_DEVTOOLS
+      ])
+    )
     .then(name => console.log(`Added Extension:  ${name}`))
     .catch(err => console.log('An error occurred: ', err));
 }
 
 function createWindow() {
-  const options = {
+  const options: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 600,
     width: 1280,
@@ -35,7 +33,6 @@ function createWindow() {
   };
 
   if (process.env.LINUX) {
-    // $FlowFixMe[prop-missing]
     options.icon = './static/icon.png';
   }
 
@@ -48,29 +45,23 @@ function createWindow() {
       throw 'Missing webpack port';
     }
 
-    // $FlowFixMe[incompatible-use]
     win.loadURL(`http://localhost:${process.env.ELECTRON_MAIN_PORT}`);
 
     installExtensions();
 
-    // $FlowFixMe[incompatible-use]
     win.webContents.openDevTools();
   } else {
-    // $FlowFixMe[incompatible-use]
     win.loadURL('file://' + __dirname + '/index.html');
   }
 
   checkAccessibility();
+  loadMenuListener();
   require('./shortcuts');
 
-  // $FlowFixMe[incompatible-use]
   win.webContents.on('did-finish-load', () => {
-    // $FlowFixMe[incompatible-use]
-    sendState(win.webContents);
-    loadMenuListener();
+    win && sendState(win.webContents);
   });
 
-  // $FlowFixMe[incompatible-use]
   win.on('closed', () => {
     win = null;
   });

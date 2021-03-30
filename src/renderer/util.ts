@@ -1,12 +1,9 @@
-// @flow strict
-
+import { createHash } from 'crypto';
+import { dialog, ipcRenderer } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import path from 'path';
-import { createHash } from 'crypto';
-import { dialog, ipcRenderer } from 'electron';
-
-import type { LocalSong, Metadata } from './types';
+import { LocalSong, Metadata } from './types';
 
 export * from './util.shared';
 
@@ -57,11 +54,11 @@ function getMetadata(dir: string, name: string): Promise<Metadata> {
           duration: 0
         });
       } else {
+        // Wrong type in @types/fluent-ffmpeg
+        const tags = metadata.format.tags as Record<string, string> | undefined;
         resolve({
-          title:
-            metadata.format.tags?.title ||
-            path.basename(name, path.extname(name)),
-          artist: metadata.format.tags?.artist || '',
+          title: tags?.title || path.basename(name, path.extname(name)),
+          artist: tags?.artist || '',
           duration: Number(metadata.format.duration)
         });
       }
@@ -69,19 +66,19 @@ function getMetadata(dir: string, name: string): Promise<Metadata> {
   });
 }
 
-export function registerShortcuts(shortcuts: { +[key: string]: () => mixed }) {
+export function registerShortcuts(shortcuts: Record<string, () => void>) {
   Object.keys(shortcuts).forEach(key => {
     ipcRenderer.on(key, shortcuts[key]);
   });
 }
 
-export function removeShortcuts(shortcuts: { +[key: string]: () => mixed }) {
+export function removeShortcuts(shortcuts: Record<string, () => void>) {
   Object.keys(shortcuts).forEach(key => {
     ipcRenderer.removeListener(key, shortcuts[key]);
   });
 }
 
-export function selectLocalDir(): ?Array<string> {
+export async function selectLocalDir() {
   return dialog.showOpenDialog({
     properties: ['openDirectory', 'multiSelections']
   });

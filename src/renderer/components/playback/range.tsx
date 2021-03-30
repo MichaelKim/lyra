@@ -1,20 +1,14 @@
-// @flow strict
-
-import React from 'react';
-
-import type { Node } from 'React';
-
 import '../../../css/range.scss';
 
-type Props = {|
-  +value: number,
-  +min?: number,
-  +max: number,
-  +onChange?: (value: number) => mixed
-|};
+type Props = {
+  value: number;
+  min?: number;
+  max: number;
+  onChange?: (value: number) => void;
+};
 
-export default function RangeInput(props: Props): Node {
-  function onChange(e: SyntheticEvent<HTMLInputElement>) {
+export default function RangeInput(props: Props) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = Number(e.currentTarget.value);
     props.onChange && props.onChange(value);
   }

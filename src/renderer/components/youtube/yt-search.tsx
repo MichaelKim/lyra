@@ -1,23 +1,19 @@
-// @flow strict
-
-import React from 'react';
-import YtSuggest from './search-suggest';
-import Loading from '../loading';
-import YtItem from './yt-item';
-import { ytSearch } from '../../yt-util';
+import { useEffect, useState } from 'react';
 import { useDispatch } from '../../hooks';
+import { VideoSong } from '../../types';
+import { ytSearch } from '../../yt-util';
+import Loading from '../loading';
+import YtSuggest from './search-suggest';
+import YtItem from './yt-item';
 
-import type { Node } from 'React';
-import type { VideoSong } from '../../types';
+type Props = {
+  playVideo: (video: VideoSong) => void;
+  initialKeyword?: string;
+};
 
-type Props = {|
-  +playVideo: (video: VideoSong) => mixed,
-  +initialKeyword?: string
-|};
-
-export default function YtSearch(props: Props): Node {
-  const [searching, setSearching] = React.useState(false);
-  const [videos, setVideos] = React.useState<VideoSong[]>([]);
+export default function YtSearch(props: Props) {
+  const [searching, setSearching] = useState(false);
+  const [videos, setVideos] = useState<VideoSong[]>([]);
 
   const dispatch = useDispatch();
   const showYtPlaying = () =>
@@ -36,7 +32,7 @@ export default function YtSearch(props: Props): Node {
     props.playVideo(video);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.initialKeyword) {
       onSearch(props.initialKeyword);
     }

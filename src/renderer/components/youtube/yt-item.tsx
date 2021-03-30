@@ -1,21 +1,15 @@
-// @flow strict
-
-import React from 'react';
-import ContextMenu from '../context';
-import { formatDuration } from '../../util';
-import { useDispatchMap } from '../../hooks';
-
-import type { Node } from 'React';
-import type { Song, SongID, VideoSong, Dispatch } from '../../types';
-
 import '../../../css/youtube.scss';
+import { useDispatchMap } from '../../hooks';
+import { Dispatch, Song, SongID, VideoSong } from '../../types';
+import { formatDuration } from '../../util';
+import ContextMenu from '../context';
 
-type Props = {|
-  +video: VideoSong,
-  +onClick?: () => mixed
-|};
+type Props = {
+  video: VideoSong;
+  onClick?: () => void;
+};
 
-const YtItem = ({ video, onClick }: Props): Node => {
+const YtItem = ({ video, onClick }: Props) => {
   const { addSong, downloadAdd } = useDispatchMap(mapDispatch);
 
   return (

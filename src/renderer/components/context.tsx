@@ -1,24 +1,19 @@
-// @flow strict
-
 import { ipcRenderer } from 'electron';
-import React from 'react';
 
-import type { Node } from 'React';
+export type Props = {
+  className: string;
+  rightClick?: boolean;
+  items: Array<{
+    label: string;
+    click: () => void;
+  }>;
+  children: React.ReactNode;
+};
 
-export type Props = {|
-  +className: string,
-  +rightClick?: boolean,
-  +items: Array<{|
-    +label: string,
-    +click: () => void
-  |}>,
-  +children: React$Node
-|};
-
-export default function ContextMenu(props: Props): Node {
+export default function ContextMenu(props: Props) {
   const openMenu = () => {
-    const labels = {};
-    const clicks = {};
+    const labels: Record<string, string> = {};
+    const clicks: Record<string, () => void> = {};
     for (const item of props.items) {
       const id = Math.random().toString(36).substr(2, 9);
       labels[id] = item.label;
@@ -30,14 +25,14 @@ export default function ContextMenu(props: Props): Node {
     });
   };
 
-  const onClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!props.rightClick) {
       e.stopPropagation();
       openMenu();
     }
   };
 
-  const onContextMenu = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+  const onContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     if (props.rightClick) {
       e.stopPropagation();
       e.preventDefault();

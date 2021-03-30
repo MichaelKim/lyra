@@ -1,20 +1,16 @@
-// @flow strict
+import { Component, createRef } from 'react';
 
-import React from 'react';
+type Props = {
+  initialValue: string;
+  autoFocus: boolean;
+  onChange: (value: string) => void;
+  onEnter: () => void;
+  onCancel: () => void;
+};
 
-import type { Node } from 'React';
-
-type Props = {|
-  +initialValue: string,
-  +autoFocus: boolean,
-  +onChange: (value: string) => mixed,
-  +onEnter: () => mixed,
-  +onCancel: () => mixed
-|};
-
-type State = {|
-  initialValue: string
-|};
+type State = {
+  initialValue: string;
+};
 
 /*
   Instead of using an input (which doesn't handle multiple lines),
@@ -24,21 +20,19 @@ type State = {|
   gain focus (and position cursor) when editing begins.
 */
 
-class EditBox extends React.Component<Props, State> {
+class EditBox extends Component<Props, State> {
   // Store the initial value so the div element never updates
   state: State = {
     initialValue: this.props.initialValue
   };
-  static defaultProps: {| autoFocus: boolean |} = {
+  static defaultProps: { autoFocus: boolean } = {
     autoFocus: false
   };
-  _inputRef: {|
-    current: null | HTMLDivElement
-  |} = React.createRef<HTMLDivElement>();
+  _inputRef: {
+    current: null | HTMLDivElement;
+  } = createRef<HTMLDivElement>();
 
-  onKeyDown: (e: SyntheticKeyboardEvent<HTMLDivElement>) => void = (
-    e: SyntheticKeyboardEvent<HTMLDivElement>
-  ) => {
+  onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.key === 'Enter') {
       this.props.onEnter();
@@ -47,10 +41,8 @@ class EditBox extends React.Component<Props, State> {
     }
   };
 
-  onInput: (e: SyntheticInputEvent<HTMLDivElement>) => void = (
-    e: SyntheticInputEvent<HTMLDivElement>
-  ) => {
-    this.props.onChange(e.currentTarget.textContent);
+  onInput = (e: React.FormEvent<HTMLDivElement>) => {
+    this.props.onChange(e.currentTarget.textContent ?? '');
   };
 
   componentDidMount() {
@@ -69,21 +61,21 @@ class EditBox extends React.Component<Props, State> {
       range.collapse(false);
 
       const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
     }
   }
 
-  render(): Node {
+  render() {
     return (
       <div
         ref={this._inputRef}
         className='edit-box'
         contentEditable
         dangerouslySetInnerHTML={{ __html: this.state.initialValue }}
-        onClick={(e: SyntheticMouseEvent<HTMLInputElement>) =>
-          e.stopPropagation()
-        }
+        onClick={e => e.stopPropagation()}
         onInput={this.onInput}
         onKeyDown={this.onKeyDown}
       />

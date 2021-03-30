@@ -1,5 +1,3 @@
-// @flow strict
-
 /*
   YouTube related utility methods
 
@@ -9,23 +7,18 @@
   code, and avoid duplication across the codebase.
 */
 
+import { createHash } from 'crypto';
+import storage from 'electron-json-storage';
 import EventEmitter from 'events';
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegPath from '@ffmpeg-installer/ffmpeg';
 import fs from 'fs';
 import he from 'he';
 import path from 'path';
-import storage from 'electron-json-storage';
 import ytdl from 'ytdl-core';
-import ytsr from 'ytsr';
-import { createHash } from 'crypto';
-// import { google } from "googleapis";
-
+import ytsr, { Video } from 'ytsr';
+import { Song, SongID, VideoSong } from './types';
 import { readableViews } from './util';
-
-import type { Song, SongID, VideoSong } from './types';
-
-ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
+// import { google } from "googleapis";
 
 // const youtube = google.youtube({
 //   version: "v3",
@@ -33,11 +26,11 @@ ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
 // });
 
 // EventEmitter with specifically typed events
-declare class DownloadEventEmitter extends EventEmitter {
-  on('progress', (percent: number) => void): this;
+declare interface DownloadEventEmitter extends EventEmitter {
+  on(event: 'progress', callback: (percent: number) => void): this;
   // 'end' returns null if run in browser to end properly
-  on('end', ((song: ?Song) => void)): this;
-  on(string, (e: mixed) => void): this;
+  on(event: 'end', callback: (song: Song | null) => void): this;
+  on(event: string, callback: (e: unknown) => void): this;
 }
 
 export async function getStreamURL(id: SongID): Promise<string> {
@@ -63,10 +56,10 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
   // $FlowFixMe: EventEmitter with typed events
   const emitter: DownloadEventEmitter = new EventEmitter();
 
-  ytdl.getInfo(id, { quality: 'highestaudio' }).then(info => {
-    let currDuration: number = 0;
+  ytdl.getInfo(id).then(info => {
+    let currDuration = 0;
 
-    ffmpeg(ytdl.downloadFromInfo(info))
+    ffmpeg(ytdl.downloadFromInfo(info, { quality: 'highestaudio' }))
       .audioBitrate(128)
       .outputOptions('-metadata', 'title=' + info.videoDetails.title)
       .outputOptions('-metadata', 'artist=' + info.videoDetails.author.name)
@@ -87,7 +80,7 @@ export function downloadVideo(id: SongID): DownloadEventEmitter {
         currDuration = h * 3600 + m * 60 + s;
 
         const percent = Math.min(
-          100 * (currDuration / info.videoDetails.lengthSeconds),
+          100 * (currDuration / Number(info.videoDetails.lengthSeconds)),
           100
         );
 
@@ -184,14 +177,19 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
     limit: 25
   });
 
-  const ids = new Set();
-  const promises: Promise<VideoSong | void>[] = search.items.map(async item => {
-    const id = item.url.substr(item.url.lastIndexOf('=') + 1);
+  const ids = new Map<string, Video>();
+  for (const item of search.items) {
+    const video = item as Video;
+    const id = video.url.substr(video.url.lastIndexOf('=') + 1);
 
     // Videos can appear more than once, remove duplicates based on video id
-    if (ids.has(id)) return;
-    ids.add(id);
+    if (!ids.has(id)) {
+      ids.set(id, video);
+    }
+  }
 
+  const videos = Array.from(ids.entries());
+  const promises = videos.map(async ([id, item]) => {
     const info = await ytdl.getBasicInfo(id);
 
     // This should be guaranteed to work
@@ -199,12 +197,12 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
       Number(info.player_response.videoDetails.viewCount) || 0
     );
 
-    return {
+    const song: VideoSong = {
       id,
       title: he.decode(item.title),
-      artist: item.author.name,
+      artist: item.author?.name ?? '',
       thumbnail: {
-        url: item.bestThumbnail.url || '',
+        url: item.bestThumbnail.url ?? '',
         width: item.bestThumbnail.width,
         height: item.bestThumbnail.height
       },
@@ -212,13 +210,14 @@ export async function ytSearch(keyword: string): Promise<VideoSong[]> {
       date: Date.now(),
       source: 'YOUTUBE',
       url: info.videoDetails.videoId,
-      duration: info.videoDetails.lengthSeconds,
+      duration: Number(info.videoDetails.lengthSeconds),
       views
     };
+
+    return song;
   });
 
-  const videosongs: (VideoSong | void)[] = await Promise.all(promises);
-  return videosongs.filter(Boolean);
+  return Promise.all(promises);
 }
 
 export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
@@ -236,24 +235,25 @@ export async function getRelatedVideos(id: SongID): Promise<VideoSong[]> {
   // This is faster than having to do another getBasicInfo() to get the proper view count
 
   return related_videos.map(v => {
-    let views = Number(v.view_count.replace(/,/g, ''));
+    const viewCount = v.view_count ?? '';
+    let views = Number(viewCount.replace(/,/g, ''));
     if (!views) {
-      const size = v.view_count[v.view_count.length - 1];
-      views = parseFloat(v.view_count) || 0; // parseInt will parse as much of the string unlike Number
+      const size = viewCount[viewCount.length - 1];
+      views = parseFloat(viewCount) || 0; // parseInt will parse as much of the string unlike Number
       if (size === 'B') views *= 1e9;
       else if (size === 'M') views *= 1e6;
       else if (size === 'K') views *= 1e3;
     }
 
     return {
-      id: v.id,
-      title: v.title,
-      artist: v.author.name,
-      duration: v.length_seconds,
+      id: v.id ?? '',
+      title: v.title ?? '',
+      artist: typeof v.author === 'string' ? v.author : v.author.name,
+      duration: v.length_seconds ?? 0,
       playlists: [],
       date: Date.now(),
       source: 'YOUTUBE',
-      url: v.id,
+      url: v.id ?? '',
       views: readableViews(views || 0),
       thumbnail: {
         url: v.thumbnails[0]?.url ?? '',

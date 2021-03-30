@@ -1,60 +1,54 @@
-// @flow strict
-
-import * as React from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
-
-import AddModal from './add-modal';
+import { Dispatch, PlaylistID, Song, SongID, StoreState } from '../../types';
+import { fileExists, formatDuration } from '../../util';
 import Click from '../click';
 import ContextMenu from '../context';
+import AddModal from './add-modal';
 import EditBox from './edit-box';
 
-import { fileExists, formatDuration } from '../../util';
+type PassedProps = {
+  song: Song;
+};
 
-import type {
-  StoreState,
-  Dispatch,
-  Song,
-  SongID,
-  PlaylistID
-} from '../../types';
+type Props = PassedProps & {
+  currSongID: SongID | null;
+  selectSong: (song: Song) => void;
+  updateTags: (id: SongID, title: string, artist: string) => void;
+  setPlaylists: (sid: SongID, pids: PlaylistID[]) => void;
+  queueSong: (song: Song) => void;
+  removeSong: (id: SongID) => void;
+};
 
-type PassedProps = {|
-  +song: Song
-|};
+enum EditStart {
+  TITLE,
+  ARTIST
+}
 
-type Props = PassedProps & {|
-  +currSongID: ?SongID,
-  +selectSong: (song: Song) => void,
-  +updateTags: (id: SongID, title: string, artist: string) => void,
-  +setPlaylists: (sid: SongID, pids: PlaylistID[]) => void,
-  +queueSong: (song: Song) => void,
-  +removeSong: (id: SongID) => void
-|};
+type State = {
+  status: 'LOADING' | 'READY' | 'MISSING' | 'EDITING';
+  title: string;
+  artist: string;
+  editStart: EditStart;
+  showModal: boolean;
+};
 
-type State = {|
-  status: 'LOADING' | 'READY' | 'MISSING' | 'EDITING',
-  title: string,
-  artist: string,
-  editStart: 'TITLE' | 'ARTIST',
-  showModal: boolean
-|};
-
-class SongItem extends React.Component<Props, State> {
-  state = {
+class SongItem extends Component<Props, State> {
+  state: State = {
     status: 'LOADING',
     title: this.props.song.title,
     artist: this.props.song.artist,
-    editStart: 'TITLE',
+    editStart: EditStart.TITLE,
     showModal: false
   };
   // Focus switching
-  _focusTimer: ?TimeoutID = null;
+  _focusTimer: number | null = null;
 
   _onClick = () => {
     this.props.selectSong(this.props.song);
   };
 
-  _onDblClick = editStart => {
+  _onDblClick = (editStart: EditStart) => {
     this.setState({
       status: 'EDITING',
       editStart
@@ -67,7 +61,7 @@ class SongItem extends React.Component<Props, State> {
   };
 
   _onBlur = () => {
-    this._focusTimer = setTimeout(() => {
+    this._focusTimer = window.setTimeout(() => {
       this._cancelEdit();
       this._focusTimer = null;
     }, 10);
@@ -126,7 +120,11 @@ class SongItem extends React.Component<Props, State> {
     }
   }
 
-  _renderInput = (name, value: string, onChange) => {
+  _renderInput = (
+    name: EditStart,
+    value: string,
+    onChange: (value: string) => void
+  ) => {
     const { status, editStart } = this.state;
 
     return (
@@ -195,8 +193,8 @@ class SongItem extends React.Component<Props, State> {
               </>
             )}
           </div>
-          {this._renderInput('TITLE', title, this._changeTitle)}
-          {this._renderInput('ARTIST', artist, this._changeArtist)}
+          {this._renderInput(EditStart.TITLE, title, this._changeTitle)}
+          {this._renderInput(EditStart.ARTIST, artist, this._changeArtist)}
           <div>{formatDuration(this.props.song.duration)}</div>
           <div>{date}</div>
 
@@ -227,7 +225,4 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-export default (connect(
-  mapState,
-  mapDispatch
-)(SongItem): React.ComponentType<PassedProps>);
+export default connect(mapState, mapDispatch)(SongItem);

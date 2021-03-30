@@ -1,6 +1,4 @@
-// @flow strict
-
-import type { StoreState } from '../types';
+import { StoreState } from '../types';
 
 export const initialState: StoreState = {
   loaded: false,

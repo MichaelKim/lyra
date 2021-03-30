@@ -1,24 +1,16 @@
-// @flow strict
-
 import { ipcRenderer } from 'electron';
-import { applyMiddleware, compose, createStore } from 'redux';
-import type { Action, Dispatch, StoreState } from '../types';
+import { applyMiddleware, compose, createStore, Store } from 'redux';
+import { Action, StoreState } from '../types';
 import { logger, queueSong, saveToStorage } from './middleware';
 import reducer from './reducer';
 import { initialState } from './storage';
 
-import type { Store } from 'redux';
+const composeEnhancers = !process.env.PRODUCTION
+  ? // @ts-expect-error: inserted by devtools
+    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose)
+  : compose;
 
-const composeEnhancers =
-  (!process.env.PRODUCTION &&
-    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose)) ||
-  compose;
-
-const store: Store<StoreState, Action, Dispatch> = createStore<
-  StoreState,
-  Action,
-  Dispatch
->(
+const store: Store<StoreState, Action> = createStore(
   reducer,
   initialState,
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))

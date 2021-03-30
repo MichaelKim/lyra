@@ -1,19 +1,14 @@
-// @flow strict
-
-import React from 'react';
-import RangeInput from './range';
+import { Song } from '../../types';
 import { formatDuration } from '../../util';
+import RangeInput from './range';
 
-import type { Node } from 'React';
-import type { Song } from '../../types';
+type Props = {
+  currSong: Song | null;
+  progress: number;
+  onChange: (progress: number) => void;
+};
 
-type Props = {|
-  +currSong: ?Song,
-  +progress: number,
-  +onChange: (progress: number) => mixed
-|};
-
-const Bar = (props: Props): Node => {
+const Bar = (props: Props) => {
   const { currSong, progress, onChange } = props;
 
   const max = currSong?.duration ?? 0;

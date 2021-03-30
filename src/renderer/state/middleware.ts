@@ -1,17 +1,18 @@
-// @flow strict
-
-import { save, clear } from './storage';
+import { Action, Dispatch, Middleware, Song } from '../types';
 import { getSongList } from '../util';
 import { downloadVideo, getRelatedVideos } from '../yt-util';
+import { clear, save } from './storage';
 
-import type { Middleware, Song } from '../types';
-
-export const logger: Middleware = () => next => action => {
+export const logger: Middleware = () => (next: Dispatch) => (
+  action: Action
+) => {
   console.log(action);
   return next(action);
 };
 
-export const queueSong: Middleware = store => next => action => {
+export const queueSong: Middleware = store => (next: Dispatch) => (
+  action: Action
+) => {
   const result = next(action);
   const newState = store.getState();
 
@@ -74,7 +75,9 @@ export const queueSong: Middleware = store => next => action => {
   return result;
 };
 
-export const saveToStorage: Middleware = store => next => action => {
+export const saveToStorage: Middleware = store => (next: Dispatch) => (
+  action: Action
+) => {
   const result = next(action);
   const newState = store.getState();
 
@@ -116,7 +119,7 @@ export const saveToStorage: Middleware = store => next => action => {
         .on('progress', (progress: number) =>
           store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
         )
-        .on('end', (song: ?Song) => {
+        .on('end', (song: Song | null) => {
           if (song != null) {
             store.dispatch({ type: 'DOWNLOAD_FINISH', song });
           }
@@ -127,15 +130,6 @@ export const saveToStorage: Middleware = store => next => action => {
     case 'CLEAR_DATA':
       clear();
       break;
-
-    // Any types that don't trigger a save
-    case 'MUTE':
-    case 'DOWNLOAD_PROGRESS':
-      break;
-
-    // Ensure that all action types are handled
-    default:
-      (action: empty);
   }
 
   return result;

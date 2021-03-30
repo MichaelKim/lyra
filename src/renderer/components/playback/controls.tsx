@@ -1,18 +1,14 @@
-// @flow strict
+import { useCallback, useEffect } from 'react';
+import { useMediaSessionHandlers, useMediaShortcuts } from '../../hooks';
 
-import React from 'react';
-import { useMediaShortcuts, useMediaSessionHandlers } from '../../hooks';
-
-import type { Node } from 'React';
-
-type Props = {|
-  +disabled: boolean,
-  +playing: boolean,
-  +skipPrevious: () => mixed,
-  +skipNext: () => mixed,
-  +onTogglePause: () => mixed,
-  +onSeek: (amount: number) => mixed
-|};
+type Props = {
+  disabled: boolean;
+  playing: boolean;
+  skipPrevious: () => void;
+  skipNext: () => void;
+  onTogglePause: () => void;
+  onSeek: (amount: number) => void;
+};
 
 const Controls = ({
   disabled,
@@ -21,9 +17,9 @@ const Controls = ({
   skipPrevious,
   skipNext,
   onSeek
-}: Props): Node => {
-  const onForward = () => onSeek(10);
-  const onReplay = () => onSeek(-10);
+}: Props) => {
+  const onForward = useCallback(() => onSeek(10), [onSeek]);
+  const onReplay = useCallback(() => onSeek(-10), [onSeek]);
 
   // Media control shortcuts
   useMediaShortcuts({
@@ -44,22 +40,34 @@ const Controls = ({
     // seekto: (e: { seekTime: number }) => onSeek(e.seekTime)
   });
 
-  // Keyboard shortcuts
-  const keyboardShortcuts = {
-    KeyK: onTogglePause,
-    Space: onTogglePause,
-    KeyJ: onReplay,
-    ArrowLeft: onReplay,
-    KeyL: onForward,
-    ArrowRight: onForward,
-    KeyH: skipPrevious,
-    Semicolon: skipNext
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyboardShortcuts = ({ code }: KeyboardEvent) => {
-      if (keyboardShortcuts[code]) {
-        keyboardShortcuts[code]();
+      // Keyboard shortcuts
+      switch (code) {
+        case 'KeyK':
+          onTogglePause();
+          break;
+        case 'Space':
+          onTogglePause();
+          break;
+        case 'KeyJ':
+          onReplay();
+          break;
+        case 'ArrowLeft':
+          onReplay();
+          break;
+        case 'KeyL':
+          onForward();
+          break;
+        case 'ArrowRight':
+          onForward();
+          break;
+        case 'KeyH':
+          skipPrevious();
+          break;
+        case 'Semicolon':
+          skipNext();
+          break;
       }
     };
 
@@ -68,7 +76,7 @@ const Controls = ({
     return () => {
       window.removeEventListener('keydown', handleKeyboardShortcuts);
     };
-  }, [keyboardShortcuts]);
+  }, [onTogglePause, onReplay, onForward, skipPrevious, skipNext]);
 
   return (
     <div className='playback-center'>

@@ -1,14 +1,8 @@
-// @flow strict
-
-import React from 'react';
-import SongItem from './screen/song-item';
-import { useCurrSong, useSelector } from '../hooks';
-
-import type { Node } from 'React';
-import type { Song } from '../types';
-
 import '../../css/screen.scss';
 import '../../css/song-row.scss';
+import { useCurrSong, useSelector } from '../hooks';
+import { Song } from '../types';
+import SongItem from './screen/song-item';
 
 const columns = [
   { enum: 'TITLE', name: 'Title' },
@@ -30,7 +24,7 @@ const renderHeader = (
   </div>
 );
 
-const Queue = (): Node => {
+const Queue = () => {
   const currSong = useCurrSong();
   const nextSongs = useSelector<Array<Song>>(state => {
     const { next } = state.queue;

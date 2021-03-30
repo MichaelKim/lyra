@@ -1,18 +1,12 @@
-// @flow strict
-
-import React from 'react';
+import '../../css/toggle.scss';
 import { useToggle } from '../hooks';
 
-import type { Node } from 'React';
+type Props = {
+  selected: boolean;
+  onToggle: (selected: boolean) => void;
+};
 
-import '../../css/toggle.scss';
-
-type Props = {|
-  +selected: boolean,
-  +onToggle: (selected: boolean) => mixed
-|};
-
-export default function Toggle(props: Props): Node {
+export default function Toggle(props: Props) {
   const [selected, toggleSelected] = useToggle(props.selected);
 
   function onToggle() {

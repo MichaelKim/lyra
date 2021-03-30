@@ -1,27 +1,23 @@
-// @flow strict
-
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  useSelector as _useSelector,
-  useDispatch as _useDispatch
+  useDispatch as _useDispatch,
+  useSelector as _useSelector
 } from 'react-redux';
-
+import { Dispatch, Song, StoreState } from './types';
 import { registerShortcuts, removeShortcuts } from './util';
-
-import type { Song, StoreState, Dispatch } from './types';
 
 // Type wrappers for built-in hooks
 export function useSelector<Selected>(
-  selector: StoreState => Selected
+  selector: (state: StoreState) => Selected
 ): Selected {
-  return _useSelector<StoreState, Selected>(selector);
+  return _useSelector(selector);
 }
 
 export function useDispatch(): Dispatch {
   return _useDispatch<Dispatch>();
 }
 
-export function useDispatchMap<T>(mapDispatch: Dispatch => T): T {
+export function useDispatchMap<T>(mapDispatch: (d: Dispatch) => T): T {
   const dispatch = useDispatch();
   return useMemo(() => mapDispatch(dispatch), [mapDispatch, dispatch]);
 }
@@ -43,7 +39,7 @@ export function useCurrSong(): Song | null {
   });
 }
 
-export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
+export function useMediaShortcuts(shortcuts: Record<string, () => void>) {
   useEffect(() => {
     registerShortcuts(shortcuts);
 
@@ -53,21 +49,27 @@ export function useMediaShortcuts(shortcuts: { +[key: string]: () => mixed }) {
   }, [shortcuts]);
 }
 
-export function useMediaSessionHandlers(actionHandlers: {
-  +[key: string]: <T: []>(...args: T) => mixed
-}) {
+export function useMediaSessionHandlers(
+  actionHandlers: Partial<
+    Record<MediaSessionAction, (details: MediaSessionActionDetails) => void>
+  >
+) {
   useEffect(() => {
-    if (!('mediaSession' in navigator)) {
+    if (navigator.mediaSession == null) {
       return;
     }
 
-    Object.entries(actionHandlers).forEach(([eventName, handler]) =>
-      navigator.mediaSession.setActionHandler(eventName, handler)
+    const { mediaSession } = navigator;
+
+    Object.entries(actionHandlers).forEach(
+      ([eventName, handler]) =>
+        handler &&
+        mediaSession.setActionHandler(eventName as MediaSessionAction, handler)
     );
 
     return () => {
       Object.entries(actionHandlers).forEach(([eventName]) =>
-        navigator.mediaSession.setActionHandler(eventName, null)
+        mediaSession.setActionHandler(eventName as MediaSessionAction, null)
       );
     };
   }, [actionHandlers]);

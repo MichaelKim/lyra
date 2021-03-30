@@ -1,16 +1,16 @@
-// @flow strict
 // State storage
 
 import fs from 'fs';
 import path from 'path';
-import { ipcMain } from 'electron';
+import { ipcMain, WebContents } from 'electron';
 import storage from 'electron-json-storage';
 import { initialState } from '../renderer/state/storage';
 
-import type { StoreState } from '../renderer/types';
+import { StoreState } from '../renderer/types';
 
-export function sendState(webContents: { send: (string, StoreState) => void }) {
-  storage.get('state', (err, state: ?StoreState) => {
+export function sendState(webContents: WebContents) {
+  storage.get('state', (err, obj) => {
+    const state = obj as StoreState;
     if (err || state == null) {
       webContents.send('state-load', initialState);
     } else {

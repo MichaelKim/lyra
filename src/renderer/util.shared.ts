@@ -1,21 +1,11 @@
-// @flow strict
-
-import type { Song, SongID, SortType } from './types';
-
-// Restricts T to objects
-export function values<T>(obj: T & {}): Array<$Values<T & {}>> {
-  // $FlowFixMe[incompatible-return]: Object.values() returns mixed
-  return Object.values(obj);
-}
+import { Song, SongID, SortType } from './types';
 
 export function getSongList(
-  songs: {|
-    +[id: SongID]: Song
-  |},
-  playlist: ?string,
+  songs: Record<SongID, Song>,
+  playlist?: string,
   sort?: SortType
 ): Song[] {
-  const songlist = values(songs);
+  const songlist = Object.values(songs);
   const filtered =
     playlist != null
       ? songlist.filter((song: Song) => song.playlists.includes(playlist))
@@ -45,8 +35,7 @@ export function getSongList(
   return sorted;
 }
 
-function spaceship(a, b) {
-  // $FlowFixMe[invalid-compare]: how to type this function properly?
+function spaceship<T = number | string>(a: T, b: T) {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 

@@ -1,24 +1,21 @@
-// @flow strict
-
-import * as React from 'react';
+import { Component, createRef } from 'react';
 import { connect } from 'react-redux';
+import { StoreState } from '../../types';
 
-import type { StoreState } from '../../types';
+type PassedProps = {
+  src: string | null;
+  playing: boolean;
+  progress: number;
+  onProgress?: (progress: number) => void;
+  onEnd?: () => void;
+};
 
-type PassedProps = {|
-  +src: ?string,
-  +playing: boolean,
-  +progress: number,
-  +onProgress?: (progress: number) => mixed,
-  +onEnd?: () => mixed
-|};
+type Props = PassedProps & {
+  volume: number;
+};
 
-type Props = PassedProps & {|
-  +volume: number
-|};
-
-class AudioControl extends React.Component<Props> {
-  audio = React.createRef<HTMLAudioElement>();
+class AudioControl extends Component<Props> {
+  audio = createRef<HTMLAudioElement>();
 
   checkVolume = () => {
     if (this.audio.current && this.audio.current.volume !== this.props.volume) {
@@ -63,7 +60,7 @@ class AudioControl extends React.Component<Props> {
     this.checkPosition();
   }
 
-  onProgress = (e: SyntheticEvent<HTMLAudioElement>) => {
+  onProgress = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     const { onProgress } = this.props;
     onProgress && onProgress(e.currentTarget.currentTime);
   };
@@ -98,6 +95,4 @@ const mapState = (state: StoreState) => {
   };
 };
 
-export default (connect(mapState)(
-  AudioControl
-): React.ComponentType<PassedProps>);
+export default connect(mapState)(AudioControl);

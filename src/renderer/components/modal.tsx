@@ -1,26 +1,20 @@
-// @flow strict
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import type { Node } from 'react';
-
+import { createPortal } from 'react-dom';
 import '../../css/modal.scss';
 
-type Props = {|
-  +isOpen: boolean,
-  +className: string,
-  +onClose: () => void,
-  +children: React$Node
-|};
+type Props = {
+  isOpen: boolean;
+  className: string;
+  onClose: () => void;
+  children: React.ReactNode;
+};
 
-export default function Modal(props: Props): Node {
-  const onOutsideClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+export default function Modal(props: Props) {
+  const onOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     props.onClose();
   };
 
-  const onInsideClick = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+  const onInsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 
@@ -28,7 +22,7 @@ export default function Modal(props: Props): Node {
     return null;
   }
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div className='modal' onClick={onOutsideClick}>
       <div className={props.className} onClick={onInsideClick}>
         {props.children}

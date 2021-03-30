@@ -1,15 +1,9 @@
-// @flow strict
 // Context menus
 
 import { ipcMain, Menu, MenuItem } from 'electron';
 
-type Items = {|
-  [id: string]: string
-|};
-
 export function loadMenuListener() {
-  ipcMain.on('menu-show', (event, items: Items) => {
-    console.log('menu showing');
+  ipcMain.on('menu-show', (event, items: Record<string, string>) => {
     const menu = new Menu();
     for (const [id, label] of Object.entries(items)) {
       const menuItem = new MenuItem({

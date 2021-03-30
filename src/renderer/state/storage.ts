@@ -1,6 +1,4 @@
-// @flow strict
-
-import type { StoreState } from '../types';
+import { StoreState } from '../types';
 import { ipcRenderer } from 'electron';
 
 export const initialState: StoreState = {

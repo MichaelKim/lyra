@@ -1,35 +1,29 @@
-// @flow strict
-
-import React from 'react';
-import { values } from '../util';
-import { useSelector, useDispatch, useToggle } from '../hooks';
-
-import type { Node } from 'React';
-import type { Playlist, PlaylistID } from '../types';
-
+import { useState } from 'react';
 import '../../css/sidebar.scss';
+import { useDispatch, useSelector, useToggle } from '../hooks';
+import { Playlist, PlaylistID } from '../types';
 
-export default function Sidebar(): Node {
+export default function Sidebar() {
   const [openSidebar, toggleSidebar] = useToggle(false);
   const currScreen = useSelector(state => state.currScreen);
-  const playlists = useSelector(state => values(state.playlists));
+  const playlists = useSelector(state => Object.values(state.playlists));
 
-  const [editing, setEditing] = React.useState(false);
-  const [value, setValue] = React.useState('');
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState('');
 
   const dispatch = useDispatch();
   const createPlaylist = (playlist: Playlist) =>
     dispatch({ type: 'CREATE_PLAYLIST', playlist });
-  const selectPlaylist = (id: ?string) =>
+  const selectPlaylist = (id: string | null) =>
     dispatch({ type: 'SELECT_PLAYLIST', id });
   const deletePlaylist = (id: PlaylistID) =>
     dispatch({ type: 'DELETE_PLAYLIST', id });
 
   function renderItem(
-    key: ?string,
+    key: string | null,
     name: string,
     selected: boolean,
-    deletable: boolean = false
+    deletable = false
   ) {
     return (
       <div
@@ -67,11 +61,11 @@ export default function Sidebar(): Node {
     }
   }
 
-  function onChange(e: SyntheticInputEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
   }
 
-  function onKeyDown(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
     if (e.key === 'Enter') {
       finishEdit();

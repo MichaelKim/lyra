@@ -1,33 +1,28 @@
-// @flow strict
-
-import React from 'react';
+import { useState } from 'react';
+import '../../css/search.scss';
 import Suggestion from './suggest';
 
-import type { Node } from 'React';
+type Props = {
+  initialValue?: string;
+  suggestions?: Array<string>;
+  defaultSuggestions?: Array<string>;
+  onChange?: (value: string) => void;
+  onEnter?: (value: string) => void;
+};
 
-import '../../css/search.scss';
+export default function Search(props: Props) {
+  const [focused, setFocused] = useState(false);
+  const [focus, setFocus] = useState(-1);
+  const [value, setValue] = useState<string>(props.initialValue || '');
 
-type Props = {|
-  +initialValue?: string,
-  +suggestions?: Array<string>,
-  +defaultSuggestions?: Array<string>,
-  +onChange?: (value: string) => mixed,
-  +onEnter?: (value: string) => mixed
-|};
-
-export default function Search(props: Props): Node {
-  const [focused, setFocused] = React.useState(false);
-  const [focus, setFocus] = React.useState(-1);
-  const [value, setValue] = React.useState<string>(props.initialValue || '');
-
-  function onChange(e: SyntheticInputEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value } = e.currentTarget;
     setFocus(-1);
     props.onChange && props.onChange(value);
     setValue(value);
   }
 
-  function onEnter(e: SyntheticKeyboardEvent<HTMLInputElement>) {
+  function onEnter(e: React.KeyboardEvent<HTMLInputElement>) {
     e.stopPropagation();
     if (e.key === 'Enter') {
       const onEnter = props.onEnter;
@@ -73,7 +68,7 @@ export default function Search(props: Props): Node {
     setFocus(-1);
   }
 
-  function onClick(suggest) {
+  function onClick(suggest: string) {
     setValue(suggest);
     props.onEnter && props.onEnter(suggest);
   }

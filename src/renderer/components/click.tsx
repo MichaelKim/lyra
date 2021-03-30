@@ -1,48 +1,44 @@
-// @flow strict
-
-import React from 'react';
-
-import type { Node } from 'React';
+import { useRef } from 'react';
 
 // Max delay in ms between two clicks
 const DBL_CLICK_DELAY = 250;
 
-type Props = {|
-  +onSngClick?: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
-  +onDblClick: (e: SyntheticMouseEvent<HTMLDivElement>) => void,
-  +children: React$Node,
-  +className?: string
-|};
+type Props = {
+  onSngClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onDblClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  children: React.ReactNode;
+  className?: string;
+};
 
-export default function Click(props: Props): Node {
+export default function Click(props: Props) {
   // Double click
-  let isDblClick: boolean = false;
-  let clickTimer: ?TimeoutID = null;
+  const isDblClick = useRef(false);
+  const clickTimer = useRef<number | null>(null);
 
-  function onClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
 
     // Make it easier to double click
-    if (clickTimer != null) {
+    if (clickTimer.current != null) {
       onDblClick(e);
       return;
     }
 
     // Don't fire click handler if double click
-    clickTimer = setTimeout(() => {
+    clickTimer.current = window.setTimeout(() => {
       if (!isDblClick) {
         props.onSngClick && props.onSngClick(e);
       }
-      clickTimer = null;
-      isDblClick = false;
+      clickTimer.current = null;
+      isDblClick.current = false;
     }, DBL_CLICK_DELAY);
   }
 
-  function onDblClick(e: SyntheticMouseEvent<HTMLDivElement>) {
+  function onDblClick(e: React.MouseEvent<HTMLDivElement>) {
     // Don't fire single click handler
-    clickTimer && clearTimeout(clickTimer);
-    clickTimer = null;
-    isDblClick = true;
+    clickTimer.current && clearTimeout(clickTimer.current);
+    clickTimer.current = null;
+    isDblClick.current = true;
 
     props.onDblClick(e);
   }

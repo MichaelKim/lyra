@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 
@@ -13,7 +15,7 @@ module.exports = async (env, argv) => {
   const config = {
     context: __dirname,
     entry: {
-      main: path.resolve('./src/main/index.js')
+      main: path.resolve('./src/main/index.ts')
     },
     output: {
       path: path.resolve('./dist/main'),
@@ -27,7 +29,7 @@ module.exports = async (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.js$/i,
+          test: /\.ts$/i,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
@@ -35,7 +37,13 @@ module.exports = async (env, argv) => {
               targets: {
                 electron: '10'
               },
-              presets: ['@babel/preset-env', '@babel/preset-flow']
+              presets: ['@babel/preset-env', '@babel/preset-typescript'],
+              plugins: [
+                [
+                  '@babel/plugin-transform-typescript',
+                  { allowDeclareFields: true }
+                ]
+              ]
             }
           }
         }
@@ -47,10 +55,23 @@ module.exports = async (env, argv) => {
         'process.env.PRODUCTION': !isDev,
         'process.env.ELECTRON_MAIN_PORT': 8080
       }),
-      new ESLintPlugin({
-        files: './src/main/**/*.{js}'
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          context: './src/main',
+          diagnosticOptions: {
+            semantic: true,
+            syntactic: true
+          },
+          mode: 'write-references'
+        },
+        eslint: {
+          files: './src/main/**/*.ts'
+        }
       })
     ],
+    resolve: {
+      extensions: ['.ts', '.js']
+    },
     stats: {
       colors: true
     },

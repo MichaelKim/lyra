@@ -1,30 +1,25 @@
-// @flow strict
-
-import * as React from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Dispatch, Song } from '../../../types';
 import { downloadVideo } from '../../../yt-util';
 
-import type { Dispatch, Song } from '../../../types';
+type Props = {
+  addSongs: (songs: Song[]) => void;
+};
 
-type Props = {|
-  +addSongs: (songs: Song[]) => void
-|};
+type State = {
+  loading: boolean;
+  link: string;
+  progress?: number;
+};
 
-type State = {|
-  loading: boolean,
-  link: string,
-  progress: ?number
-|};
-
-class Sources extends React.Component<Props, State> {
-  state = {
+class Sources extends Component<Props, State> {
+  state: State = {
     loading: false,
-    link: '',
-    progress: null
+    link: ''
   };
 
-  _onChange = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       link: e.currentTarget.value
     });
@@ -37,7 +32,7 @@ class Sources extends React.Component<Props, State> {
 
     downloadVideo(this.state.link)
       .on('progress', (progress: number) => this.setState({ progress }))
-      .on('end', (song: ?Song) => {
+      .on('end', (song: Song | null) => {
         if (song != null) this.props.addSongs([song]);
         this.setState({ loading: false });
       });
@@ -68,4 +63,4 @@ function mapDispatch(dispatch: Dispatch) {
   };
 }
 
-export default (connect(null, mapDispatch)(Sources): React.ComponentType<{||}>);
+export default connect(null, mapDispatch)(Sources);

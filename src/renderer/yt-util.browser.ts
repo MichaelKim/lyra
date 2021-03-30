@@ -1,5 +1,3 @@
-// @flow strict
-
 /*
   YouTube related utility methods
 
@@ -9,7 +7,7 @@
   code, and avoid duplication across the codebase.
 */
 
-import type { SongID, VideoSong } from './types';
+import { SongID, VideoSong } from './types';
 
 if (!process.env.LYRA_URL) throw 'LYRA_URL missing!';
 const LYRA_URL = process.env.LYRA_URL;
@@ -24,7 +22,7 @@ export async function getStreamURL(id: SongID): Promise<string> {
 
 // Mock EventEmitter for browser
 class DownloadEventEmitter {
-  on(key: string, callback: mixed => void) {
+  on(key: string, callback: () => void) {
     callback();
   }
 }

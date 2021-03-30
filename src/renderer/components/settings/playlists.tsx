@@ -1,14 +1,9 @@
-// @flow strict
+import { useState } from 'react';
+import { useDispatch, useSelector } from '../../hooks';
+import { Playlist, PlaylistID } from '../../types';
 
-import React from 'react';
-import { values } from '../../util';
-import { useSelector, useDispatch } from '../../hooks';
-import type { Playlist, PlaylistID } from '../../types';
-
-import type { Node } from 'React';
-
-export default function Playlists(): Node {
-  const playlists = useSelector(state => values(state.playlists));
+export default function Playlists() {
+  const playlists = useSelector(state => Object.values(state.playlists));
 
   const dispatch = useDispatch();
   const addPlaylist = (playlist: Playlist) =>
@@ -16,9 +11,9 @@ export default function Playlists(): Node {
   const deletePlaylist = (id: PlaylistID) =>
     dispatch({ type: 'DELETE_PLAYLIST', id });
 
-  const [input, setInput] = React.useState('');
+  const [input, setInput] = useState('');
 
-  function onChange(event: SyntheticInputEvent<HTMLInputElement>) {
+  function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
   }
 

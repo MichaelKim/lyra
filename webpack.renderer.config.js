@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 const os = require('os');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -18,7 +20,7 @@ module.exports = async (env, argv) => {
   const config = {
     context: __dirname,
     entry: {
-      renderer: path.resolve('./src/renderer/index.jsx')
+      renderer: path.resolve('./src/renderer/index.tsx')
     },
     output: {
       path: path.resolve('./dist/renderer'),
@@ -32,7 +34,7 @@ module.exports = async (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.jsx?$/i,
+          test: /\.tsx?$/i,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
@@ -48,9 +50,15 @@ module.exports = async (env, argv) => {
                     runtime: 'automatic'
                   }
                 ],
-                '@babel/preset-flow'
+                '@babel/preset-typescript'
               ],
-              plugins: ['@babel/plugin-proposal-class-properties']
+              plugins: [
+                [
+                  '@babel/plugin-transform-typescript',
+                  { allowDeclareFields: true }
+                ],
+                '@babel/plugin-proposal-class-properties'
+              ]
             }
           }
         },
@@ -87,8 +95,17 @@ module.exports = async (env, argv) => {
         'process.env.PRODUCTION': !isDev,
         'process.env.FLUENTFFMPEG_COV': false
       }),
-      new ESLintPlugin({
-        files: './src/renderer/**/*.{js}'
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          diagnosticOptions: {
+            semantic: true,
+            syntactic: true
+          },
+          mode: 'write-references'
+        },
+        eslint: {
+          files: './src/renderer/**/*.{ts,tsx}'
+        }
       }),
       new HtmlWebpackPlugin({
         template: path.resolve('./src/index.html')
@@ -96,7 +113,7 @@ module.exports = async (env, argv) => {
       new MiniCssExtractPlugin()
     ],
     resolve: {
-      extensions: ['.js', '.jsx']
+      extensions: ['.ts', '.tsx', '.js']
     },
     stats: {
       colors: true

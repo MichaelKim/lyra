@@ -1,41 +1,32 @@
-// @flow strict
-
-import React from 'react';
 import { useDispatch } from '../hooks';
 
-import type { Node } from 'React';
+type Props = {
+  text: string;
+  search: string;
+  focused: boolean;
+  isHistory: boolean;
+  onClick: (value: string) => void;
+};
 
-type Props = {|
-  +text: string,
-  +search: string,
-  +focused: boolean,
-  +isHistory: boolean,
-  +onClick: (value: string) => mixed
-|};
-
-const Suggestion = ({
-  text,
-  search,
-  focused,
-  isHistory,
-  onClick
-}: Props): Node => {
+const Suggestion = ({ text, search, focused, isHistory, onClick }: Props) => {
   const dispatch = useDispatch();
-  const deleteFromHistory = search =>
+  const deleteFromHistory = (search: string) =>
     dispatch({ type: 'REMOVE_FROM_HISTORY', search });
 
-  const cancelBlur = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+  const cancelBlur = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
+  ) => {
     // Stop blur event on input to keep showing suggestions
     e.preventDefault();
   };
 
   const selectItem = () => {
     // ? pass onBlur prop instead
-    document.activeElement?.blur();
+    (document.activeElement as HTMLElement | null)?.blur();
     onClick(text);
   };
 
-  const deleteItem = (e: SyntheticMouseEvent<HTMLDivElement>) => {
+  const deleteItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     deleteFromHistory(text);
   };

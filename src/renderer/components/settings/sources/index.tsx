@@ -1,12 +1,7 @@
-// @flow strict
-
-import React from 'react';
 import LocalSource from './local';
 import YoutubeSource from './youtube';
 
-import type { Node } from 'React';
-
-export default function Sources(): Node {
+export default function Sources() {
   return (
     <div className='scroll-box'>
       <h3>Add Songs</h3>
