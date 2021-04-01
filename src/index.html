@@ -5,9 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script>
-      global = globalThis;
-    </script>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="img-src http: data:; media-src http:; style-src 'unsafe-inline'; default-src 'self';"
+    />
   </head>
   <body>
     <div id="app"></div>

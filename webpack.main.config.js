@@ -53,8 +53,7 @@ module.exports = async (_, argv) => {
     plugins: [
       new DefinePlugin({
         'process.env.LINUX': process.platform === 'linux',
-        'process.env.PRODUCTION': !isDev,
-        'process.env.ELECTRON_MAIN_PORT': 8080
+        'process.env.PRODUCTION': !isDev
       }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {

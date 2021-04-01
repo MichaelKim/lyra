@@ -1,15 +1,15 @@
 import { createHash } from 'crypto';
 import { dialog, ipcMain } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
-import { promises } from 'fs';
 import { constants } from 'fs';
+import { access, readdir } from 'fs/promises';
 import path from 'path';
 import { LocalSong, Metadata } from '../renderer/types';
 
 export function registerUtil() {
   ipcMain.handle('util-fileExists', async (_, path: string) => {
     try {
-      await promises.access(path, constants.F_OK);
+      await access(path, constants.F_OK);
       return true;
     } catch {
       return false;
@@ -18,7 +18,7 @@ export function registerUtil() {
 
   ipcMain.handle('util-getSongs', async (_, dir: string) => {
     try {
-      const files = await promises.readdir(dir);
+      const files = await readdir(dir);
       const names = files.filter(file => path.extname(file) === '.mp3');
       const songs = names.map(async name => {
         const metadata = await getMetadata(dir, name);

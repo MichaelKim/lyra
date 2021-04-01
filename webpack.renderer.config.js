@@ -114,6 +114,9 @@ module.exports = async (_, argv) => {
     stats: {
       colors: true
     },
+    node: {
+      global: false
+    },
     watchOptions: {
       ignored: /^(?!.*src\/(css|fonts|icons|renderer|index\.html)).*$/
     }
@@ -121,7 +124,7 @@ module.exports = async (_, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.devServer = {
       contentBase: path.resolve('./dist/renderer'),
       hot: true,

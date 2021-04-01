@@ -10,15 +10,15 @@ import { registerYoutube } from './yt-util';
 let win: BrowserWindow | null = null;
 
 function installExtensions() {
-  // import('electron-devtools-installer')
-  //   .then(installExtension =>
-  //     installExtension.default([
-  //       installExtension.REACT_DEVELOPER_TOOLS,
-  //       installExtension.REDUX_DEVTOOLS
-  //     ])
-  //   )
-  //   .then(name => console.log(`Added Extension:  ${name}`))
-  //   .catch(err => console.log('An error occurred: ', err));
+  import('electron-devtools-installer')
+    .then(installExtension =>
+      installExtension.default([
+        installExtension.REACT_DEVELOPER_TOOLS,
+        installExtension.REDUX_DEVTOOLS
+      ])
+    )
+    .then(name => console.log(`Added Extension:  ${name}`))
+    .catch(err => console.log('An error occurred: ', err));
 }
 
 function createWindow() {
@@ -30,8 +30,7 @@ function createWindow() {
     title: 'Lyra Music Player',
     backgroundColor: '#333',
     webPreferences: {
-      preload: join(app.getAppPath(), 'preload.js'),
-      contextIsolation: true
+      preload: join(app.getAppPath(), 'preload.js')
     }
   };
 
