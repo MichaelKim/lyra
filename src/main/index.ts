@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 
 import checkAccessibility from './accessibility';
@@ -41,11 +42,11 @@ function createWindow() {
   win.setMenu(null);
 
   if (!process.env.PRODUCTION) {
-    if (process.env.ELECTRON_MAIN_PORT == null) {
+    if (process.env.ELECTRON_RENDERER_PORT == null) {
       throw 'Missing webpack port';
     }
 
-    win.loadURL(`http://localhost:${process.env.ELECTRON_MAIN_PORT}`);
+    win.loadURL(`http://localhost:${process.env.ELECTRON_RENDERER_PORT}`);
 
     installExtensions();
 

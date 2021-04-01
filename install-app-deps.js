@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // For Linux, dbus should be installed
 
-const pkg = require('./package.json');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
+const { optionalDependencies } = require('./package.json');
 
-const dbusVer = pkg.optionalDependencies.dbus;
+const dbusVer = optionalDependencies.dbus;
 
 if (process.platform === 'Linux') {
   exec('npm install dbus@' + dbusVer);

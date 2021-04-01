@@ -4,7 +4,7 @@
   "description": "A music player app",
   "main": "dist/main/main.js",
   "scripts": {
-    "electron": "electron-webpack dev",
+    "electron": "node electron-webpack.mjs",
     "electron:build": "webpack --mode production --config webpack.main.config.js",
     "electron:dist": "electron-builder --dir",
     "electron:pack": "electron-builder",
@@ -14,7 +14,7 @@
     "neutrino": "neutrino-webpack -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
     "neutrino:build": "neutrino-webpack -p -m ./webpack.neutrino.config.js -r ./webpack.neutrino-renderer.config.js",
     "neutrino:dist": "neutrino-builder -m ./dist/neutrino -r ./dist/neutrino-renderer",
-    "postinstall": "node install-app-deps"
+    "postinstall": "node install-app-deps.js"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
-    "dbus": "^1.0.5",
-    "fluent-ffmpeg": "^2.1.2",
-    "neutrinojs": "file:../neutrino"
+    "fluent-ffmpeg": "^2.1.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.13.0",
@@ -58,6 +56,7 @@
     "googleapis": "^68.0.0",
     "he": "^1.2.0",
     "html-webpack-plugin": "^5.3.1",
+    "immer": "^9.0.1",
     "mini-css-extract-plugin": "^1.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -65,7 +64,9 @@
     "redux": "^4.0.5",
     "sass": "^1.32.8",
     "sass-loader": "^11.0.1",
+    "source-map-support": "^0.5.19",
     "style-loader": "^2.0.0",
+    "tree-kill": "^1.2.2",
     "typescript": "^4.2.3",
     "updeep": "^1.2.0",
     "webpack": "^5.28.0",

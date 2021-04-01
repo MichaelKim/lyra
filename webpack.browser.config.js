@@ -122,9 +122,10 @@ module.exports = async (env, argv) => {
     config.devServer = {
       contentBase: path.resolve('./dist/browser'),
       host: 'localhost',
-      port: '9000',
+      port: 9000,
       hot: true,
-      overlay: true
+      overlay: true,
+      compress: true
     };
     config.plugins.push(
       new DefinePlugin({

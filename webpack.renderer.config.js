@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 
-module.exports = async (env, argv) => {
+module.exports = async (_, argv) => {
   const isDev = argv.mode !== 'production';
   console.log(
     `===================${
@@ -18,7 +18,6 @@ module.exports = async (env, argv) => {
   );
 
   const config = {
-    context: __dirname,
     entry: {
       renderer: path.resolve('./src/renderer/index.tsx')
     },
@@ -123,7 +122,10 @@ module.exports = async (env, argv) => {
       'fluent-ffmpeg',
       'dbus',
       new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
-    ]
+    ],
+    watchOptions: {
+      ignored: /^(?!.*src\/(css|fonts|icons|renderer|index\.html)).*$/
+    }
   };
 
   if (isDev) {
@@ -131,10 +133,9 @@ module.exports = async (env, argv) => {
     config.devtool = 'eval-source-map';
     config.devServer = {
       contentBase: path.resolve('./dist/renderer'),
-      host: 'localhost',
-      port: '8080',
       hot: true,
-      overlay: true
+      overlay: true,
+      compress: true
     };
   } else {
     config.mode = 'production';

@@ -6,14 +6,13 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 
-module.exports = async (env, argv) => {
+module.exports = async (_, argv) => {
   const isDev = argv.mode !== 'production';
   console.log(
     `===================${isDev ? 'DEV' : 'PROD'} MAIN========================`
   );
 
   const config = {
-    context: __dirname,
     entry: {
       main: path.resolve('./src/main/index.ts')
     },
@@ -57,7 +56,6 @@ module.exports = async (env, argv) => {
       }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {
-          context: './src/main',
           diagnosticOptions: {
             semantic: true,
             syntactic: true
@@ -77,19 +75,21 @@ module.exports = async (env, argv) => {
     },
     node: {
       __dirname: true
+    },
+    watchOptions: {
+      ignored: /^(?!.*src\/main).*$/
     }
   };
 
   if (isDev) {
     config.mode = 'development';
     config.devtool = 'eval-source-map';
-    // config.devServer = {
-    //   contentBase: path.resolve('./build'),
-    //   host: 'localhost',
-    //   port: '8080',
-    //   hot: true,
-    //   overlay: true
-    // };
+    config.devServer = {
+      contentBase: path.resolve('./dist/main'),
+      hot: true,
+      overlay: true,
+      compress: true
+    };
   } else {
     config.mode = 'production';
     // Basic options, except ignore console statements
@@ -105,7 +105,7 @@ module.exports = async (env, argv) => {
         })
       ]
     };
-    config.plugins.push(new CleanWebpackPlugin());
+    config.plugins?.push(new CleanWebpackPlugin());
   }
 
   return config;
