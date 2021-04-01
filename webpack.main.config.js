@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require('path');
+const os = require('os');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -76,6 +77,12 @@ module.exports = async (_, argv) => {
     node: {
       __dirname: true
     },
+    externals: [
+      '@ffmpeg-installer/ffmpeg',
+      'fluent-ffmpeg',
+      'dbus',
+      new RegExp(`^@ffmpeg-installer/(?!${os.platform()}-${os.arch()})`)
+    ],
     watchOptions: {
       ignored: /^(?!.*src\/main).*$/
     }

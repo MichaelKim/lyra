@@ -106,7 +106,6 @@ export default function Context(props: Props) {
           ))}
         </div>
       </div>,
-      // $FlowFixMe
       document.body
     );
   };

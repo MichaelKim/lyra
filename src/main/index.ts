@@ -4,6 +4,8 @@ import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 import checkAccessibility from './accessibility';
 import { sendState } from './storage';
 import { loadMenuListener } from './context';
+import { registerUtil } from './util';
+import { registerYoutube } from './yt-util';
 
 let win: BrowserWindow | null = null;
 
@@ -57,6 +59,8 @@ function createWindow() {
 
   checkAccessibility();
   loadMenuListener();
+  registerUtil();
+  registerYoutube();
   require('./shortcuts');
 
   win.webContents.on('did-finish-load', () => {

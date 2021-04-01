@@ -34,6 +34,7 @@
     "@types/dbus": "^1.0.1",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/electron-json-storage": "^4.0.0",
+    "@types/ffmpeg-installer__ffmpeg": "^1.0.0",
     "@types/fluent-ffmpeg": "^2.1.16",
     "@types/he": "^1.1.1",
     "@types/react": "^17.0.3",

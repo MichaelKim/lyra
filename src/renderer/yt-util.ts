@@ -1,19 +1,6 @@
-/*
-  YouTube related utility methods
-
-  Some of the packages that are used for YouTube integration
-  require some setup before running (e.g. ffmpeg, googleapis).
-  Moving all of them to this file helps centralize the setup
-  code, and avoid duplication across the codebase.
-*/
-
-import { createHash } from 'crypto';
-import storage from 'electron-json-storage';
+import { ipcRenderer } from 'electron';
 import EventEmitter from 'events';
-import ffmpeg from 'fluent-ffmpeg';
-import fs from 'fs';
 import he from 'he';
-import path from 'path';
 import ytdl from 'ytdl-core';
 import ytsr, { Video } from 'ytsr';
 import { Song, SongID, VideoSong } from './types';
@@ -30,7 +17,6 @@ declare interface DownloadEventEmitter extends EventEmitter {
   on(event: 'progress', callback: (percent: number) => void): this;
   // 'end' returns null if run in browser to end properly
   on(event: 'end', callback: (song: Song | null) => void): this;
-  on(event: string, callback: (e: unknown) => void): this;
 }
 
 export async function getStreamURL(id: SongID): Promise<string> {
@@ -44,77 +30,18 @@ export async function getStreamURL(id: SongID): Promise<string> {
 }
 
 export function downloadVideo(id: SongID): DownloadEventEmitter {
-  /*
-    This method fetches the audio of a YouTube video, and downloads it
-    to download.mp3, while converting to a mp3 file. Once it finishes,
-    it renames the file to the title of the video, applies metadata tags,
-    and returns the new song object.
-  */
-
-  const dlPath = path.join(storage.getDataPath(), `download-${id}.mp3`);
-
-  // $FlowFixMe: EventEmitter with typed events
   const emitter: DownloadEventEmitter = new EventEmitter();
 
-  ytdl.getInfo(id).then(info => {
-    let currDuration = 0;
+  function onProgress(_: Electron.IpcRendererEvent, percent: number) {
+    emitter.emit('progress', percent);
+  }
 
-    ffmpeg(ytdl.downloadFromInfo(info, { quality: 'highestaudio' }))
-      .audioBitrate(128)
-      .outputOptions('-metadata', 'title=' + info.videoDetails.title)
-      .outputOptions('-metadata', 'artist=' + info.videoDetails.author.name)
-      .on('progress', progress => {
-        /*
-          ffmpeg's progress event contains a "percent" property, but
-          it can be really inaccurate at times.
+  ipcRenderer.on('dl-progress', onProgress);
 
-          The info object from ytdl contains a "length_seconds" value,
-          but it's only precise to seconds. The progress event from ffmpeg
-          has a precision of 0.01s, but doesn't contain total duration information.
+  ipcRenderer.invoke('yt-util-downloadVideo', id).then((song: Song | null) => {
+    ipcRenderer.off('dl-progress', onProgress);
 
-          The following calculation uses ytdl's info as an approximate duration
-          to calculate percent downloaded. Then, it uses the last duration from
-          ffmpeg's progress to store as song duration metadata.
-        */
-        const [h, m, s] = progress.timemark.split(':').map(Number);
-        currDuration = h * 3600 + m * 60 + s;
-
-        const percent = Math.min(
-          100 * (currDuration / Number(info.videoDetails.lengthSeconds)),
-          100
-        );
-
-        emitter.emit('progress', percent);
-      })
-      .save(dlPath)
-      .on('end', () => {
-        // Sanitize for file name
-        const safeName =
-          info.videoDetails.title.replace(/[/\\?%*:|"<>. ]/g, '_') + '.mp3';
-        const filepath = path.join(storage.getDataPath(), safeName);
-
-        fs.rename(dlPath, filepath, err => {
-          if (err) {
-            emitter.emit('end');
-            return;
-          }
-
-          const song: Song = {
-            id: createHash('sha256')
-              .update(info.videoDetails.videoId)
-              .digest('hex'),
-            filepath,
-            title: info.videoDetails.title,
-            artist: info.videoDetails.author.name,
-            duration: currDuration,
-            playlists: [],
-            date: Date.now(),
-            source: 'LOCAL'
-          };
-
-          emitter.emit('end', song);
-        });
-      });
+    emitter.emit('end', song);
   });
 
   return emitter;
