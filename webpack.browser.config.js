@@ -8,6 +8,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CssoWebpackPlugin = require('csso-webpack-plugin').default;
 
 module.exports = async (env, argv) => {
   const isDev = argv.mode !== 'production';
@@ -118,7 +120,7 @@ module.exports = async (env, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.devServer = {
       contentBase: path.resolve('./dist/browser'),
       host: 'localhost',
@@ -153,7 +155,9 @@ module.exports = async (env, argv) => {
       new DefinePlugin({
         'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim'),
         'process.env.LYRA_USE_API': JSON.stringify(true)
-      })
+      }),
+      new CssoWebpackPlugin(),
+      new BundleAnalyzerPlugin()
     );
   }
 
