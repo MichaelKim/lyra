@@ -2,10 +2,10 @@
   "name": "lyra",
   "version": "1.0.0",
   "description": "A music player app",
-  "main": "dist/main/main.js",
+  "main": "main.js",
   "scripts": {
     "electron": "node electron-webpack.mjs",
-    "electron:build": "webpack --mode production --config webpack.main.config.js",
+    "electron:build": "webpack --mode production --config webpack.main.config.js && webpack --mode production --config webpack.renderer.config.js",
     "electron:dist": "electron-builder --dir",
     "electron:pack": "electron-builder",
     "browser": "webpack serve --mode development --config ./webpack.browser.config.js",
@@ -105,7 +105,10 @@
       "!node_modules/dbus",
       "!node_modules/neutrinojs",
       "static",
-      "dist/main",
+      {
+        "from": "dist/main",
+        "to": "."
+      },
       "dist/renderer"
     ]
   },

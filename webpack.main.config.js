@@ -74,9 +74,6 @@ module.exports = async (_, argv) => {
     stats: {
       colors: true
     },
-    node: {
-      __dirname: true
-    },
     externals: [
       '@ffmpeg-installer/ffmpeg',
       'fluent-ffmpeg',

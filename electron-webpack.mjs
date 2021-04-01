@@ -1,14 +1,11 @@
 import { spawn } from 'child_process';
+import electron from 'electron';
 import { createServer } from 'net';
-import { resolve as _resolve } from 'path';
 import kill from 'tree-kill';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import mainConfig from './webpack.main.config.js';
 import rendererConfig from './webpack.renderer.config.js';
-
-const isWin = process.platform === 'win32';
-const ext = isWin ? '.cmd' : '';
 
 function getFreePort(defaultHost, defaultPort) {
   return new Promise((resolve, reject) => {
@@ -88,10 +85,11 @@ async function startRenderer(port) {
 }
 
 function startElectron(rendererPort) {
+  console.log('Electron: located at', electron);
   console.log(`Electron: launching at './dist/main/main.js`);
 
   const electronProcess = spawn(
-    _resolve('./node_modules/.bin/electron' + ext),
+    electron,
     ['./dist/main/main.js', ...process.argv.slice(2)],
     {
       env: {

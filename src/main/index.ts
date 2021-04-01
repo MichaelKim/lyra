@@ -53,7 +53,7 @@ function createWindow() {
 
     win.webContents.openDevTools();
   } else {
-    win.loadURL('file://' + __dirname + '/index.html');
+    win.loadURL(join('file://', __dirname, 'dist/renderer/index.html'));
   }
 
   checkAccessibility();

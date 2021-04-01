@@ -10,13 +10,20 @@ import { StoreState } from '../renderer/types';
 export function registerStorage() {
   ipcMain.handle('state-load', () => {
     return new Promise<StoreState>(resolve => {
-      storage.get('state', (err, obj) => {
-        const state = obj as StoreState;
-        if (err || state == null) {
+      storage.has('state', (err, hasKey) => {
+        if (err || !hasKey) {
           resolve(initialState);
-        } else {
-          resolve(state);
+          return;
         }
+
+        storage.get('state', (err2, obj) => {
+          const state = obj as StoreState;
+          if (err2 || state == null) {
+            resolve(initialState);
+          } else {
+            resolve(state);
+          }
+        });
       });
     });
   });
