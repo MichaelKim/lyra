@@ -13,7 +13,7 @@ export const menu = {
 };
 
 export const state = {
-  load: (): Promise<StoreState> => ipcRenderer.invoke('state-load'),
+  load: (): Promise<StoreState | null> => ipcRenderer.invoke('state-load'),
   save: (state: StoreState) => ipcRenderer.send('state-save', state),
   clear: () => ipcRenderer.send('state-clear')
 };

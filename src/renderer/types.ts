@@ -67,7 +67,7 @@ export type QueueType = {
 
 export type StoreState = {
   loaded: boolean;
-  currScreen?: string;
+  currScreen: string | null;
   songs: Record<SongID, Song>;
   playlists: Record<PlaylistID, Playlist>;
   volume: {

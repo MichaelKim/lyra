@@ -1,181 +1,133 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+import produce, { Draft } from 'immer';
+import { Action, QueueType, StoreState } from '../types';
 
-import u from 'updeep';
-import { initialState } from './storage';
-
-import {
-  SongID,
-  StoreState,
-  Action,
-  SortType,
-  QueueType,
-  Song
-} from '../types';
+export const initialState: StoreState = {
+  loaded: false,
+  currScreen: null,
+  songs: {},
+  playlists: {},
+  volume: {
+    amount: 1,
+    muted: false
+  },
+  sort: {
+    column: 'TITLE',
+    direction: false
+  },
+  shuffle: false,
+  queue: {
+    prev: [],
+    curr: null,
+    next: [],
+    cache: {}
+  },
+  history: [],
+  dlQueue: [],
+  dlProgress: 0
+};
 
 const MAX_QUEUE_SIZE = 50;
 
-// Removes ids from cache
-function cleanCache(
-  ids: Array<SongID>,
-  cache: Record<
-    string,
-    {
-      song: Song;
-      count: number;
+// Restricts prev.length to MAX_QUEUE_SIZE
+function cleanQueue(queue: QueueType) {
+  while (queue.prev.length > MAX_QUEUE_SIZE) {
+    // Remove oldest from cache
+    const oldest = queue.prev.shift();
+
+    if (oldest) {
+      const count = queue.cache[oldest]?.count;
+
+      if (count === 1) {
+        // Remove from cache
+        delete queue.cache[oldest];
+      } else if (count > 1) {
+        // Decrease count
+        queue.cache[oldest].count -= 1;
+      }
     }
-  >
-) {
-  return ids.reduce((acc, id) => {
-    // Missing id
-    if (cache[id] == null) {
-      return cache;
-    }
-    // Only one left, remove from cache
-    if (cache[id].count === 1) {
-      return u.omit(id, cache);
-    }
-    // Decrease count
-    return u(
-      {
-        [id]: {
-          count: cache[id].count - 1
-        }
-      },
-      cache
-    );
-  }, cache);
+  }
 }
 
-export default function rootReducer(
-  state: StoreState = initialState,
-  action: Action
-): StoreState {
+function rootReducer(state: Draft<StoreState>, action: Action) {
   switch (action.type) {
-    case 'LOAD_STORAGE':
-      return u({ loaded: true }, action.state);
+    case 'LOAD_STORAGE': {
+      Object.assign(state, action.state, { loaded: true });
+      return;
+    }
 
     case 'SELECT_SONG': {
       const { id } = action.song;
       const { queue } = state;
 
-      // Clean cache
-      const cache = cleanCache(queue.next, queue.cache);
+      if (queue.curr != null) {
+        // Move current song to history
+        queue.prev.push(queue.curr);
+        cleanQueue(queue);
+      }
 
-      const newQueue: QueueType = {
-        prev:
-          queue.curr != null
-            ? [...queue.prev, queue.curr].slice(-MAX_QUEUE_SIZE)
-            : queue.prev,
-        curr: id,
-        next: [],
-        cache:
-          queue.prev.length >= MAX_QUEUE_SIZE
-            ? cleanCache([queue.prev[0]], cache)
-            : cache
-      };
+      queue.curr = id;
+      queue.next = [];
 
       if (state.songs[id] != null) {
-        return {
-          ...state,
-          queue: newQueue
-        };
+        return;
       }
 
       if (queue.cache[id] != null) {
-        return {
-          ...state,
-          queue: u(
-            {
-              cache: {
-                [id]: {
-                  count: state.queue.cache[id].count + 1
-                }
-              }
-            },
-            newQueue
-          )
-        };
+        // Increment count
+        queue.cache[id].count += 1;
+        return;
       }
 
-      return {
-        ...state,
-        queue: u(
-          {
-            cache: {
-              [id]: {
-                song: action.song,
-                count: 1
-              }
-            }
-          },
-          newQueue
-        )
+      // Add to cache
+      queue.cache[id] = {
+        song: action.song,
+        count: 1
       };
+      return;
     }
 
-    case 'SELECT_PLAYLIST':
-      return u(
-        {
-          currScreen: action.id
-        },
-        state
-      );
+    case 'SELECT_PLAYLIST': {
+      state.currScreen = action.id;
+      return;
+    }
 
     case 'ADD_SONGS': {
-      const newSongs = action.songs.reduce((acc, song) => {
-        return u(
-          {
-            [song.id]: song
-          },
-          acc
-        );
-      }, state.songs);
+      for (const newSong of action.songs) {
+        state.songs[newSong.id] = newSong;
 
-      // Remove songs from cache
-      const songIDs = action.songs.map(s => s.id);
-      const cache = cleanCache(songIDs, state.queue.cache);
-
-      return {
-        ...state,
-        songs: newSongs,
-        queue: {
-          ...state.queue,
-          cache
-        }
-      };
+        // Remove song from cache
+        delete state.queue.cache[newSong.id];
+      }
+      return;
     }
 
     case 'REMOVE_SONG': {
       const { queue, songs } = state;
       if (songs[action.id] == null) {
-        return state;
+        // Missing song
+        return;
       }
 
-      // Clean cache
-      const cache = cleanCache([action.id], queue.cache);
+      // Remove from songs
+      delete state.songs[action.id];
 
-      return {
-        ...state,
-        songs: u.omit(action.id, songs),
-        queue: {
-          prev: queue.prev.filter(p => p !== action.id),
-          curr: queue.curr === action.id ? null : action.id,
-          next: queue.next.filter(p => p !== action.id),
-          cache
-        }
-      };
+      // Remove from cache
+      delete queue.cache[action.id];
+
+      // Remove from queue
+      queue.prev = queue.prev.filter(p => p !== action.id);
+      if (queue.curr == action.id) {
+        queue.curr = null;
+      }
+      queue.next = queue.next.filter(p => p !== action.id);
+
+      return;
     }
 
-    case 'CREATE_PLAYLIST':
-      return u(
-        {
-          playlists: {
-            [action.playlist.id]: action.playlist
-          }
-        },
-        state
-      );
+    case 'CREATE_PLAYLIST': {
+      state.playlists[action.playlist.id] = action.playlist;
+      return;
+    }
 
     case 'DELETE_PLAYLIST': {
       const playlist = state.playlists[action.id];
@@ -183,31 +135,21 @@ export default function rootReducer(
         return state;
       }
 
-      const songs = state.songs;
-
-      playlist.songs.forEach(id => {
-        const index = songs[id].playlists.indexOf(action.id);
-        if (index !== -1) songs[id].playlists.splice(index, 1);
-      });
-
-      if (state.currScreen === action.id) {
-        return u(
-          {
-            playlists: u.omit(action.id),
-            songs,
-            currScreen: null
-          },
-          state
-        );
+      // Remove songs from playlist
+      for (const songID of playlist.songs) {
+        const song = state.songs[songID];
+        if (song) {
+          song.playlists = song.playlists.filter(p => p !== action.id);
+        }
       }
 
-      return u(
-        {
-          playlists: u.omit(action.id),
-          songs
-        },
-        state
-      );
+      // Remove from playlists
+      delete state.playlists[action.id];
+
+      if (state.currScreen === action.id) {
+        state.currScreen = null;
+      }
+      return;
     }
 
     case 'SET_PLAYLISTS': {
@@ -216,269 +158,159 @@ export default function rootReducer(
 
       // Invalid song ID
       if (song == null) {
-        return state;
+        return;
       }
 
       for (const pid of pids) {
-        // Invalid playlist ID
-        if (state.playlists[pid] == null) {
-          return state;
+        // Only add valid playlists
+        if (state.playlists[pid]) {
+          song.playlists.push(pid);
         }
       }
-
-      return u(
-        {
-          songs: {
-            [sid]: {
-              playlists: pids
-            }
-          }
-        },
-        state
-      );
+      return;
     }
 
     case 'CHANGE_VOLUME': {
-      return u(
-        {
-          volume: {
-            amount: Math.max(Math.min(action.volume, 1), 0)
-          }
-        },
-        state
-      );
+      const clamp = Math.max(Math.min(action.volume, 1), 0);
+      state.volume.amount = clamp;
+      return;
     }
 
     case 'MUTE': {
-      return u(
-        {
-          volume: {
-            muted: action.muted
-          }
-        },
-        state
-      );
+      state.volume.muted = action.muted;
+      return;
     }
 
     case 'SKIP_PREVIOUS': {
       const { queue } = state;
-      const { prev, curr, next } = queue;
-      if (curr == null) {
-        // Nothing playing right now
-        return state;
+
+      const newCurr = queue.prev.pop();
+
+      if (newCurr == null) {
+        // No previous songs
+        return;
       }
 
-      if (prev.length === 0) {
-        return state;
+      if (queue.curr) {
+        queue.next.unshift(queue.curr);
       }
 
-      return u(
-        {
-          queue: {
-            prev: prev.slice(0, -1),
-            curr: prev[prev.length - 1],
-            next: [curr, ...next]
-          }
-        },
-        state
-      );
+      queue.curr = newCurr;
+      return;
     }
 
     case 'SKIP_NEXT': {
       const { queue } = state;
-      const { prev, curr, next } = queue;
 
-      // Middleware: queues song if next is empty
-      if (next.length === 0) {
+      const newCurr = queue.next.shift();
+      if (newCurr == null) {
+        // Middleware: queues song if next is empty
         return state;
       }
 
-      // Clean cache
-      const cache =
-        prev.length >= MAX_QUEUE_SIZE
-          ? cleanCache([prev[0]], queue.cache)
-          : queue.cache;
+      if (queue.curr) {
+        queue.prev.push(queue.curr);
+        cleanQueue(queue);
+      }
 
-      return {
-        ...state,
-        queue: {
-          prev: curr == null ? prev : [...prev, curr].slice(-MAX_QUEUE_SIZE),
-          curr: next[0],
-          next: next.slice(1),
-          cache
-        }
-      };
+      queue.curr = newCurr;
+      return;
     }
 
     case 'UPDATE_TAGS': {
       const song = Object.values(state.songs).find(
         song => song.id === action.id
       );
+
       if (song == null) {
-        return state;
+        return;
       }
 
-      return u(
-        {
-          songs: {
-            [song.id]: {
-              title: action.title,
-              artist: action.artist
-            }
-          }
-        },
-        state
-      );
+      song.title = action.title;
+      song.artist = action.artist;
+      return;
     }
 
     case 'SET_SORT': {
-      const sort: SortType = {
-        column: action.column,
-        direction: action.direction
-      };
-      return u(
-        {
-          sort
-        },
-        state
-      );
+      state.sort.column = action.column;
+      state.sort.direction = action.direction;
+      return;
     }
 
     case 'SET_SHUFFLE': {
-      return u(
-        {
-          shuffle: action.shuffle
-        },
-        state
-      );
+      state.shuffle = action.shuffle;
+      return;
     }
 
     case 'QUEUE_SONG': {
       const { song } = action;
-      const next = [...state.queue.next, song.id];
+
+      state.queue.next.push(song.id);
 
       // Song in library
       if (state.songs[song.id] != null) {
-        return u(
-          {
-            queue: {
-              next
-            }
-          },
-          state
-        );
+        return;
       }
 
       // Song in cache
       if (state.queue.cache[song.id] != null) {
-        return u(
-          {
-            queue: {
-              next,
-              cache: {
-                [song.id]: {
-                  count: state.queue.cache[song.id].count + 1
-                }
-              }
-            }
-          },
-          state
-        );
+        state.queue.cache[song.id].count += 1;
+        return;
       }
 
       // Add to cache
-      return u(
-        {
-          queue: {
-            next,
-            cache: {
-              [song.id]: {
-                song,
-                count: 1
-              }
-            }
-          }
-        },
-        state
-      );
+      state.queue.cache[song.id] = {
+        song,
+        count: 1
+      };
+      return;
     }
 
     case 'ADD_TO_HISTORY': {
-      const cache = new Set<string>();
-      // Remove duplicates and limit to 50
-      const history = [action.search, ...state.history]
-        .filter(str => {
-          if (cache.has(str)) return false;
-          cache.add(str);
-          return true;
-        })
-        .slice(0, MAX_QUEUE_SIZE);
-      return {
-        ...state,
-        history
-      };
+      state.history.push(action.search);
+      state.history = [...new Set(state.history)].slice(0, MAX_QUEUE_SIZE);
+      return;
     }
 
     case 'REMOVE_FROM_HISTORY': {
-      const idx = state.history.indexOf(action.search);
-      const history = state.history.slice();
-      history.splice(idx, 1);
-      return {
-        ...state,
-        history
-      };
+      state.history = state.history.filter(h => h !== action.search);
+      return;
     }
 
     case 'DOWNLOAD_ADD': {
-      return u(
-        {
-          dlQueue: [...state.dlQueue, action.id]
-        },
-        state
-      );
+      state.dlQueue.push(action.id);
+      return;
     }
 
     case 'DOWNLOAD_PROGRESS': {
-      return u(
-        {
-          dlProgress: action.progress
-        },
-        state
-      );
+      state.dlProgress = action.progress;
+      return;
     }
 
     case 'DOWNLOAD_FINISH': {
-      if (action.song == null) {
-        return u(
-          {
-            dlQueue: state.dlQueue.slice(1),
-            dlProgress: 0
-          },
-          state
-        );
-      }
+      state.dlQueue.shift();
+      state.dlProgress = 0;
 
-      return u(
-        {
-          songs: {
-            [action.song.id]: action.song
-          },
-          dlQueue: state.dlQueue.slice(1),
-          dlProgress: 0
-        },
-        state
-      );
+      if (action.song != null) {
+        state.songs[action.song.id] = action.song;
+      }
+      return;
     }
 
-    case 'CLEAR_DATA':
-      return u(
-        {
-          loaded: true
-        },
-        initialState
-      );
-
-    default:
-      return state;
+    case 'CLEAR_DATA': {
+      Object.assign(state, initialState, {
+        loaded: true
+      });
+      return;
+    }
   }
+}
+
+export default function wrapper(
+  state: StoreState = initialState,
+  action: Action
+): StoreState {
+  return produce(state, draftState => {
+    rootReducer(draftState, action);
+  });
 }

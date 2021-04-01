@@ -2,7 +2,7 @@ import { applyMiddleware, compose, createStore, Store } from 'redux';
 import { Action, StoreState } from '../types';
 import { logger, queueSong, saveToStorage } from './middleware';
 import reducer from './reducer';
-import { initialState } from './storage';
+import { initialState } from './reducer';
 
 const composeEnhancers =
   (!process.env.PRODUCTION && // @ts-expect-error: inserted by devtools
@@ -15,10 +15,10 @@ const store: Store<StoreState, Action> = createStore(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-window.state.load().then((state: StoreState) => {
+window.state.load().then((state: StoreState | null) => {
   store.dispatch({
     type: 'LOAD_STORAGE',
-    state
+    state: state ?? initialState
   });
 });
 

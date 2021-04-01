@@ -2,7 +2,7 @@ import { Song, SongID, SortType } from './types';
 
 export function getSongList(
   songs: Record<SongID, Song>,
-  playlist?: string,
+  playlist: string | null,
   sort?: SortType
 ): Song[] {
   const songlist = Object.values(songs);

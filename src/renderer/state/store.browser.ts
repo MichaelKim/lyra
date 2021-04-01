@@ -2,7 +2,7 @@ import { applyMiddleware, compose, createStore, Store } from 'redux';
 import { Action, StoreState } from '../types';
 import { logger, queueSong, saveToStorage } from './middleware';
 import reducer from './reducer';
-import { initialState } from './storage';
+import { initialState } from './reducer';
 
 const composeEnhancers =
   (!process.env.PRODUCTION && // @ts-expect-error: inserted by devtools

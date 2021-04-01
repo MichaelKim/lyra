@@ -6,7 +6,9 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssoWebpackPlugin = require('csso-webpack-plugin').default;
 const { DefinePlugin } = require('webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = async (_, argv) => {
   const isDev = argv.mode !== 'production';
@@ -88,7 +90,6 @@ module.exports = async (_, argv) => {
     plugins: [
       new DefinePlugin({
         'process.env.PRODUCTION': !isDev,
-        'process.env.FLUENTFFMPEG_COV': false,
         'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
       }),
       new ForkTsCheckerWebpackPlugin({
@@ -146,7 +147,11 @@ module.exports = async (_, argv) => {
         })
       ]
     };
-    config.plugins.push(new CleanWebpackPlugin());
+    config.plugins.push(
+      new CleanWebpackPlugin(),
+      new CssoWebpackPlugin(),
+      new BundleAnalyzerPlugin()
+    );
   }
 
   return config;

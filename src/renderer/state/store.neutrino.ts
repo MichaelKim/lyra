@@ -3,7 +3,7 @@ import { applyMiddleware, createStore, Store } from 'redux';
 import { Action, StoreState } from '../types';
 import { logger, saveToStorage } from './middleware';
 import reducer from './reducer';
-import { initialState } from './storage';
+import { initialState } from './reducer';
 
 const store: Store<StoreState, Action> = createStore(
   reducer,
