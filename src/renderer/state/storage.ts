@@ -1,5 +1,4 @@
 import { StoreState } from '../types';
-import { ipcRenderer } from 'electron';
 
 export const initialState: StoreState = {
   loaded: false,
@@ -26,10 +25,10 @@ export const initialState: StoreState = {
 };
 
 export function save(state: StoreState) {
-  ipcRenderer.send('state-save', state);
+  window.state.save(state);
   console.log('Stored state:', state);
 }
 
 export function clear() {
-  ipcRenderer.send('state-clear');
+  window.state.clear();
 }

@@ -1,5 +1,3 @@
-import { ipcRenderer } from 'electron';
-
 export type Props = {
   className: string;
   rightClick?: boolean;
@@ -19,8 +17,8 @@ export default function ContextMenu(props: Props) {
       labels[id] = item.label;
       clicks[id] = item.click;
     }
-    ipcRenderer.send('menu-show', labels);
-    ipcRenderer.once('menu-click', (event, id: string) => {
+
+    window.menu.show(labels).then(id => {
       clicks[id]?.();
     });
   };

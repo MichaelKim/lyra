@@ -14,6 +14,7 @@ import storage from 'electron-json-storage';
 import ffmpeg from 'fluent-ffmpeg';
 import { promises } from 'fs';
 import he from 'he';
+import fetch from 'node-fetch';
 import path from 'path';
 import ytdl from 'ytdl-core';
 import ytsr, { Video } from 'ytsr';
@@ -27,6 +28,9 @@ import { readableViews } from '../renderer/util';
 // });
 
 ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'));
+
+const YT_SUGGEST_URL =
+  'https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=';
 
 export function registerYoutube() {
   ipcMain.handle('yt-util-getStreamURL', async (_, id: SongID) => {
@@ -210,6 +214,18 @@ export function registerYoutube() {
         }
       };
     });
+  });
+
+  ipcMain.handle('yt-util-ytSuggest', async (_, query: string) => {
+    if (!query) return [];
+
+    const url = YT_SUGGEST_URL + query.trim().replace(/\s+/, '+');
+
+    // Format: [query: string, suggestions: string[]]
+    const res = await fetch(url);
+    const body: [string, string[]] = await res.json();
+
+    return body[1];
   });
 }
 

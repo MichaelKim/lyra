@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import { applyMiddleware, compose, createStore, Store } from 'redux';
 import { Action, StoreState } from '../types';
 import { logger, queueSong, saveToStorage } from './middleware';
@@ -16,7 +15,7 @@ const store: Store<StoreState, Action> = createStore(
   composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
 );
 
-ipcRenderer.on('state-load', (_, state: StoreState) => {
+window.state.load().then((state: StoreState) => {
   store.dispatch({
     type: 'LOAD_STORAGE',
     state

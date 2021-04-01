@@ -1,9 +1,9 @@
-import 'source-map-support/register';
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
-
+import { join } from 'path';
+import 'source-map-support/register';
 import checkAccessibility from './accessibility';
-import { sendState } from './storage';
 import { loadMenuListener } from './context';
+import { registerStorage } from './storage';
 import { registerUtil } from './util';
 import { registerYoutube } from './yt-util';
 
@@ -30,7 +30,8 @@ function createWindow() {
     title: 'Lyra Music Player',
     backgroundColor: '#333',
     webPreferences: {
-      nodeIntegration: true
+      preload: join(app.getAppPath(), 'preload.js'),
+      contextIsolation: true
     }
   };
 
@@ -58,13 +59,10 @@ function createWindow() {
 
   checkAccessibility();
   loadMenuListener();
+  registerStorage();
   registerUtil();
   registerYoutube();
   require('./shortcuts');
-
-  win.webContents.on('did-finish-load', () => {
-    win && sendState(win.webContents);
-  });
 
   win.on('closed', () => {
     win = null;

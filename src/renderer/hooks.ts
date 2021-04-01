@@ -4,7 +4,7 @@ import {
   useSelector as _useSelector
 } from 'react-redux';
 import { Dispatch, Song, StoreState } from './types';
-import { registerShortcuts, removeShortcuts } from './util';
+import { registerShortcuts } from './util';
 
 // Type wrappers for built-in hooks
 export function useSelector<Selected>(
@@ -40,13 +40,7 @@ export function useCurrSong(): Song | null {
 }
 
 export function useMediaShortcuts(shortcuts: Record<string, () => void>) {
-  useEffect(() => {
-    registerShortcuts(shortcuts);
-
-    return () => {
-      removeShortcuts(shortcuts);
-    };
-  }, [shortcuts]);
+  useEffect(() => registerShortcuts(shortcuts), [shortcuts]);
 }
 
 export function useMediaSessionHandlers(

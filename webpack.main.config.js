@@ -15,7 +15,8 @@ module.exports = async (_, argv) => {
 
   const config = {
     entry: {
-      main: path.resolve('./src/main/index.ts')
+      main: path.resolve('./src/main/index.ts'),
+      preload: path.resolve('./src/main/preload.ts')
     },
     output: {
       path: path.resolve('./dist/main'),

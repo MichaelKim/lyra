@@ -23,12 +23,9 @@ module.exports = async (_, argv) => {
     output: {
       path: path.resolve('./dist/renderer'),
       filename: '[name].js',
-      chunkFilename: '[name].bundle.js',
-      library: {
-        type: 'commonjs2'
-      }
+      chunkFilename: '[name].bundle.js'
     },
-    target: 'electron-renderer',
+    target: 'web',
     module: {
       rules: [
         {
@@ -91,7 +88,8 @@ module.exports = async (_, argv) => {
     plugins: [
       new DefinePlugin({
         'process.env.PRODUCTION': !isDev,
-        'process.env.FLUENTFFMPEG_COV': false
+        'process.env.FLUENTFFMPEG_COV': false,
+        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
       }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {
