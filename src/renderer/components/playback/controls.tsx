@@ -71,10 +71,15 @@ const Controls = ({
       }
     };
 
+    // Space can trigger buttons on keyup
+    const handleSpace = (e: KeyboardEvent) => e.preventDefault();
+
     window.addEventListener('keydown', handleKeyboardShortcuts);
+    window.addEventListener('keyup', handleSpace);
 
     return () => {
       window.removeEventListener('keydown', handleKeyboardShortcuts);
+      window.removeEventListener('keyup', handleSpace);
     };
   }, [onTogglePause, onReplay, onForward, skipPrevious, skipNext]);
 
