@@ -21,8 +21,7 @@ module.exports = config => {
     rules: [
       {
         test: /\.tsx?$/i,
-        // TODO: eslint error when removing neutrino/lib
-        exclude: /node_modules|neutrino[\\/]lib/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {

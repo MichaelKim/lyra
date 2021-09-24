@@ -9,23 +9,7 @@ module.exports = config => {
 
   config.entry = './src/neutrino/index.js';
   config.output.path = path.resolve('./dist/neutrino');
-  // TODO: eslint error when removing neutrino/lib
-  config.module.rules = [
-    {
-      test: /\.js$/,
-      exclude: /node_modules|neutrino[\\/]lib/,
-      use: [
-        'eslint-loader',
-        {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-class-properties']
-          }
-        }
-      ]
-    }
-  ];
+  config.module.rules[0].use.unshift('eslint-loader');
   config.plugins.push(
     new DefinePlugin({
       'process.env.PRODUCTION': JSON.stringify(!isDev)
