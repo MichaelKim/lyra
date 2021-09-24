@@ -53,8 +53,7 @@ module.exports = async (env, argv) => {
                 [
                   '@babel/plugin-transform-typescript',
                   { allowDeclareFields: true }
-                ],
-                '@babel/plugin-proposal-class-properties'
+                ]
               ]
             }
           }

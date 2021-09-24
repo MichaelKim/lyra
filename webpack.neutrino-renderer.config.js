@@ -40,8 +40,7 @@ module.exports = config => {
               [
                 '@babel/plugin-transform-typescript',
                 { allowDeclareFields: true }
-              ],
-              '@babel/plugin-proposal-class-properties'
+              ]
             ]
           }
         }
