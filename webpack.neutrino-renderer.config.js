@@ -1,78 +1,149 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssoWebpackPlugin = require('csso-webpack-plugin').default;
+const { DefinePlugin } = require('webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = config => {
-  const production = config.mode === 'production';
-  const LYRA_URL = production
-    ? 'https://lyra.michael.kim'
-    : 'http://localhost:5000';
+  const isDev = config.mode !== 'production';
+  console.log(
+    `==========NEUTRINO RENDERER ${isDev ? 'DEV' : 'PROD'}==========`
+  );
 
-  config.output.path = path.join(__dirname, 'dist/neutrino-renderer');
-  config.plugins.push(
+  const LYRA_URL = isDev ? 'http://localhost:5000' : 'https://lyra.michael.kim';
+
+  config.entry = './src/renderer/index.tsx';
+  config.module = {
+    rules: [
+      {
+        test: /\.tsx?$/i,
+        // TODO: eslint error when removing neutrino/lib
+        exclude: /node_modules|neutrino[\\/]lib/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            targets: '> 1%, not ie 11',
+            presets: [
+              '@babel/preset-env',
+              [
+                '@babel/preset-react',
+                {
+                  runtime: 'automatic'
+                }
+              ],
+              '@babel/preset-typescript'
+            ],
+            plugins: [
+              [
+                '@babel/plugin-transform-typescript',
+                { allowDeclareFields: true }
+              ],
+              '@babel/plugin-proposal-class-properties'
+            ]
+          }
+        }
+      },
+      {
+        test: /\.module\.scss$/i,
+        use: [
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: !isDev,
+              url: false,
+              modules: {
+                localIdentName: isDev
+                  ? '[path][name]__[local]'
+                  : '[contenthash:base64]'
+              }
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: !isDev
+            }
+          }
+        ]
+      },
+      {
+        test: /\.scss$/i,
+        exclude: /\.module\.scss$/i,
+        use: [
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: !isDev,
+              url: false
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: !isDev
+            }
+          }
+        ]
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset'
+      },
+      {
+        test: /\.ttf$/i,
+        type: 'asset/resource'
+      }
+    ]
+  };
+  config.plugins = [
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        diagnosticOptions: {
+          semantic: true,
+          syntactic: true
+        },
+        mode: 'write-references'
+      },
+      eslint: {
+        files: './src/**/*.{ts,tsx}'
+      }
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
-    new webpack.DefinePlugin({
+    new MiniCssExtractPlugin({
+      filename: isDev ? '[name].css' : '[name].[contenthash].css',
+      chunkFilename: isDev ? '[id].css' : '[id].[contenthash].css'
+    }),
+    new DefinePlugin({
+      'process.env.PRODUCTION': JSON.stringify(!isDev),
       'process.env.LYRA_URL': JSON.stringify(LYRA_URL),
-      'process.env.LYRA_USE_API': JSON.stringify(production)
+      'process.env.LYRA_USE_API': JSON.stringify(!isDev)
     })
-  );
-  config.resolve.extensions.unshift(
-    '.neutrino.js',
-    '.neutrino.jsx',
-    '.browser.js',
-    '.browser.jsx'
-  );
-  config.module.rules.push(
-    {
-      test: /\.scss$/,
-      use: ['style-loader', 'css-loader', 'sass-loader']
-    },
-    { test: /\.css$/, use: [{ loader: MiniCssExtractPlugin.loader }] },
-    {
-      test: /\.ttf$/,
-      use: [
-        {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]'
-          }
-        }
-      ]
-    },
-    {
-      test: /\.svg$/,
-      use: ['url-loader']
-    },
-    {
-      test: /\.jsx?$/,
-      // TODO: eslint error when removing neutrino/lib
-      exclude: /node_modules|neutrino[\\/]lib/,
-      use: [
-        'eslint-loader',
-        {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-react',
-              '@babel/preset-flow',
-              [
-                '@babel/preset-env',
-                {
-                  targets: '>1%, not ie 11, not op_mini all'
-                }
-              ]
-            ],
-            plugins: ['@babel/plugin-proposal-class-properties']
-          }
-        }
-      ]
-    }
-  );
+  ];
+  config.resolve.extensions = [
+    '.neutrino.ts',
+    '.neutrino.tsx',
+    '.browser.ts',
+    '.browser.tsx',
+    '.ts',
+    '.tsx',
+    '.js'
+  ];
+
+  if (!isDev) {
+    config.plugins.push(
+      new CleanWebpackPlugin(),
+      new CssoWebpackPlugin(),
+      new BundleAnalyzerPlugin()
+    );
+  }
 
   return config;
 };
