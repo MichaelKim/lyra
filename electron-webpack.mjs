@@ -65,7 +65,7 @@ async function startMain() {
 async function startRenderer(port) {
   console.log(`RENDERER: Starting WDS on http://localhost:${port}`);
 
-  const config = await rendererConfig({}, { mode: 'development' });
+  const config = await rendererConfig({}, { mode: 'development', port });
   const compiler = webpack(config);
   const wds = new WebpackDevServer(config.devServer, compiler);
 

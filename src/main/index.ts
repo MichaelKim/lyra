@@ -9,19 +9,20 @@ import { registerYoutube } from './yt-util';
 
 let win: BrowserWindow | null = null;
 
-function installExtensions() {
-  import('electron-devtools-installer')
-    .then(installExtension =>
-      installExtension.default([
-        installExtension.REACT_DEVELOPER_TOOLS,
-        installExtension.REDUX_DEVTOOLS
-      ])
-    )
-    .then(name => console.log(`Added Extension:  ${name}`))
-    .catch(err => console.log('An error occurred: ', err));
+async function installExtensions() {
+  const installExtension = await import('electron-devtools-installer');
+  try {
+    const name = await installExtension.default([
+      installExtension.REACT_DEVELOPER_TOOLS,
+      installExtension.REDUX_DEVTOOLS
+    ]);
+    console.log(`Added Extension:  ${name}`);
+  } catch (err) {
+    console.log('An error occurred: ', err);
+  }
 }
 
-function createWindow() {
+async function createWindow() {
   const options: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 600,
@@ -49,7 +50,7 @@ function createWindow() {
 
     win.loadURL(`http://localhost:${process.env.ELECTRON_RENDERER_PORT}`);
 
-    installExtensions();
+    await installExtensions();
 
     win.webContents.openDevTools();
   } else {

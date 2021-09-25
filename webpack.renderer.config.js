@@ -128,7 +128,7 @@ module.exports = async (_, argv) => {
     config.devServer = {
       static: path.resolve('./dist/renderer'),
       host: 'localhost',
-      port: 9000,
+      port: argv.port,
       hot: true
     };
   } else {
