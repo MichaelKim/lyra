@@ -2,7 +2,6 @@
 
 const path = require('path');
 const os = require('os');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
@@ -22,6 +21,7 @@ module.exports = async (_, argv) => {
       path: path.resolve('./dist/main'),
       filename: '[name].js',
       chunkFilename: '[name].bundle.js',
+      clean: true,
       library: {
         type: 'commonjs2'
       }
@@ -109,7 +109,6 @@ module.exports = async (_, argv) => {
         })
       ]
     };
-    config.plugins?.push(new CleanWebpackPlugin());
   }
 
   return config;

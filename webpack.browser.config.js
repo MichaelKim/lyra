@@ -2,7 +2,6 @@
 // Webpack config for browser
 
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -27,7 +26,8 @@ module.exports = async (env, argv) => {
     output: {
       path: path.resolve('./dist/browser'),
       filename: '[name].js',
-      chunkFilename: '[name].bundle.js'
+      chunkFilename: '[name].bundle.js',
+      clean: true
     },
     target: 'web',
     module: {
@@ -89,7 +89,11 @@ module.exports = async (env, argv) => {
     plugins: [
       new DefinePlugin({
         'process.env.PRODUCTION': JSON.stringify(!isDev),
-        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze'),
+        'process.env.LYRA_URL': JSON.stringify(
+          isDev ? 'http://localhost:5000' : 'https://lyra.michael.kim'
+        ),
+        'process.env.LYRA_USE_API': JSON.stringify(!isDev)
       }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {
@@ -119,21 +123,13 @@ module.exports = async (env, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'cheap-module-source-map';
+    config.devtool = 'eval-source-map';
     config.devServer = {
       contentBase: path.resolve('./dist/browser'),
       host: 'localhost',
       port: 9000,
-      hot: true,
-      overlay: true,
-      compress: true
+      hot: true
     };
-    config.plugins.push(
-      new DefinePlugin({
-        'process.env.LYRA_URL': JSON.stringify('http://localhost:5000'),
-        'process.env.LYRA_USE_API': JSON.stringify(false)
-      })
-    );
   } else {
     config.mode = 'production';
     // Basic options, except ignore console statements
@@ -149,15 +145,7 @@ module.exports = async (env, argv) => {
         })
       ]
     };
-    config.plugins.push(
-      new CleanWebpackPlugin(),
-      new DefinePlugin({
-        'process.env.LYRA_URL': JSON.stringify('https://lyra.michael.kim'),
-        'process.env.LYRA_USE_API': JSON.stringify(true)
-      }),
-      new CssoWebpackPlugin(),
-      new BundleAnalyzerPlugin()
-    );
+    config.plugins.push(new CssoWebpackPlugin(), new BundleAnalyzerPlugin());
   }
 
   return config;

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -136,11 +135,7 @@ module.exports = config => {
   ];
 
   if (!isDev) {
-    config.plugins.push(
-      new CleanWebpackPlugin(),
-      new CssoWebpackPlugin(),
-      new BundleAnalyzerPlugin()
-    );
+    config.plugins.push(new CssoWebpackPlugin(), new BundleAnalyzerPlugin());
   }
 
   return config;
