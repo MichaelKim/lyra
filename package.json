@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LenKagamine/lyra.git"
+    "url": "https://github.com/MichaelKim/lyra.git"
   },
   "author": "Michael Kim <micklepickle98@gmail.com>",
   "license": "MIT",
@@ -78,7 +78,7 @@
     "webpack": "^5.53.0",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2",
+    "webpack-dev-server": "^4.3.0",
     "ytdl-core": "^4.5.0",
     "ytsr": "^3.3.1"
   },

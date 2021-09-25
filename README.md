@@ -2,9 +2,9 @@
 
 Lyra is a cross-platform music player app that can play songs on your computer and on YouTube.
 
-This repository contains the code for the desktop and browser app versions of Lyra, written in Electron. Also check out the [mobile app](https://github.com/LenKagamine/lyra-mobile).
+This repository contains the code for the desktop and browser app versions of Lyra, written in Electron. Also check out the [mobile app](https://github.com/MichaelKim/lyra-mobile).
 
-Check out the [lightweight version](https://github.com/LenKagamine/lyra-neutrino) built with [Neutrino](https://github.com/LenKagamine/neutrino)!
+Check out the [lightweight version](https://github.com/MichaelKim/lyra-neutrino) built with [Neutrino](https://github.com/MichaelKim/neutrino)!
 
 ## Features
 
@@ -76,13 +76,13 @@ npm run browser:build # Create release
 npm run browser:serve # Serve built release on localhost:8080
 ```
 
-This also requires [lyra-server](https://github.com/LenKagamine/lyra-server) to be running (on localhost:5000).
+This also requires [lyra-server](https://github.com/MichaelKim/lyra-server) to be running (on localhost:5000).
 
 ### Neutrino App (Experimental)
 
 Until I get to uploading binaries, you will need to build Neutrino from source.
 
-Clone [Neutrino](https://github.com/LenKagamine/neutrino), then follow the build instructions in the Neutrino README. Place them in the same directory (or change the relative path in `package.json` for the package `neutrinojs`). Make sure to place the built executable inside `neutrino/lib`. If you use CMake, the provided config should already do it.
+Clone [Neutrino](https://github.com/MichaelKim/neutrino), then follow the build instructions in the Neutrino README. Place them in the same directory (or change the relative path in `package.json` for the package `neutrinojs`). Make sure to place the built executable inside `neutrino/lib`. If you use CMake, the provided config should already do it.
 
 The build scripts use `neutrino-webpack` and `neutrino-builder`, which are provided along with Neutrino. Check Neutrino README for more details.
 
@@ -95,7 +95,7 @@ npm run neutrino:dist  # Create unpacked Neutrino app
                        # (Note: Windows won't be able to run the unpacked app; see Neutrino's README)
 ```
 
-This also requires [lyra-server](https://github.com/LenKagamine/lyra-server) to be running (on localhost:5000).
+This also requires [lyra-server](https://github.com/MichaelKim/lyra-server) to be running (on localhost:5000).
 
 Note:
 

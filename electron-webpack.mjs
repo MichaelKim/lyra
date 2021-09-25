@@ -42,7 +42,7 @@ function getFreePort(defaultHost, defaultPort) {
   });
 }
 
-async function startMain(afterBuild) {
+async function startMain() {
   console.log(`MAIN: Starting webpack`);
 
   const config = await mainConfig({}, { mode: 'development' });
@@ -51,7 +51,6 @@ async function startMain(afterBuild) {
   return new Promise((resolve, reject) => {
     compiler.hooks.done.tap('electron-main', () => {
       resolve(compiler);
-      afterBuild();
     });
 
     compiler.watch(config.watchOptions, error => {
@@ -68,14 +67,14 @@ async function startRenderer(port) {
 
   const config = await rendererConfig({}, { mode: 'development' });
   const compiler = webpack(config);
-  const wds = new WebpackDevServer(compiler, config.devServer);
+  const wds = new WebpackDevServer(config.devServer, compiler);
 
   return new Promise((resolve, reject) => {
     compiler.hooks.done.tap('electron-renderer', () => {
       resolve(wds);
     });
 
-    wds.listen(port, 'localhost', error => {
+    wds.start().catch(error => {
       if (error) {
         console.error('electron-renderer:', error.message);
         reject(error);
@@ -114,20 +113,20 @@ const rendererPort = await getFreePort('localhost', 9080);
 const rendererDevServer = await startRenderer(rendererPort);
 
 let electronProcess = null;
-const mainDevServer = await startMain(() => {
-  console.log('MAIN: rebuilt');
-  if (electronProcess != null) {
-    console.log('Existing running electron, closing first');
-    electronProcess.off('close', close);
+const mainDevServer = await startMain();
+console.log('MAIN: rebuilt');
 
-    kill(electronProcess.pid, error => {
-      if (error) throw error;
-      initElectron();
-    });
-  } else {
+if (electronProcess != null) {
+  console.log('Existing running electron, closing first');
+  electronProcess.off('close', close);
+
+  kill(electronProcess.pid, error => {
+    if (error) throw error;
     initElectron();
-  }
-});
+  });
+} else {
+  initElectron();
+}
 
 function initElectron() {
   console.log('Starting up new electron');
@@ -135,18 +134,17 @@ function initElectron() {
   electronProcess.on('close', close);
 }
 
-function close(exitCode) {
+async function close(exitCode) {
   console.debug(`Electron exited with exit code ${exitCode}`);
   console.log('Closing dev servers...');
+
+  await rendererDevServer.stop();
+  console.log('Renderer WDS closed');
 
   mainDevServer.close(() => {
     console.log('Main WDS closed');
 
-    rendererDevServer.close(() => {
-      console.log('Renderer WDS closed');
-
-      process.exit();
-    });
+    process.exit(exitCode);
   });
 }
 

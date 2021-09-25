@@ -126,10 +126,10 @@ module.exports = async (_, argv) => {
     config.mode = 'development';
     config.devtool = 'cheap-module-source-map';
     config.devServer = {
-      contentBase: path.resolve('./dist/renderer'),
-      hot: true,
-      overlay: true,
-      compress: true
+      static: path.resolve('./dist/renderer'),
+      host: 'localhost',
+      port: 9000,
+      hot: true
     };
   } else {
     config.mode = 'production';
