@@ -89,7 +89,6 @@ module.exports = async (env, argv) => {
     plugins: [
       new DefinePlugin({
         'process.env.PRODUCTION': JSON.stringify(!isDev),
-        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze'),
         'process.env.LYRA_URL': JSON.stringify(
           isDev ? 'http://localhost:5000' : 'https://lyra.michael.kim'
         ),

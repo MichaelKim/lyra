@@ -88,8 +88,7 @@ module.exports = async (_, argv) => {
     },
     plugins: [
       new DefinePlugin({
-        'process.env.PRODUCTION': !isDev,
-        'process.env.UPDEEP_MODE': JSON.stringify('dangerously_never_freeze')
+        'process.env.PRODUCTION': !isDev
       }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {
