@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -16,6 +17,7 @@ module.exports = config => {
   const LYRA_URL = isDev ? 'http://localhost:5000' : 'https://lyra.michael.kim';
 
   config.entry = './src/renderer/index.tsx';
+  config.output.path = path.resolve('./dist/neutrino-renderer');
   config.module = {
     rules: [
       {
@@ -45,39 +47,13 @@ module.exports = config => {
         }
       },
       {
-        test: /\.module\.scss$/i,
-        use: [
-          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: !isDev,
-              url: false,
-              modules: {
-                localIdentName: isDev
-                  ? '[path][name]__[local]'
-                  : '[contenthash:base64]'
-              }
-            }
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: !isDev
-            }
-          }
-        ]
-      },
-      {
         test: /\.scss$/i,
-        exclude: /\.module\.scss$/i,
         use: [
           isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
-              sourceMap: !isDev,
-              url: false
+              sourceMap: !isDev
             }
           },
           {
@@ -89,7 +65,7 @@ module.exports = config => {
         ]
       },
       {
-        test: /\.svg$/,
+        test: /\.svg$/i,
         type: 'asset'
       },
       {
@@ -108,11 +84,12 @@ module.exports = config => {
         mode: 'write-references'
       },
       eslint: {
-        files: './src/**/*.{ts,tsx}'
+        files: './src/renderer/**/*.{ts,tsx}'
       }
     }),
     new HtmlWebpackPlugin({
-      template: './src/index.html'
+      template: './src/index.html',
+      favicon: './static/icon.png'
     }),
     new MiniCssExtractPlugin({
       filename: isDev ? '[name].css' : '[name].[contenthash].css',
