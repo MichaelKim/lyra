@@ -13,13 +13,12 @@ import { ipcMain } from 'electron';
 import storage from 'electron-json-storage';
 import ffmpeg from 'fluent-ffmpeg';
 import { promises } from 'fs';
-import he from 'he';
 import fetch from 'node-fetch';
 import path from 'path';
 import ytdl from 'ytdl-core';
 import ytsr, { Video } from 'ytsr';
 import { Song, SongID, VideoSong } from '../renderer/types';
-import { readableViews } from '../renderer/util';
+import { parseReadableDuration, readableViews } from '../renderer/util';
 // import { google } from "googleapis";
 
 // const youtube = google.youtube({
@@ -142,33 +141,22 @@ export function registerYoutube() {
     }
 
     const videos = Array.from(ids.entries());
-    const songs = videos.map(async ([id, item]) => {
-      const info = await ytdl.getBasicInfo(id);
-
-      // This should be guaranteed to work
-      const views = readableViews(
-        Number(info.player_response.videoDetails.viewCount) || 0
-      );
-
-      const song: VideoSong = {
-        id,
-        title: he.decode(item.title),
-        artist: item.author?.name ?? '',
-        thumbnail: {
-          url: item.bestThumbnail.url ?? '',
-          width: item.bestThumbnail.width,
-          height: item.bestThumbnail.height
-        },
-        playlists: [],
-        date: Date.now(),
-        source: 'YOUTUBE',
-        url: info.videoDetails.videoId,
-        duration: Number(info.videoDetails.lengthSeconds),
-        views
-      };
-
-      return song;
-    });
+    const songs = videos.map<Promise<VideoSong>>(async ([id, item]) => ({
+      id,
+      title: item.title,
+      artist: item.author?.name ?? '',
+      thumbnail: {
+        url: item.bestThumbnail.url ?? '',
+        width: item.bestThumbnail.width,
+        height: item.bestThumbnail.height
+      },
+      playlists: [],
+      date: Date.now(),
+      source: 'YOUTUBE',
+      url: id,
+      duration: parseReadableDuration(item.duration),
+      views: readableViews(item.views ?? 0)
+    }));
 
     return Promise.all(songs);
   });
