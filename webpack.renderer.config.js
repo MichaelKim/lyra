@@ -123,7 +123,7 @@ module.exports = async (_, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.devServer = {
       static: path.resolve('./dist/renderer'),
       host: 'localhost',

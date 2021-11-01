@@ -87,12 +87,10 @@ module.exports = async (_, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.devServer = {
-      contentBase: path.resolve('./dist/main'),
-      hot: true,
-      overlay: true,
-      compress: true
+      static: path.resolve('./dist/main'),
+      hot: true
     };
   } else {
     config.mode = 'production';

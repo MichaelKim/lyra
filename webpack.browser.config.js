@@ -122,9 +122,9 @@ module.exports = async (env, argv) => {
 
   if (isDev) {
     config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.devServer = {
-      contentBase: path.resolve('./dist/browser'),
+      static: path.resolve('./dist/browser'),
       host: 'localhost',
       port: 9000,
       hot: true
