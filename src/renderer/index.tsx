@@ -1,4 +1,5 @@
 // require('dotenv').config();
+import { StrictMode } from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import '../css/fonts.scss';
@@ -10,9 +11,11 @@ const root = document.getElementById('app');
 
 function App() {
   return (
-    <Provider store={store}>
-      <Root />
-    </Provider>
+    <StrictMode>
+      <Provider store={store}>
+        <Root />
+      </Provider>
+    </StrictMode>
   );
 }
 
