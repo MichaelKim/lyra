@@ -44,7 +44,12 @@ export type Metadata = {
   duration: number;
 };
 
-export type SortColumn = 'TITLE' | 'ARTIST' | 'DURATION' | 'DATE';
+export enum SortColumn {
+  TITLE = 'TITLE',
+  ARTIST = 'ARTIST',
+  DURATION = 'DURATION',
+  DATE = 'DATE'
+}
 
 export type SortType = {
   column: SortColumn;

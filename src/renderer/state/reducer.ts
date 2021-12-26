@@ -1,5 +1,5 @@
 import produce, { Draft } from 'immer';
-import { Action, QueueType, StoreState } from '../types';
+import { Action, QueueType, SortColumn, StoreState } from '../types';
 
 export const initialState: StoreState = {
   loaded: false,
@@ -11,7 +11,7 @@ export const initialState: StoreState = {
     muted: false
   },
   sort: {
-    column: 'TITLE',
+    column: SortColumn.TITLE,
     direction: false
   },
   shuffle: false,
