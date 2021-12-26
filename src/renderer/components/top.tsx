@@ -28,24 +28,19 @@ export default function Top() {
     }
   ];
 
-  let screen = true;
+  const showGrid = tops.every(t => !t.visible);
 
   return (
     <div className='top'>
       <Sidebar />
 
-      {tops.map(t => {
-        if (t.visible) {
-          screen = false;
-        }
-        return (
-          <div key={t.enum} className={'screen ' + (t.visible ? '' : 'hidden')}>
-            <t.Component />
-          </div>
-        );
-      })}
+      {tops.map(t => (
+        <div key={t.enum} className={'screen ' + (t.visible ? '' : 'hidden')}>
+          <t.Component />
+        </div>
+      ))}
 
-      <div className={'screen ' + (screen ? '' : 'hidden')}>
+      <div className={'screen ' + (showGrid ? '' : 'hidden')}>
         <Screen />
       </div>
     </div>
