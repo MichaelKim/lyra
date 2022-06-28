@@ -1,15 +1,14 @@
+import { configureStore } from '@reduxjs/toolkit';
 import fs from 'fs';
-import { applyMiddleware, createStore, Store } from 'redux';
-import { Action, StoreState } from '../types';
 import { logger, saveToStorage } from './middleware';
-import reducer from './reducer';
-import { initialState } from './reducer';
+import reducer, { initialState } from './reducer';
 
-const store: Store<StoreState, Action> = createStore(
+const store = configureStore({
   reducer,
-  initialState,
-  applyMiddleware(logger, saveToStorage)
-);
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(logger, saveToStorage),
+  preloadedState: initialState
+});
 
 fs.readFile('state.json', 'utf-8', (err, data) => {
   let state = initialState;

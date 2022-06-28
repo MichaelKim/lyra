@@ -1,19 +1,14 @@
-import { applyMiddleware, compose, createStore, Store } from 'redux';
-import { Action, StoreState } from '../types';
+import { configureStore } from '@reduxjs/toolkit';
 import { logger, queueSong, saveToStorage } from './middleware';
-import reducer from './reducer';
-import { initialState } from './reducer';
+import reducer, { initialState } from './reducer';
 
-const composeEnhancers =
-  (!process.env.PRODUCTION && // @ts-expect-error: inserted by devtools
-    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose)) ||
-  compose;
-
-const store: Store<StoreState, Action> = createStore(
+const store = configureStore({
   reducer,
-  initialState,
-  composeEnhancers(applyMiddleware(logger, saveToStorage, queueSong))
-);
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(logger, saveToStorage, queueSong),
+  preloadedState: initialState,
+  devTools: !process.env.PRODUCTION
+});
 
 function getState() {
   const stored = window.localStorage.getItem('state');
