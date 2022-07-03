@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, Song } from '../../../types';
+import { addSongs } from '../../../actions';
+import { AppDispatch } from '../../../state/store';
+import { Song } from '../../../types';
 import { downloadVideo } from '../../../yt-util';
 
 type Props = {
@@ -57,10 +59,11 @@ class Sources extends Component<Props, State> {
   }
 }
 
-function mapDispatch(dispatch: Dispatch) {
+function mapDispatch(dispatch: AppDispatch) {
   return {
-    addSongs: (songs: Song[]) => dispatch({ type: 'ADD_SONGS', songs })
+    addSongs: (songs: Song[]) => dispatch(addSongs(songs))
   };
 }
 
+// @ts-expect-error: connect issue
 export default connect(null, mapDispatch)(Sources);

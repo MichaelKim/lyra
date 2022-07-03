@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import '../../../css/playback.scss';
-import { Dispatch, Song, StoreState } from '../../types';
+import { selectPlaylist, skipNext, skipPrevious } from '../../actions';
+import { Song, StoreState } from '../../types';
 import { getStreamURL } from '../../yt-util';
 import AudioControl from './audio';
 import Bar from './bar';
@@ -210,13 +211,10 @@ const mapState = (state: StoreState) => {
   };
 };
 
-const mapDispatch = (dispatch: Dispatch) => {
-  return {
-    skipPrevious: () => dispatch({ type: 'SKIP_PREVIOUS' }),
-    skipNext: () => dispatch({ type: 'SKIP_NEXT' }),
-    goToPlaying: (id: string | null) =>
-      dispatch({ type: 'SELECT_PLAYLIST', id })
-  };
+const mapDispatch = {
+  skipPrevious,
+  skipNext,
+  goToPlaying: selectPlaylist
 };
 
 export default connect(mapState, mapDispatch)(PlaybackBar);

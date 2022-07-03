@@ -1,10 +1,11 @@
+import { clearData } from '../../actions';
 import { useDispatch } from '../../hooks';
 import Playlists from './playlists';
 import Sources from './sources';
 
 export default function Settings() {
   const dispatch = useDispatch();
-  const clearData = () => dispatch({ type: 'CLEAR_DATA' });
+  const onClick = () => dispatch(clearData());
 
   return (
     <>
@@ -13,7 +14,7 @@ export default function Settings() {
       <Playlists />
 
       <div>
-        <button onClick={clearData}>Clear all data</button>
+        <button onClick={onClick}>Clear all data</button>
       </div>
     </>
   );

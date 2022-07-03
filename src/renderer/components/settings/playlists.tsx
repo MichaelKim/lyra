@@ -1,15 +1,12 @@
 import { useState } from 'react';
+import { createPlaylist, deletePlaylist } from '../../actions';
 import { useDispatch, useSelector } from '../../hooks';
-import { Playlist, PlaylistID } from '../../types';
+import { PlaylistID } from '../../types';
 
 export default function Playlists() {
   const playlists = useSelector(state => Object.values(state.playlists));
 
   const dispatch = useDispatch();
-  const addPlaylist = (playlist: Playlist) =>
-    dispatch({ type: 'CREATE_PLAYLIST', playlist });
-  const deletePlaylist = (id: PlaylistID) =>
-    dispatch({ type: 'DELETE_PLAYLIST', id });
 
   const [input, setInput] = useState('');
 
@@ -18,17 +15,19 @@ export default function Playlists() {
   }
 
   function onAdd() {
-    addPlaylist({
-      id: Date.now().toString(),
-      name: input || 'Unnamed Playlist',
-      songs: []
-    });
+    dispatch(
+      createPlaylist({
+        id: Date.now().toString(),
+        name: input || 'Unnamed Playlist',
+        songs: []
+      })
+    );
 
     setInput('');
   }
 
   function onDelete(id: PlaylistID) {
-    deletePlaylist(id);
+    dispatch(deletePlaylist(id));
   }
 
   return (

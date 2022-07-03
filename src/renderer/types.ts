@@ -1,4 +1,4 @@
-import { Middleware as _Middleware, Dispatch as _Dispatch } from 'redux';
+import { Middleware } from '@reduxjs/toolkit';
 
 export type SongID = string;
 export type PlaylistID = string;
@@ -87,34 +87,4 @@ export type StoreState = {
   dlProgress: number;
 };
 
-export type Dispatch = _Dispatch<Action>;
-
-export type Middleware = _Middleware<
-  Record<string, never>,
-  StoreState,
-  Dispatch
->;
-
-export type Action =
-  | { type: 'LOAD_STORAGE'; state: StoreState }
-  | { type: 'SELECT_SONG'; song: Song }
-  | { type: 'SELECT_PLAYLIST'; id: string | null }
-  | { type: 'ADD_SONGS'; songs: Song[] }
-  | { type: 'REMOVE_SONG'; id: SongID }
-  | { type: 'CREATE_PLAYLIST'; playlist: Playlist }
-  | { type: 'DELETE_PLAYLIST'; id: PlaylistID }
-  | { type: 'SET_PLAYLISTS'; sid: SongID; pids: PlaylistID[] }
-  | { type: 'CHANGE_VOLUME'; volume: number }
-  | { type: 'MUTE'; muted: boolean }
-  | { type: 'SKIP_PREVIOUS' }
-  | { type: 'SKIP_NEXT' }
-  | { type: 'UPDATE_TAGS'; id: SongID; title: string; artist: string }
-  | { type: 'SET_SORT'; column: SortColumn; direction: boolean }
-  | { type: 'SET_SHUFFLE'; shuffle: boolean }
-  | { type: 'QUEUE_SONG'; song: Song }
-  | { type: 'ADD_TO_HISTORY'; search: string }
-  | { type: 'REMOVE_FROM_HISTORY'; search: string }
-  | { type: 'DOWNLOAD_ADD'; id: SongID }
-  | { type: 'DOWNLOAD_PROGRESS'; progress: number }
-  | { type: 'DOWNLOAD_FINISH'; song: Song | null }
-  | { type: 'CLEAR_DATA' };
+export type AppMiddleware = Middleware<Record<string, never>, StoreState>;

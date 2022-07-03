@@ -1,6 +1,13 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, PlaylistID, Song, SongID, StoreState } from '../../types';
+import {
+  queueSong,
+  removeSong,
+  selectSong,
+  setPlaylists,
+  updateTags
+} from '../../actions';
+import { PlaylistID, Song, SongID, StoreState } from '../../types';
 import { fileExists, formatDuration } from '../../util';
 import Click from '../click';
 import ContextMenu from '../context';
@@ -213,16 +220,14 @@ function mapState(state: StoreState) {
   };
 }
 
-function mapDispatch(dispatch: Dispatch) {
-  return {
-    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
-    updateTags: (id: SongID, title: string, artist: string) =>
-      dispatch({ type: 'UPDATE_TAGS', id, title, artist }),
-    setPlaylists: (sid: SongID, pids: PlaylistID[]) =>
-      dispatch({ type: 'SET_PLAYLISTS', sid, pids }),
-    queueSong: (song: Song) => dispatch({ type: 'QUEUE_SONG', song }),
-    removeSong: (id: SongID) => dispatch({ type: 'REMOVE_SONG', id })
-  };
-}
+const mapDispatch = {
+  selectSong,
+  updateTags: (id: SongID, title: string, artist: string) =>
+    updateTags({ id, title, artist }),
+  setPlaylists: (sid: SongID, pids: PlaylistID[]) =>
+    setPlaylists({ sid, pids }),
+  queueSong,
+  removeSong
+};
 
 export default connect(mapState, mapDispatch)(SongItem);

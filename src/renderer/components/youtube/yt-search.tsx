@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { selectPlaylist } from '../../actions';
 import { useDispatch } from '../../hooks';
 import { VideoSong } from '../../types';
 import { ytSearch } from '../../yt-util';
@@ -16,8 +17,7 @@ export default function YtSearch(props: Props) {
   const [videos, setVideos] = useState<VideoSong[]>([]);
 
   const dispatch = useDispatch();
-  const showYtPlaying = () =>
-    dispatch({ type: 'SELECT_PLAYLIST', id: 'yt-playing' });
+  const showYtPlaying = () => dispatch(selectPlaylist('yt-playing'));
 
   const onSearch = async (value: string) => {
     setSearching(true);

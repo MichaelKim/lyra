@@ -1,25 +1,45 @@
-import { Action, Dispatch, Middleware, Song } from '../types';
+import { isAnyOf } from '@reduxjs/toolkit';
+import {
+  addSongs,
+  addToHistory,
+  changeVolume,
+  clearData,
+  createPlaylist,
+  deletePlaylist,
+  downloadAdd,
+  downloadFinish,
+  downloadProgress,
+  loadStorage,
+  queueSong,
+  removeFromHistory,
+  removeSong,
+  selectPlaylist,
+  selectSong,
+  setPlaylists,
+  setShuffle,
+  setSort,
+  skipNext,
+  skipPrevious,
+  updateTags
+} from '../actions';
+import { AppMiddleware } from '../types';
 import { getSongList } from '../util';
 import { downloadVideo, getRelatedVideos } from '../yt-util';
 import { clear, save } from './storage';
 
-export const logger: Middleware = () => (next: Dispatch) => (
-  action: Action
-) => {
+export const logger: AppMiddleware = () => next => action => {
   console.log(action);
   return next(action);
 };
 
-export const queueSong: Middleware = store => (next: Dispatch) => (
-  action: Action
-) => {
+export const fetchNextSong: AppMiddleware = store => next => action => {
   const result = next(action);
   const newState = store.getState();
 
   if (
-    action.type !== 'SKIP_NEXT' &&
-    action.type !== 'SELECT_SONG' &&
-    action.type !== 'SET_SHUFFLE'
+    skipNext.match(action) ||
+    selectSong.match(action) ||
+    setShuffle.match(action)
   ) {
     // Ignore middleware
     return result;
@@ -48,7 +68,7 @@ export const queueSong: Middleware = store => (next: Dispatch) => (
   if (currSong.source === 'YOUTUBE') {
     if (newState.shuffle) {
       getRelatedVideos(currSong.id).then(related => {
-        store.dispatch({ type: 'QUEUE_SONG', song: related[0] });
+        store.dispatch(queueSong(related[0]));
       });
     }
     return result;
@@ -61,7 +81,7 @@ export const queueSong: Middleware = store => (next: Dispatch) => (
     );
     const nextSong = songs[0 | (Math.random() * songs.length)];
 
-    store.dispatch({ type: 'QUEUE_SONG', song: nextSong });
+    store.dispatch(queueSong(nextSong));
     return result;
   }
 
@@ -69,67 +89,52 @@ export const queueSong: Middleware = store => (next: Dispatch) => (
   const songs = getSongList(newState.songs, newState.currScreen, newState.sort);
   const index = songs.findIndex(song => song.id === currSong.id);
   if (index >= 0 && index < songs.length - 1) {
-    store.dispatch({ type: 'QUEUE_SONG', song: songs[index + 1] });
+    store.dispatch(queueSong(songs[index + 1]));
   }
 
   return result;
 };
 
-export const saveToStorage: Middleware = store => (next: Dispatch) => (
-  action: Action
-) => {
+const isSaveAction = isAnyOf(
+  loadStorage,
+  selectSong,
+  selectPlaylist,
+  addSongs,
+  removeSong,
+  createPlaylist,
+  deletePlaylist,
+  setPlaylists,
+  changeVolume,
+  skipPrevious,
+  skipNext,
+  updateTags,
+  setSort,
+  setShuffle,
+  queueSong,
+  addToHistory,
+  removeFromHistory
+);
+
+export const saveToStorage: AppMiddleware = store => next => action => {
   const result = next(action);
   const newState = store.getState();
 
-  switch (action.type) {
-    case 'LOAD_STORAGE':
-    case 'SELECT_SONG':
-    case 'SELECT_PLAYLIST':
-    case 'ADD_SONGS':
-    case 'REMOVE_SONG':
-    case 'CREATE_PLAYLIST':
-    case 'DELETE_PLAYLIST':
-    case 'SET_PLAYLISTS':
-    case 'CHANGE_VOLUME':
-    case 'SKIP_PREVIOUS':
-    case 'SKIP_NEXT':
-    case 'UPDATE_TAGS':
-    case 'SET_SORT':
-    case 'SET_SHUFFLE':
-    case 'QUEUE_SONG':
-    case 'ADD_TO_HISTORY':
-    case 'REMOVE_FROM_HISTORY':
-      save(newState);
-      break;
-
-    case 'DOWNLOAD_ADD':
-    case 'DOWNLOAD_FINISH': {
-      // There's already a song being downloaded
-      if (action.type === 'DOWNLOAD_ADD' && newState.dlQueue.length > 1) {
-        break;
-      }
-
-      // There are no more songs to download
-      if (action.type === 'DOWNLOAD_FINISH' && newState.dlQueue.length === 0) {
-        break;
-      }
-
-      const id = newState.dlQueue[0];
-      downloadVideo(id)
-        .on('progress', (progress: number) =>
-          store.dispatch({ type: 'DOWNLOAD_PROGRESS', progress })
-        )
-        .on('end', (song: Song | null) => {
-          if (song != null) {
-            store.dispatch({ type: 'DOWNLOAD_FINISH', song });
-          }
-        });
-      break;
-    }
-
-    case 'CLEAR_DATA':
-      clear();
-      break;
+  if (isSaveAction(action)) {
+    save(newState);
+  } else if (clearData.match(action)) {
+    clear();
+  } else if (
+    // There's already a song being downloaded
+    (downloadAdd.match(action) && newState.dlQueue.length <= 1) ||
+    // There are no more songs to download
+    (downloadFinish.match(action) && newState.dlQueue.length > 0)
+  ) {
+    const id = newState.dlQueue[0];
+    downloadVideo(id)
+      .on('progress', progress => store.dispatch(downloadProgress(progress)))
+      .on('end', song => {
+        if (song != null) store.dispatch(downloadFinish(song));
+      });
   }
 
   return result;

@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { logger, queueSong, saveToStorage } from './middleware';
+import { loadStorage } from '../actions';
+import { fetchNextSong, logger, saveToStorage } from './middleware';
 import reducer, { initialState } from './reducer';
 
 const store = configureStore({
   reducer,
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(logger, saveToStorage, queueSong),
+    getDefaultMiddleware().concat(logger, saveToStorage, fetchNextSong),
   preloadedState: initialState,
   devTools: !process.env.PRODUCTION
 });
@@ -20,9 +21,6 @@ function getState() {
   }
 }
 
-store.dispatch({
-  type: 'LOAD_STORAGE',
-  state: getState()
-});
+store.dispatch(loadStorage(getState()));
 
 export default store;

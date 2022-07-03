@@ -1,3 +1,4 @@
+import { removeFromHistory } from '../actions';
 import { useDispatch } from '../hooks';
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 const Suggestion = ({ text, search, focused, isHistory, onClick }: Props) => {
   const dispatch = useDispatch();
   const deleteFromHistory = (search: string) =>
-    dispatch({ type: 'REMOVE_FROM_HISTORY', search });
+    dispatch(removeFromHistory(search));
 
   const cancelBlur = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>

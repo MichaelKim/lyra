@@ -211,7 +211,7 @@ export function registerYoutube() {
 
     // Format: [query: string, suggestions: string[]]
     const res = await fetch(url);
-    const body: [string, string[]] = await res.json();
+    const body = (await res.json()) as [string, string[]];
 
     return body[1];
   });

@@ -1,4 +1,5 @@
 import '../../../css/volume.scss';
+import { changeVolume, toggleMute } from '../../actions';
 import { useDispatch, useSelector } from '../../hooks';
 import RangeInput from './range';
 
@@ -7,10 +8,8 @@ export function VolumeBar() {
   const muted = useSelector(state => state.volume.muted);
 
   const dispatch = useDispatch();
-  const changeVolume = (volume: number) =>
-    dispatch({ type: 'CHANGE_VOLUME', volume });
-  const toggleMute = () => {
-    dispatch({ type: 'MUTE', muted: !muted });
+  const onClick = () => {
+    dispatch(toggleMute(!muted));
   };
 
   const onChange = (volume: number) => {
@@ -21,7 +20,7 @@ export function VolumeBar() {
       In order to mute at 0, the volume is dropped to 0, ignoring the log. The 1% dropoff is small enough to be unnoticable.
     */
     const adjusted = volume === 0 ? 0 : Math.pow(100, volume - 1);
-    changeVolume(adjusted);
+    dispatch(changeVolume(adjusted));
   };
 
   // The inverse of the above adjustment
@@ -32,7 +31,7 @@ export function VolumeBar() {
 
   return (
     <>
-      <button className={'volume-btn ' + icon} onClick={toggleMute} />
+      <button className={'volume-btn ' + icon} onClick={onClick} />
       <div className='volume-bar'>
         <RangeInput min={0} max={1} value={slider} onChange={onChange} />
       </div>

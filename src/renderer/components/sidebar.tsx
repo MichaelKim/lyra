@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import '../../css/sidebar.scss';
+import { createPlaylist, deletePlaylist, selectPlaylist } from '../actions';
 import { useDispatch, useSelector, useToggle } from '../hooks';
-import { Playlist, PlaylistID } from '../types';
 
 export default function Sidebar() {
   const [openSidebar, toggleSidebar] = useToggle(false);
@@ -12,12 +12,6 @@ export default function Sidebar() {
   const [value, setValue] = useState('');
 
   const dispatch = useDispatch();
-  const createPlaylist = (playlist: Playlist) =>
-    dispatch({ type: 'CREATE_PLAYLIST', playlist });
-  const selectPlaylist = (id: string | null) =>
-    dispatch({ type: 'SELECT_PLAYLIST', id });
-  const deletePlaylist = (id: PlaylistID) =>
-    dispatch({ type: 'DELETE_PLAYLIST', id });
 
   function renderItem(
     key: string | null,
@@ -34,10 +28,12 @@ export default function Sidebar() {
           (deletable ? ' sidebar-del' : '')
         }
       >
-        <p onClick={() => selectPlaylist(key) && toggleSidebar()}>{name}</p>
+        <p onClick={() => dispatch(selectPlaylist(key)) && toggleSidebar()}>
+          {name}
+        </p>
         <button
           className='del-btn'
-          onClick={() => key && deletePlaylist(key)}
+          onClick={() => key && dispatch(deletePlaylist(key))}
         />
       </div>
     );
@@ -53,11 +49,13 @@ export default function Sidebar() {
 
     // Don't create if empty name
     if (value) {
-      createPlaylist({
-        id: Date.now().toString(),
-        name: value,
-        songs: []
-      });
+      dispatch(
+        createPlaylist({
+          id: Date.now().toString(),
+          name: value,
+          songs: []
+        })
+      );
     }
   }
 

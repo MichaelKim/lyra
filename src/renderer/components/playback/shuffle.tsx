@@ -1,14 +1,13 @@
+import { setShuffle } from '../../actions';
 import { useDispatch, useSelector } from '../../hooks';
 
 const Shuffle = () => {
   const shuffle = useSelector(state => state.shuffle);
 
   const dispatch = useDispatch();
-  const setShuffle = (shuffle: boolean) =>
-    dispatch({ type: 'SET_SHUFFLE', shuffle });
 
   const onShuffle = () => {
-    setShuffle(!shuffle);
+    dispatch(setShuffle(!shuffle));
   };
 
   return (

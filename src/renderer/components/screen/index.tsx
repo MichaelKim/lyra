@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../../../css/screen.scss';
 import '../../../css/song-row.scss';
+import { setSort } from '../../actions';
 import { useDispatch, useSelector } from '../../hooks';
 import { SortColumn } from '../../types';
 import { getSongList } from '../../util';
@@ -28,14 +29,14 @@ export default function Screen() {
   const [search, setSearch] = useState('');
 
   const dispatch = useDispatch();
-  const setSort = (column: SortColumn, direction: boolean) =>
-    dispatch({ type: 'SET_SORT', column, direction });
+  const _setSort = (column: SortColumn, direction: boolean) =>
+    dispatch(setSort({ column, direction }));
 
   function onSort(column: SortColumn) {
     if (column === sort.column) {
-      setSort(column, !sort.direction);
+      _setSort(column, !sort.direction);
     } else {
-      setSort(column, false);
+      _setSort(column, false);
     }
   }
 

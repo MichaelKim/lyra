@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, LocalSong, Song, SongID, VideoSong } from '../../../types';
+import { addSongs } from '../../../actions';
+import { AppDispatch } from '../../../state/store';
+import { LocalSong, Song, SongID, VideoSong } from '../../../types';
 import { getSongs, selectLocalDir } from '../../../util';
 import Toggle from '../../toggle';
 
@@ -109,10 +111,11 @@ class Sources extends Component<Props, State> {
   }
 }
 
-function mapDispatch(dispatch: Dispatch) {
+function mapDispatch(dispatch: AppDispatch) {
   return {
-    addSongs: (songs: Song[]) => dispatch({ type: 'ADD_SONGS', songs })
+    addSongs: (songs: Song[]) => dispatch(addSongs(songs))
   };
 }
 
+// @ts-expect-error: connect issue
 export default connect(null, mapDispatch)(Sources);

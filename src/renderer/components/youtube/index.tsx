@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import '../../../css/youtube.scss';
+import { selectPlaylist, selectSong } from '../../actions';
 import { useCurrSong, useDispatchMap, useSelector } from '../../hooks';
-import { Dispatch, Song, VideoSong } from '../../types';
+import { AppDispatch } from '../../state/store';
+import { Song, VideoSong } from '../../types';
 import YtPlaying from './yt-playing';
 import YtSearch from './yt-search';
 
@@ -49,10 +51,10 @@ const Youtube = () => {
   );
 };
 
-function mapDispatch(dispatch: Dispatch) {
+function mapDispatch(dispatch: AppDispatch) {
   return {
-    selectSong: (song: Song) => dispatch({ type: 'SELECT_SONG', song }),
-    selectPlaylist: (id: string) => dispatch({ type: 'SELECT_PLAYLIST', id })
+    selectSong: (song: Song) => dispatch(selectSong(song)),
+    selectPlaylist: (id: string) => dispatch(selectPlaylist(id))
   };
 }
 

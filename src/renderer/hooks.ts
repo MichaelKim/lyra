@@ -1,23 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  TypedUseSelectorHook,
   useDispatch as _useDispatch,
   useSelector as _useSelector
 } from 'react-redux';
-import { Dispatch, Song, StoreState } from './types';
+import { AppDispatch } from './state/store';
+import { Song, StoreState } from './types';
 import { registerShortcuts } from './util';
 
 // Type wrappers for built-in hooks
-export function useSelector<Selected>(
-  selector: (state: StoreState) => Selected
-): Selected {
-  return _useSelector(selector);
-}
+export const useSelector: TypedUseSelectorHook<StoreState> = _useSelector;
+export const useDispatch: () => AppDispatch = _useDispatch;
 
-export function useDispatch(): Dispatch {
-  return _useDispatch<Dispatch>();
-}
-
-export function useDispatchMap<T>(mapDispatch: (d: Dispatch) => T): T {
+export function useDispatchMap<T>(mapDispatch: (d: AppDispatch) => T): T {
   const dispatch = useDispatch();
   return useMemo(() => mapDispatch(dispatch), [mapDispatch, dispatch]);
 }

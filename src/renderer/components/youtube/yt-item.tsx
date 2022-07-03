@@ -1,6 +1,8 @@
 import '../../../css/youtube.scss';
+import { addSongs, downloadAdd } from '../../actions';
 import { useDispatchMap } from '../../hooks';
-import { Dispatch, Song, SongID, VideoSong } from '../../types';
+import { AppDispatch } from '../../state/store';
+import { Song, SongID, VideoSong } from '../../types';
 import { formatDuration } from '../../util';
 import ContextMenu from '../context';
 
@@ -47,10 +49,10 @@ const YtItem = ({ video, onClick }: Props) => {
   );
 };
 
-function mapDispatch(dispatch: Dispatch) {
+function mapDispatch(dispatch: AppDispatch) {
   return {
-    addSong: (song: Song) => dispatch({ type: 'ADD_SONGS', songs: [song] }),
-    downloadAdd: (id: SongID) => dispatch({ type: 'DOWNLOAD_ADD', id })
+    addSong: (song: Song) => dispatch(addSongs([song])),
+    downloadAdd: (id: SongID) => dispatch(downloadAdd(id))
   };
 }
 
